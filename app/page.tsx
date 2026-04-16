@@ -7,58 +7,83 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero section */}
+      {/* ── Hero ── */}
       <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-amber-600 text-sm font-medium mb-3 tracking-wide">
-            ✨ 新しい体験が、あなたを待っています
+            ✨ プロや職人と出会う、リアルな体験
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-stone-800 leading-snug mb-4">
-            やってみたい体験が
+            子どもの「やってみたい」を、
             <br />
-            きっと見つかる
+            <span className="text-amber-500">本物の体験に。</span>
           </h1>
-          <p className="text-stone-500 text-base max-w-md mx-auto mb-8">
-            料理・ものづくり・自然探究など、ユニークな体験を提供するホストと
-            ゲストをつなぐプラットフォームです。
+          <p className="text-stone-500 text-base max-w-lg mx-auto mb-8">
+            料理・ものづくり・自然探究……
+            <br className="hidden sm:block" />
+            プロや職人と出会う、リアルな体験プラットフォーム
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <a
               href="#experiences"
-              className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2.5 rounded-full transition-colors shadow-sm"
+              className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-full transition-colors shadow-sm"
             >
-              体験を見てみる
+              体験をさがす
             </a>
             <Link
-              href="/host"
-              className="bg-white hover:bg-amber-50 text-amber-700 font-medium px-6 py-2.5 rounded-full border border-amber-200 transition-colors"
+              href="/for-host"
+              className="bg-white hover:bg-amber-50 text-amber-700 font-bold px-6 py-2.5 rounded-full border border-amber-200 transition-colors"
             >
-              体験を投稿する
+              ホストになる
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Category badges */}
-      <section className="border-b border-stone-100 bg-white">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex gap-2 flex-wrap">
-          <span className="text-xs text-stone-400 self-center mr-1">
-            カテゴリ:
-          </span>
-          {["🍳 料理・ものづくり", "🔍 探究・学び", "🌿 自然・アウトドア"].map(
-            (cat) => (
-              <span
-                key={cat}
-                className="text-sm text-stone-600 bg-stone-100 hover:bg-amber-100 hover:text-amber-700 px-3 py-1 rounded-full cursor-pointer transition-colors"
+      {/* ── 安心して使える3つの理由 ── */}
+      <section className="bg-white border-b border-stone-100 py-10 px-4">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-6">
+            安心して使える3つの理由
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {trustPoints.map((t) => (
+              <div
+                key={t.title}
+                className="flex items-start gap-3 bg-amber-50 rounded-2xl px-5 py-4 border border-amber-100"
               >
-                {cat}
-              </span>
-            )
-          )}
+                <span className="text-2xl shrink-0">{t.icon}</span>
+                <div>
+                  <p className="text-sm font-bold text-stone-800 mb-0.5">{t.title}</p>
+                  <p className="text-xs text-stone-500 leading-relaxed">{t.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Experience list */}
+      {/* ── カテゴリバー ── */}
+      <section className="border-b border-stone-100 bg-white">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex gap-2 flex-wrap">
+          <span className="text-xs text-stone-400 self-center mr-1">カテゴリ:</span>
+          {[
+            "🍳 料理・ものづくり",
+            "🔍 探究・学び",
+            "🌿 自然・アウトドア",
+            "🖌️ アート・表現",
+          ].map((cat) => (
+            <span
+              key={cat}
+              className="text-sm text-stone-600 bg-stone-100 hover:bg-amber-100 hover:text-amber-700 px-3 py-1 rounded-full cursor-pointer transition-colors"
+            >
+              {cat}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 体験一覧 ── */}
       <section id="experiences" className="max-w-5xl mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-stone-800">
@@ -89,7 +114,26 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* CTA section */}
+      {/* ── itoitoについて（ストーリー）── */}
+      <section className="py-16 px-4 bg-stone-800">
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-4">
+            About itoito
+          </p>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white leading-snug mb-6">
+            「やってみたい」が、
+            <br />
+            人生を変える。
+          </h2>
+          <p className="text-stone-300 text-base leading-relaxed">
+            学校では出会えない大人、教科書には載っていない体験。
+            <br className="hidden sm:block" />
+            itoitoは、子どもたちの好奇心と、本物の現場をつなぐプラットフォームです。
+          </p>
+        </div>
+      </section>
+
+      {/* ── ホスト募集CTA ── */}
       <section className="bg-gradient-to-r from-amber-500 to-orange-500 py-12 px-4">
         <div className="max-w-xl mx-auto text-center text-white">
           <h2 className="text-xl font-bold mb-2">
@@ -100,13 +144,31 @@ export default function HomePage() {
             素敵な体験を提供してみましょう。
           </p>
           <Link
-            href="/host"
+            href="/for-host"
             className="bg-white text-amber-600 hover:bg-amber-50 font-bold px-8 py-2.5 rounded-full transition-colors shadow-sm"
           >
-            体験を投稿する
+            ホストになる →
           </Link>
         </div>
       </section>
     </div>
   );
 }
+
+const trustPoints = [
+  {
+    icon: "✅",
+    title: "ホストは全員審査済み",
+    body: "掲載前にホストの経歴・体験内容を確認。安心できるホストだけを紹介しています。",
+  },
+  {
+    icon: "👶",
+    title: "少人数制で目が届く",
+    body: "定員は多くても10〜12名。ホストの目が届き、一人ひとりに丁寧に関われる規模です。",
+  },
+  {
+    icon: "👨‍👩‍👧",
+    title: "保護者の同伴OK",
+    body: "ほとんどの体験で保護者の同伴・参加が可能。一緒に体験できる機会も多数あります。",
+  },
+];

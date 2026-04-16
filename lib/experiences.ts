@@ -12,8 +12,12 @@ export type Experience = {
   location: string;
   capacity: number;
   price: number;
+  targetAge?: string;
   target?: string;
   host: string | { name: string; bio: string };
+  hostProfile?: string;
+  benefits?: string[];
+  parentNote?: string;
   tags?: string[];
   image?: string | null;
 };

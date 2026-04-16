@@ -5,13 +5,17 @@ import { Experience, hostName } from "@/lib/experiences";
 const categoryColors: Record<string, string> = {
   "料理・ものづくり": "bg-orange-100 text-orange-700",
   "ものづくり・アート": "bg-orange-100 text-orange-700",
+  "アート・表現": "bg-purple-100 text-purple-700",
   "探究・学び": "bg-emerald-100 text-emerald-700",
+  "自然・アウトドア": "bg-lime-100 text-lime-700",
 };
 
 const categoryEmoji: Record<string, string> = {
   "料理・ものづくり": "🍳",
   "ものづくり・アート": "🎨",
+  "アート・表現": "🖌️",
   "探究・学び": "🔍",
+  "自然・アウトドア": "🌿",
 };
 
 export default function ExperienceCard({ exp }: { exp: Experience }) {
@@ -19,18 +23,21 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
     categoryColors[exp.category] ?? "bg-stone-100 text-stone-600";
   const emoji = categoryEmoji[exp.category] ?? "✨";
 
-  /* 日付表示：dateTo があれば「〜」でつなぐ */
   const dateLabel = exp.dateTo
     ? `${exp.date} 〜 ${exp.dateTo}`
     : exp.date;
 
+  const imgSrc =
+    exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
+
   return (
-    <Link href={`/experiences/${exp.id}`} className="group block">
+    <Link href={`/experiences/${exp.id}`} className="group block h-full">
       <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-stone-100 overflow-hidden h-full flex flex-col">
-        {/* Photo area */}
-        <div className="relative h-44 w-full overflow-hidden bg-amber-50">
+
+        {/* Photo */}
+        <div className="relative h-44 w-full overflow-hidden bg-amber-50 shrink-0">
           <Image
-            src={exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg"}
+            src={imgSrc}
             alt={exp.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -42,6 +49,12 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
           >
             {emoji} {exp.category}
           </span>
+          {/* Age badge */}
+          {exp.targetAge && (
+            <span className="absolute top-3 right-3 text-xs font-medium px-2.5 py-1 rounded-full bg-white/80 text-stone-600 shadow-sm backdrop-blur-sm">
+              👤 {exp.targetAge}
+            </span>
+          )}
         </div>
 
         <div className="p-5 flex flex-col gap-3 flex-1">
@@ -50,12 +63,12 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
             {exp.title}
           </h2>
 
-          {/* Description preview */}
+          {/* Description */}
           <p className="text-sm text-stone-500 line-clamp-2 flex-1">
             {exp.description}
           </p>
 
-          {/* Info row */}
+          {/* Info */}
           <div className="flex flex-col gap-1.5 text-sm text-stone-600 border-t border-stone-100 pt-3">
             <div className="flex items-center gap-1.5">
               <span>📅</span>
@@ -81,6 +94,11 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
           <div className="text-xs text-stone-400 flex items-center gap-1">
             <span>🌿</span>
             <span>ホスト: {hostName(exp.host)}</span>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-1 bg-amber-50 group-hover:bg-amber-100 text-amber-700 text-sm font-medium text-center py-2 rounded-xl transition-colors border border-amber-100">
+            この体験を見る →
           </div>
         </div>
       </div>

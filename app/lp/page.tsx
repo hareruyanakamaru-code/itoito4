@@ -26,21 +26,21 @@ export default function LpPage() {
           Experience Matching Platform
         </p>
         <h1 className="relative text-4xl md:text-5xl font-extrabold text-stone-800 leading-tight mb-6">
-          やってみたい体験が、
+          子どもの「やってみたい」を、
           <br className="hidden sm:block" />
-          <span className="text-amber-500">きっと見つかる。</span>
+          <span className="text-amber-500">本物の体験に。</span>
         </h1>
         <p className="relative text-stone-500 text-base md:text-lg max-w-lg mx-auto mb-10 leading-relaxed">
           料理・ものづくり・自然探究……
           <br />
-          個性豊かなホストと、好奇心あふれるゲストをつなぐプラットフォームです。
+          プロや職人と出会う、リアルな体験プラットフォーム
         </p>
         <div className="relative flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/"
             className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-full transition-colors shadow-md text-base"
           >
-            体験を探す
+            体験をさがす
           </Link>
           <Link
             href="/for-host"
