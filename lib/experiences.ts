@@ -32,6 +32,8 @@ export function hostBio(host: Experience["host"]): string | undefined {
   return typeof host === "string" ? undefined : host.bio;
 }
 
+export type ApplicationStatus = "未確認" | "確認済み" | "承認" | "キャンセル";
+
 export type Application = {
   id: string;
   experienceId: string;
@@ -39,6 +41,7 @@ export type Application = {
   email: string;
   message: string;
   createdAt: string;
+  status: ApplicationStatus;
 };
 
 const experiencesPath = path.join(process.cwd(), "data", "experiences.json");
@@ -72,15 +75,27 @@ export function getAllApplications(): Application[] {
 }
 
 export function addApplication(
-  app: Omit<Application, "id" | "createdAt">
+  app: Omit<Application, "id" | "createdAt" | "status">
 ): Application {
   const all = getAllApplications();
   const newApp: Application = {
     id: String(Date.now()),
     createdAt: new Date().toISOString(),
+    status: "未確認",
     ...app,
   };
   all.push(newApp);
   fs.writeFileSync(applicationsPath, JSON.stringify(all, null, 2), "utf-8");
   return newApp;
+}
+
+export function updateApplicationStatus(
+  id: string,
+  status: ApplicationStatus
+): void {
+  const all = getAllApplications();
+  const idx = all.findIndex((a) => a.id === id);
+  if (idx === -1) throw new Error(`Application ${id} not found`);
+  all[idx].status = status;
+  fs.writeFileSync(applicationsPath, JSON.stringify(all, null, 2), "utf-8");
 }

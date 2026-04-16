@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# 申し込みデータ（個人情報を含むため除外）
+data/applications.json
+
 # vercel
 .vercel
 
