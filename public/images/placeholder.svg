@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <rect width="600" height="400" fill="#fef3c7"/>
+  <rect x="1" y="1" width="598" height="398" fill="none" stroke="#fde68a" stroke-width="2" stroke-dasharray="8 4"/>
+  <!-- mountain shape -->
+  <polygon points="200,280 300,140 400,280" fill="#fde68a"/>
+  <polygon points="240,280 320,170 400,280" fill="#fbbf24"/>
+  <!-- sun -->
+  <circle cx="440" cy="130" r="36" fill="#fbbf24"/>
+  <!-- ground -->
+  <rect x="100" y="280" width="400" height="4" rx="2" fill="#fde68a"/>
+  <!-- text -->
+  <text x="300" y="340" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#92400e" opacity="0.7">写真を準備中</text>
+</svg>
