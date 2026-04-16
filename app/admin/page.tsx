@@ -1,5 +1,13 @@
-import { getAllApplications, getAllExperiences, type ApplicationStatus } from "@/lib/experiences";
-import { changeApplicationStatus } from "@/lib/actions";
+import {
+  getAllApplications,
+  getAllExperiences,
+  type ApplicationStatus,
+} from "@/lib/experiences";
+import {
+  changeApplicationStatus,
+  logoutAdmin,
+  changeAdminPassword,
+} from "@/lib/actions";
 import Link from "next/link";
 
 const statusConfig: Record<
@@ -19,7 +27,12 @@ const nextStatuses: Record<ApplicationStatus, ApplicationStatus[]> = {
   キャンセル: ["未確認"],
 };
 
-export default function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ passwordChanged?: string; passwordError?: string }>;
+}) {
+  const params = await searchParams;
   const applications = getAllApplications().sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
@@ -33,31 +46,42 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      {/* ヘッダー */}
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-5xl mx-auto px-4 py-8">
+
+      {/* ── ヘッダー ── */}
+      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-stone-800">申し込み管理</h1>
           <p className="text-sm text-stone-500 mt-0.5">
             申し込みの確認・ステータス変更ができます
           </p>
         </div>
-        <Link
-          href="/"
-          className="text-sm text-stone-500 hover:text-amber-700 transition-colors"
-        >
-          ← サイトに戻る
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="text-sm text-stone-500 hover:text-amber-700 transition-colors"
+          >
+            ← サイトに戻る
+          </Link>
+          <form action={logoutAdmin}>
+            <button
+              type="submit"
+              className="text-sm text-stone-400 hover:text-red-500 transition-colors cursor-pointer"
+            >
+              ログアウト
+            </button>
+          </form>
+        </div>
       </div>
 
-      {/* サマリーカード */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      {/* ── サマリーカード ── */}
+      <div className="grid grid-cols-3 gap-3 mb-8">
         <SummaryCard label="申し込み総数" value={counts.total} color="amber" />
         <SummaryCard label="未確認" value={counts.未確認} color="stone" />
         <SummaryCard label="承認済み" value={counts.承認} color="emerald" />
       </div>
 
-      {/* 申し込み一覧 */}
+      {/* ── 申し込み一覧 ── */}
       {applications.length === 0 ? (
         <div className="text-center py-24 bg-white rounded-2xl border border-stone-100">
           <p className="text-4xl mb-4">📭</p>
@@ -79,18 +103,18 @@ export default function AdminPage() {
             return (
               <div
                 key={app.id}
-                className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 flex flex-col gap-4"
+                className="bg-white rounded-2xl border border-stone-100 shadow-sm p-4 sm:p-5 flex flex-col gap-4"
               >
                 {/* 上段：日時・体験名・ステータス */}
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  <div className="flex flex-col gap-1">
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="flex flex-col gap-1 min-w-0">
                     <p className="text-xs text-stone-400">{dateStr}</p>
-                    <p className="font-bold text-stone-800 leading-snug">
+                    <p className="font-bold text-stone-800 leading-snug text-sm sm:text-base">
                       {expMap[app.experienceId] ?? `体験ID: ${app.experienceId}`}
                     </p>
                   </div>
                   <span
-                    className={`text-xs font-bold px-3 py-1 rounded-full ${sc.bg} ${sc.text}`}
+                    className={`text-xs font-bold px-3 py-1 rounded-full shrink-0 ${sc.bg} ${sc.text}`}
                   >
                     {sc.label}
                   </span>
@@ -114,7 +138,7 @@ export default function AdminPage() {
                   {app.message && (
                     <div className="bg-stone-50 rounded-xl px-4 py-3 sm:col-span-2">
                       <p className="text-xs text-stone-400 mb-0.5">メッセージ</p>
-                      <p className="text-stone-700 whitespace-pre-wrap">{app.message}</p>
+                      <p className="text-stone-700 whitespace-pre-wrap text-sm">{app.message}</p>
                     </div>
                   )}
                 </div>
@@ -122,7 +146,7 @@ export default function AdminPage() {
                 {/* 下段：ステータス変更ボタン */}
                 {nexts.length > 0 && (
                   <div className="flex items-center gap-2 flex-wrap border-t border-stone-100 pt-3">
-                    <span className="text-xs text-stone-400 mr-1">ステータスを変更：</span>
+                    <span className="text-xs text-stone-400">ステータスを変更：</span>
                     {nexts.map((next) => {
                       const nc = statusConfig[next];
                       return (
@@ -131,8 +155,7 @@ export default function AdminPage() {
                           <input type="hidden" name="status" value={next} />
                           <button
                             type="submit"
-                            className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors cursor-pointer
-                              ${nc.bg} ${nc.text} hover:opacity-80`}
+                            className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${nc.bg} ${nc.text} hover:opacity-80`}
                           >
                             {nc.label} にする
                           </button>
@@ -146,6 +169,91 @@ export default function AdminPage() {
           })}
         </div>
       )}
+
+      {/* ── 管理者設定（パスワード変更） ── */}
+      <div className="mt-10 bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
+        <h2 className="text-base font-bold text-stone-800 mb-1">⚙️ 管理者設定</h2>
+        <p className="text-xs text-stone-400 mb-5">ログイン情報を変更できます</p>
+
+        {params.passwordChanged && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 mb-4 text-sm text-emerald-700">
+            ✅ パスワードを変更しました
+          </div>
+        )}
+        {params.passwordError === "wrong" && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-2.5 mb-4 text-sm text-red-600">
+            現在のパスワードが正しくありません
+          </div>
+        )}
+        {params.passwordError === "mismatch" && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-2.5 mb-4 text-sm text-red-600">
+            新しいパスワードが一致しません
+          </div>
+        )}
+
+        <form
+          action={changeAdminPassword}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+        >
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-stone-600">
+              新しいユーザー名 <span className="text-stone-400 font-normal">（空欄で変更なし）</span>
+            </label>
+            <input
+              name="newUsername"
+              type="text"
+              placeholder="admin"
+              className="border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-stone-600">
+              現在のパスワード <span className="text-red-400">必須</span>
+            </label>
+            <input
+              name="currentPassword"
+              type="password"
+              required
+              autoComplete="current-password"
+              className="border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-stone-600">
+              新しいパスワード <span className="text-red-400">必須</span>
+            </label>
+            <input
+              name="newPassword"
+              type="password"
+              required
+              minLength={6}
+              autoComplete="new-password"
+              className="border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-stone-600">
+              新しいパスワード（確認）
+            </label>
+            <input
+              name="confirmPassword"
+              type="password"
+              required
+              autoComplete="new-password"
+              className="border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <button
+              type="submit"
+              className="bg-stone-800 hover:bg-stone-700 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors cursor-pointer"
+            >
+              変更を保存
+            </button>
+          </div>
+        </form>
+      </div>
+
     </div>
   );
 }
@@ -165,8 +273,8 @@ function SummaryCard({
     emerald: "bg-emerald-50 border-emerald-100 text-emerald-700",
   };
   return (
-    <div className={`rounded-2xl border p-4 text-center ${styles[color]}`}>
-      <p className="text-3xl font-extrabold">{value}</p>
+    <div className={`rounded-2xl border p-3 sm:p-4 text-center ${styles[color]}`}>
+      <p className="text-2xl sm:text-3xl font-extrabold">{value}</p>
       <p className="text-xs mt-1 opacity-80">{label}</p>
     </div>
   );

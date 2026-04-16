@@ -3,7 +3,11 @@ import ExperienceCard from "@/components/ExperienceCard";
 import Link from "next/link";
 
 export default function HomePage() {
-  const experiences = getAllExperiences();
+  const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+  const experiences = getAllExperiences().filter((exp) => {
+    const endDate = exp.dateTo ?? exp.date;
+    return endDate >= today;
+  });
 
   return (
     <div>
@@ -92,6 +96,7 @@ export default function HomePage() {
               {experiences.length}件
             </span>
           </h2>
+          <p className="text-xs text-stone-400 hidden sm:block">終了済みは非表示</p>
         </div>
 
         {experiences.length === 0 ? (

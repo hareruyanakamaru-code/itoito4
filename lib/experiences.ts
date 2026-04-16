@@ -45,11 +45,30 @@ export type Application = {
 };
 
 const experiencesPath = path.join(process.cwd(), "data", "experiences.json");
-const applicationsPath = path.join(
-  process.cwd(),
-  "data",
-  "applications.json"
-);
+const applicationsPath = path.join(process.cwd(), "data", "applications.json");
+const adminConfigPath = path.join(process.cwd(), "data", "admin-config.json");
+
+export type AdminConfig = { username: string; password: string };
+
+export function getAdminCredentials(): AdminConfig {
+  try {
+    if (fs.existsSync(adminConfigPath)) {
+      return JSON.parse(fs.readFileSync(adminConfigPath, "utf-8")) as AdminConfig;
+    }
+  } catch { /* fall through */ }
+  return {
+    username: process.env.ADMIN_USERNAME ?? "admin",
+    password: process.env.ADMIN_PASSWORD ?? "itoito2026",
+  };
+}
+
+export function updateAdminCredentials(username: string, password: string): void {
+  try {
+    fs.writeFileSync(adminConfigPath, JSON.stringify({ username, password }, null, 2), "utf-8");
+  } catch {
+    console.warn("[admin-config] 書き込みをスキップしました（読み取り専用環境）");
+  }
+}
 
 export function getAllExperiences(): Experience[] {
   const raw = fs.readFileSync(experiencesPath, "utf-8");

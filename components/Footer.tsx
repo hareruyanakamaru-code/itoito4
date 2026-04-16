@@ -11,18 +11,16 @@ export default function Footer() {
         <p className="text-sm text-stone-500">
           体験を通じて、人と人をつなぐプラットフォーム
         </p>
-        <nav className="flex items-center justify-center gap-4 mt-4 mb-2">
-          <Link
-            href="/privacy"
-            className="text-xs text-stone-400 hover:text-amber-700 transition-colors"
-          >
+        <nav className="flex items-center justify-center gap-3 mt-4 mb-2 flex-wrap">
+          <Link href="/contact" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
+            お問い合わせ
+          </Link>
+          <span className="text-stone-300 text-xs">|</span>
+          <Link href="/privacy" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
             プライバシーポリシー
           </Link>
           <span className="text-stone-300 text-xs">|</span>
-          <Link
-            href="/terms"
-            className="text-xs text-stone-400 hover:text-amber-700 transition-colors"
-          >
+          <Link href="/terms" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
             利用規約
           </Link>
         </nav>
