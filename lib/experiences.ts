@@ -70,8 +70,14 @@ export function addExperience(experience: Omit<Experience, "id">): Experience {
 }
 
 export function getAllApplications(): Application[] {
-  const raw = fs.readFileSync(applicationsPath, "utf-8");
-  return JSON.parse(raw) as Application[];
+  // ファイルが存在しない場合（Vercel本番環境など）は空配列を返す
+  if (!fs.existsSync(applicationsPath)) return [];
+  try {
+    const raw = fs.readFileSync(applicationsPath, "utf-8");
+    return JSON.parse(raw) as Application[];
+  } catch {
+    return [];
+  }
 }
 
 export function addApplication(
@@ -85,7 +91,15 @@ export function addApplication(
     ...app,
   };
   all.push(newApp);
-  fs.writeFileSync(applicationsPath, JSON.stringify(all, null, 2), "utf-8");
+  // ディレクトリが存在しない場合は作成してから書き込む
+  const dir = path.dirname(applicationsPath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  try {
+    fs.writeFileSync(applicationsPath, JSON.stringify(all, null, 2), "utf-8");
+  } catch {
+    // Vercel本番環境ではファイル書き込みができないため無視
+    console.warn("[applications] ファイル書き込みをスキップしました（読み取り専用環境）");
+  }
   return newApp;
 }
 
@@ -97,5 +111,9 @@ export function updateApplicationStatus(
   const idx = all.findIndex((a) => a.id === id);
   if (idx === -1) throw new Error(`Application ${id} not found`);
   all[idx].status = status;
-  fs.writeFileSync(applicationsPath, JSON.stringify(all, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(applicationsPath, JSON.stringify(all, null, 2), "utf-8");
+  } catch {
+    console.warn("[applications] ファイル書き込みをスキップしました（読み取り専用環境）");
+  }
 }
