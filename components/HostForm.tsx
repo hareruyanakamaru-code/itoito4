@@ -26,10 +26,7 @@ export default function HostForm() {
     };
     reader.readAsDataURL(file);
 
-    // ImgBBアップロード
-    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-    if (!apiKey) return; // APIキー未設定時はプレビューのみ
-
+    // サーバー経由でImgBBにアップロード（APIキーをクライアントに露出しない）
     setUploading((prev) => {
       const next = [...prev] as typeof prev;
       next[index] = true;
@@ -39,15 +36,12 @@ export default function HostForm() {
     try {
       const fd = new FormData();
       fd.append("image", file);
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-        method: "POST",
-        body: fd,
-      });
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
       const data = await res.json();
-      if (data.success) {
+      if (data.url) {
         setImages((prev) => {
           const next = [...prev] as typeof prev;
-          next[index] = { ...next[index], url: data.data.url };
+          next[index] = { ...next[index], url: data.url };
           return next;
         });
       }
