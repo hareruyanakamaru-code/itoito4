@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import StickyApply from "@/components/StickyApply";
+import ImageSlider from "@/components/ImageSlider";
 
 export async function generateStaticParams() {
   const experiences = getAllExperiences();
@@ -36,6 +37,14 @@ export default async function ExperienceDetailPage({
     exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
   const bio = exp.hostProfile ?? hostBio(exp.host);
 
+  // 複数画像：imagesフィールドがあればそれを使い、なければimageをフォールバック
+  const allImages: string[] =
+    exp.images && exp.images.length > 0
+      ? exp.images
+      : exp.image && exp.image !== "null"
+      ? [exp.image]
+      : [];
+
   return (
     <>
       {/* スクロールで固定されるCTAボタン */}
@@ -52,20 +61,21 @@ export default async function ExperienceDetailPage({
 
         {/* メインカード */}
         <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-          {/* ヒーロー画像 */}
-          <div className="relative h-56 md:h-72 w-full overflow-hidden bg-amber-50">
-            <Image
-              src={imgSrc}
-              alt={exp.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
-              priority
-            />
-            {exp.image && exp.image !== "null" && (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-            )}
-          </div>
+          {/* ヒーロー画像スライダー */}
+          {allImages.length > 0 ? (
+            <ImageSlider images={allImages} title={exp.title} />
+          ) : (
+            <div className="relative h-56 md:h-72 w-full overflow-hidden bg-amber-50">
+              <Image
+                src="/images/placeholder.svg"
+                alt={exp.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
 
           <div className="p-6 md:p-8">
             {/* カテゴリ */}

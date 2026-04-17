@@ -19,6 +19,7 @@ export type Experience = {
   tags?: string[];
   skillTags?: string[];
   image?: string | null;
+  images?: string[];
 };
 
 export type ApplicationStatus = "未確認" | "確認済み" | "承認" | "キャンセル";

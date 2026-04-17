@@ -22,7 +22,8 @@
     "parentNote": "作業中は電動ドリルなどの工具を使います。安全説明を必ず行いますが、12歳以下のお子様は保護者の方がそばにいてください。動きやすい服装・汚れてもよい靴でお越しください。雨天の場合は室内会場に変更して実施します（中止にはなりません）。",
     "tags": ["竹あかり", "アート", "イベント", "光"],
     "skillTags": ["#創造力", "#空間デザイン"],
-    "image": "/images/bamboo-light.jpg"
+    "image": "/images/bamboo-light.jpg",
+    "images": ["/images/bamboo-light.jpg"]
   },
   {
     "id": "2",
@@ -46,7 +47,12 @@
     "parentNote": "グルテンアレルギーの方はご参加が難しい場合があります。その他食物アレルギーのある方は事前にご連絡ください。エプロンをお持ちいただくとスムーズです（貸し出しあり）。雨天でも通常通り開催します。キャンセルは前日18時までにご連絡ください。",
     "tags": ["パン", "発酵", "料理", "食育"],
     "skillTags": ["#食への好奇心", "#発酵のしくみ"],
-    "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80"
+    "image": "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&q=80",
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80",
+      "https://images.unsplash.com/photo-1565180020957-bde22ac76e6b?w=600&q=80"
+    ]
   },
   {
     "id": "3",
@@ -70,7 +76,12 @@
     "parentNote": "田んぼに入るため、汚れてもよい服装と長靴をご用意ください（レンタル可）。虫が苦手な方は事前にご相談ください。日焼け止め・帽子の持参をおすすめします。雨天時は一部プログラムを室内に変更して実施します。",
     "tags": ["農業", "食育", "自然", "虫"],
     "skillTags": ["#命の大切さ", "#自然への感謝"],
-    "image": "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&q=80"
+    "image": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80",
+      "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&q=80",
+      "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=600&q=80"
+    ]
   },
   {
     "id": "4",
@@ -94,7 +105,12 @@
     "parentNote": "画材はすべてご用意します。汚れてもよい服装でお越しいただくと安心です。親子で一緒に1冊つくることも、それぞれ1冊ずつつくることも可能です。雨天でも室内開催のため影響なし。キャンセルは2日前まで無料。",
     "tags": ["絵本", "アート", "表現", "創作"],
     "skillTags": ["#表現力", "#ストーリー思考"],
-    "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&q=80"
+    "image": "https://images.unsplash.com/photo-1607434472257-d9f8e57a643d?w=600&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1607434472257-d9f8e57a643d?w=600&q=80",
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&q=80",
+      "https://images.unsplash.com/photo-1542601906897-5b88ffd9c9d7?w=600&q=80"
+    ]
   },
   {
     "id": "5",
@@ -118,7 +134,12 @@
     "parentNote": "川に入るため、濡れてもよい服装と水陸両用のサンダルまたは長靴をご用意ください。救命ベストは全員に貸し出します。泳げない方も安全に参加できます。雨天により増水した場合のみ中止（前日18時までにご連絡）。",
     "tags": ["川", "生き物", "自然観察", "探究"],
     "skillTags": ["#探究心", "#生き物への理解"],
-    "image": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80"
+    "image": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=600&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=600&q=80",
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80",
+      "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=600&q=80"
+    ]
   },
   {
     "id": "6",
@@ -142,7 +163,11 @@
     "parentNote": "熱を使う工程があるため、10歳未満のお子様は保護者同伴でお願いします。エプロンをご持参いただくと安心です。香りに敏感な方や妊娠中の方は事前にご相談ください。室内開催のため雨天でも開催。",
     "tags": ["キャンドル", "アロマ", "手仕事", "天然素材"],
     "skillTags": ["#集中力", "#手仕事の豊かさ"],
-    "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80"
+    "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80",
+      "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=600&q=80"
+    ]
   },
   {
     "id": "7",
@@ -166,6 +191,10 @@
     "parentNote": "屋外での観察時間（約30分）があります。日焼け止め・帽子の持参をおすすめします。雨天時は室内プログラムに完全切り替えして実施します（中止にはなりません）。キャンセルは前日18時まで無料。",
     "tags": ["気象", "科学", "空", "理科"],
     "skillTags": ["#科学的思考", "#観察力"],
-    "image": "https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=800&q=80"
+    "image": "https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=800&q=80",
+      "https://images.unsplash.com/photo-1504608524841-42584120d693?w=600&q=80"
+    ]
   }
 ]

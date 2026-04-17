@@ -228,6 +228,47 @@ export default function HostPage() {
             />
           </div>
 
+          {/* 写真 */}
+          <div className="flex flex-col gap-3 border-t border-stone-100 pt-4">
+            <div>
+              <p className="text-sm font-medium text-stone-700 mb-0.5">
+                体験の写真URL{" "}
+                <span className="text-stone-400 text-xs font-normal">最大3枚</span>
+              </p>
+              <p className="text-xs text-stone-400">
+                GoogleドライブやDropboxなどで共有した画像のURLを貼り付けてください。
+              </p>
+            </div>
+
+            {/* 写真ヒント */}
+            <div className="bg-amber-50 rounded-xl p-4 border border-amber-100 text-xs text-stone-600 flex flex-col gap-2">
+              <p className="font-semibold text-amber-700">📸 どんな写真が効果的？</p>
+              <ul className="flex flex-col gap-1.5 list-none">
+                <li className="flex gap-2"><span>📷1枚目</span><span>体験中のメインカット（子どもや参加者が笑顔で作業している様子）</span></li>
+                <li className="flex gap-2"><span>📷2枚目</span><span>完成品や成果物のアップ（料理・作品・観察した生き物など）</span></li>
+                <li className="flex gap-2"><span>📷3枚目</span><span>会場・空間の雰囲気（どんな場所で体験するかわかる引きの写真）</span></li>
+              </ul>
+              <p className="text-stone-400 mt-1">
+                推奨サイズ：横1200px以上 / 横長（4:3または16:9）/ 明るく鮮明な写真
+              </p>
+            </div>
+
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="flex flex-col gap-1.5">
+                <label htmlFor={`image${n}`} className="text-xs font-medium text-stone-600">
+                  写真{n}{n === 1 ? <span className="text-stone-400 font-normal ml-1">（メイン）</span> : <span className="text-stone-400 font-normal ml-1">（任意）</span>}
+                </label>
+                <input
+                  type="url"
+                  id={`image${n}`}
+                  name={`image${n}`}
+                  placeholder="https://..."
+                  className="border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition"
+                />
+              </div>
+            ))}
+          </div>
+
           <button
             type="submit"
             className="mt-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base"

@@ -174,6 +174,9 @@ export async function submitExperience(formData: FormData) {
   const hostName = formData.get("hostName") as string;
   const hostBio = formData.get("hostBio") as string;
   const tagsRaw = formData.get("tags") as string;
+  const image1 = (formData.get("image1") as string)?.trim() || null;
+  const image2 = (formData.get("image2") as string)?.trim() || null;
+  const image3 = (formData.get("image3") as string)?.trim() || null;
 
   if (!title || !description || !date || !location || !hostName) {
     throw new Error("必須項目が入力されていません");
@@ -182,6 +185,8 @@ export async function submitExperience(formData: FormData) {
   const tags = tagsRaw
     ? tagsRaw.split(/[,、]/).map((t) => t.trim()).filter(Boolean)
     : [];
+
+  const images = [image1, image2, image3].filter(Boolean) as string[];
 
   addExperience({
     title,
@@ -194,6 +199,8 @@ export async function submitExperience(formData: FormData) {
     price,
     host: { name: hostName, bio: hostBio },
     tags,
+    image: images[0] ?? null,
+    images: images.length > 0 ? images : undefined,
   });
 
   redirect("/host/done");
