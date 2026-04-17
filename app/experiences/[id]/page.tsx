@@ -7,12 +7,47 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { type Metadata } from "next";
 import StickyApply from "@/components/StickyApply";
 import ImageSlider from "@/components/ImageSlider";
 
 export async function generateStaticParams() {
   const experiences = getAllExperiences();
   return experiences.map((e) => ({ id: e.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const exp = getExperienceById(id);
+  if (!exp) return {};
+
+  const BASE_URL = "https://itoito4.vercel.app";
+  const ogImage =
+    exp.images?.[0] ?? exp.image ?? "/images/bamboo-light.jpg";
+  const dateLabel = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
+  const description = `${dateLabel} / ${exp.location} / ¥${exp.price.toLocaleString()}〜。${exp.description.slice(0, 80)}...`;
+
+  return {
+    title: exp.title,
+    description,
+    openGraph: {
+      type: "article",
+      url: `${BASE_URL}/experiences/${id}`,
+      title: exp.title,
+      description,
+      images: [{ url: ogImage, alt: exp.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: exp.title,
+      description,
+      images: [ogImage],
+    },
+  };
 }
 
 export default async function ExperienceDetailPage({
