@@ -14,7 +14,7 @@ export default function AboutPage() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8 flex flex-col gap-4">
         <Row label="サービス名" value="itoito（イトイト）" />
-        <Row label="運営者" value="中丸 晴也（Nakamaru Hareruya）" />
+        <Row label="運営者" value="中丸晴留哉" />
         <Row label="プロフィール" value="元公立中学校教師。「学校の外にも学びがある」という想いから itoito を立ち上げる。探究・ものづくり・自然体験を通じて、子どもたちと本物の大人をつなぐことを目指している。" />
         <Row label="所在地" value="東京都江東区" />
         <Row label="お問い合わせ" value="お問い合わせフォームよりご連絡ください。" />
