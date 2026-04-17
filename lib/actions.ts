@@ -5,7 +5,14 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { Resend } from "resend";
 import { getStripe } from "./stripe";
-import { sendApplicationNotification, sendToSpreadsheet } from "./done-helpers";
+import {
+  sendApplicationNotification,
+  sendApplicantConfirmation,
+  sendToSpreadsheet,
+  sendHostApplicationNotification,
+  sendHostApplicationConfirmation,
+  sendHostApprovalEmail,
+} from "./done-helpers";
 import {
   addApplication,
   addExperience,
@@ -13,8 +20,12 @@ import {
   updateApplicationStatus,
   getAdminCredentials,
   updateAdminCredentials,
+  addHostApplication,
+  updateHostApplicationStatus,
   type ApplicationStatus,
+  type HostApplicationStatus,
 } from "./experiences";
+import { hostName } from "./types";
 
 
 /* ─── Payment Intent 作成（埋め込み決済用） ─── */
@@ -58,7 +69,21 @@ export async function finalizeApplication({
       message,
     });
   } catch (err) {
-    console.error("[Resend]", err);
+    console.error("[Resend 運営通知]", err);
+  }
+
+  try {
+    await sendApplicantConfirmation({
+      experienceTitle: exp.title,
+      experienceDate: exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date,
+      experienceTime: exp.time,
+      experienceLocation: exp.location,
+      hostName: hostName(exp.host),
+      applicantName: name,
+      applicantEmail: email,
+    });
+  } catch (err) {
+    console.error("[Resend 自動返信]", err);
   }
 
   try {
@@ -203,7 +228,91 @@ export async function submitExperience(formData: FormData) {
     images: images.length > 0 ? images : undefined,
   });
 
+  // 運営者へメールで体験投稿内容を通知（Vercel本番でファイル書き込みができない場合のバックアップ）
+  const apiKey = process.env.RESEND_API_KEY;
+  const notifyEmail = process.env.NOTIFY_EMAIL ?? "hareruyanakamaru@gmail.com";
+  if (apiKey && !apiKey.startsWith("re_xxx")) {
+    try {
+      const { Resend: ResendClient } = await import("resend");
+      const resend = new ResendClient(apiKey);
+      await resend.emails.send({
+        from: "itoito <onboarding@resend.dev>",
+        to: notifyEmail,
+        subject: `【itoito】新しい体験が投稿されました：${title}`,
+        html: `
+          <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
+            <h2 style="color:#b45309;border-bottom:2px solid #fde68a;padding-bottom:8px;">新しい体験が投稿されました</h2>
+            <table style="width:100%;border-collapse:collapse;margin-top:16px;font-size:14px;">
+              <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;width:100px;">タイトル</td><td style="padding:8px 12px;">${title}</td></tr>
+              <tr><td style="padding:8px 12px;font-weight:bold;">カテゴリ</td><td style="padding:8px 12px;">${category}</td></tr>
+              <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">開催日</td><td style="padding:8px 12px;">${date} ${time}</td></tr>
+              <tr><td style="padding:8px 12px;font-weight:bold;">場所</td><td style="padding:8px 12px;">${location}</td></tr>
+              <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">ホスト名</td><td style="padding:8px 12px;">${hostName}</td></tr>
+              <tr><td style="padding:8px 12px;font-weight:bold;">参加費</td><td style="padding:8px 12px;">¥${price.toLocaleString()}</td></tr>
+              <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">説明</td><td style="padding:8px 12px;white-space:pre-wrap;">${description.slice(0, 300)}</td></tr>
+            </table>
+            <p style="color:#78716c;font-size:12px;margin-top:16px;">※ Vercel本番環境ではファイルに保存されません。管理画面で手動追加が必要な場合があります。</p>
+          </div>
+        `,
+      });
+    } catch (err) {
+      console.error("[Resend 体験投稿通知]", err);
+    }
+  }
+
   redirect("/host/done");
+}
+
+/* ─── ホスト申請送信 ─── */
+export async function submitHostApplication(formData: FormData) {
+  const name = (formData.get("name") as string)?.trim();
+  const email = (formData.get("email") as string)?.trim();
+  const phone = (formData.get("phone") as string)?.trim();
+  const experienceOverview = (formData.get("experienceOverview") as string)?.trim();
+  const targetAge = (formData.get("targetAge") as string)?.trim();
+  const childExperience = (formData.get("childExperience") as string)?.trim();
+  const achievements = (formData.get("achievements") as string)?.trim() ?? "";
+  const safetyConsideration = (formData.get("safetyConsideration") as string)?.trim();
+
+  if (!name || !email || !phone || !experienceOverview || !targetAge || !childExperience || !safetyConsideration) {
+    throw new Error("必須項目が入力されていません");
+  }
+
+  addHostApplication({ name, email, phone, experienceOverview, targetAge, childExperience, achievements, safetyConsideration });
+
+  try {
+    await sendHostApplicationConfirmation({ applicantName: name, applicantEmail: email });
+  } catch (err) {
+    console.error("[Resend ホスト申請自動返信]", err);
+  }
+
+  try {
+    await sendHostApplicationNotification({ applicantName: name, applicantEmail: email, phone, experienceOverview, targetAge, childExperience, achievements, safetyConsideration });
+  } catch (err) {
+    console.error("[Resend ホスト申請運営通知]", err);
+  }
+
+  redirect("/host-apply/done");
+}
+
+/* ─── ホスト申請ステータス更新（管理画面用） ─── */
+export async function changeHostApplicationStatus(formData: FormData) {
+  const id = formData.get("id") as string;
+  const status = formData.get("status") as HostApplicationStatus;
+
+  if (!id || !status) throw new Error("パラメータ不正");
+
+  const app = updateHostApplicationStatus(id, status);
+  revalidatePath("/admin");
+
+  // 承認時にホストへ承認メールを送信
+  if (status === "承認") {
+    try {
+      await sendHostApprovalEmail({ applicantName: app.name, applicantEmail: app.email });
+    } catch (err) {
+      console.error("[Resend ホスト承認メール]", err);
+    }
+  }
 }
 
 /* ─── ステータス更新（管理画面用） ─── */

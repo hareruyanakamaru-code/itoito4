@@ -2,14 +2,15 @@ import fs from "fs";
 import path from "path";
 
 // 型・純粋ヘルパーは lib/types.ts から re-export（クライアントコンポーネントでも使用可能）
-export type { Experience, Application, ApplicationStatus, AdminConfig } from "./types";
+export type { Experience, Application, ApplicationStatus, AdminConfig, HostApplication, HostApplicationStatus } from "./types";
 export { hostName, hostBio } from "./types";
 
-import type { Experience, Application, ApplicationStatus, AdminConfig } from "./types";
+import type { Experience, Application, ApplicationStatus, AdminConfig, HostApplication, HostApplicationStatus } from "./types";
 
 const experiencesPath = path.join(process.cwd(), "data", "experiences.json");
 const applicationsPath = path.join(process.cwd(), "data", "applications.json");
 const adminConfigPath = path.join(process.cwd(), "data", "admin-config.json");
+const hostApplicationsPath = path.join(process.cwd(), "data", "host-applications.json");
 
 export function getAdminCredentials(): AdminConfig {
   try {
@@ -45,7 +46,11 @@ export function addExperience(experience: Omit<Experience, "id">): Experience {
   const newId = String(Date.now());
   const newExp: Experience = { id: newId, ...experience };
   all.push(newExp);
-  fs.writeFileSync(experiencesPath, JSON.stringify(all, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(experiencesPath, JSON.stringify(all, null, 2), "utf-8");
+  } catch {
+    console.warn("[experiences] ファイル書き込みをスキップしました（読み取り専用環境）");
+  }
   return newExp;
 }
 
@@ -81,6 +86,52 @@ export function addApplication(
     console.warn("[applications] ファイル書き込みをスキップしました（読み取り専用環境）");
   }
   return newApp;
+}
+
+export function getAllHostApplications(): HostApplication[] {
+  if (!fs.existsSync(hostApplicationsPath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(hostApplicationsPath, "utf-8")) as HostApplication[];
+  } catch {
+    return [];
+  }
+}
+
+export function addHostApplication(
+  app: Omit<HostApplication, "id" | "createdAt" | "status">
+): HostApplication {
+  const all = getAllHostApplications();
+  const newApp: HostApplication = {
+    id: String(Date.now()),
+    createdAt: new Date().toISOString(),
+    status: "審査中",
+    ...app,
+  };
+  all.push(newApp);
+  const dir = path.dirname(hostApplicationsPath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  try {
+    fs.writeFileSync(hostApplicationsPath, JSON.stringify(all, null, 2), "utf-8");
+  } catch {
+    console.warn("[host-applications] ファイル書き込みをスキップしました");
+  }
+  return newApp;
+}
+
+export function updateHostApplicationStatus(
+  id: string,
+  status: HostApplicationStatus
+): HostApplication {
+  const all = getAllHostApplications();
+  const idx = all.findIndex((a) => a.id === id);
+  if (idx === -1) throw new Error(`HostApplication ${id} not found`);
+  all[idx].status = status;
+  try {
+    fs.writeFileSync(hostApplicationsPath, JSON.stringify(all, null, 2), "utf-8");
+  } catch {
+    console.warn("[host-applications] ファイル書き込みをスキップしました");
+  }
+  return all[idx];
 }
 
 export function updateApplicationStatus(

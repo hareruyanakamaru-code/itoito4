@@ -1,10 +1,13 @@
 import {
   getAllApplications,
   getAllExperiences,
+  getAllHostApplications,
   type ApplicationStatus,
+  type HostApplicationStatus,
 } from "@/lib/experiences";
 import {
   changeApplicationStatus,
+  changeHostApplicationStatus,
   logoutAdmin,
   changeAdminPassword,
 } from "@/lib/actions";
@@ -27,22 +30,45 @@ const nextStatuses: Record<ApplicationStatus, ApplicationStatus[]> = {
   キャンセル: ["未確認"],
 };
 
+const hostAppStatusConfig: Record<HostApplicationStatus, { label: string; bg: string; text: string }> = {
+  審査中:     { label: "審査中",     bg: "bg-amber-100",   text: "text-amber-700"   },
+  面談調整中:  { label: "面談調整中", bg: "bg-blue-100",    text: "text-blue-700"    },
+  承認:       { label: "承認",       bg: "bg-emerald-100", text: "text-emerald-700" },
+  非承認:     { label: "非承認",     bg: "bg-red-100",     text: "text-red-600"     },
+};
+
+const hostAppNextStatuses: Record<HostApplicationStatus, HostApplicationStatus[]> = {
+  審査中:    ["面談調整中", "承認", "非承認"],
+  面談調整中: ["承認", "非承認", "審査中"],
+  承認:      ["非承認"],
+  非承認:    ["審査中"],
+};
+
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ passwordChanged?: string; passwordError?: string }>;
+  searchParams: Promise<{ passwordChanged?: string; passwordError?: string; tab?: string }>;
 }) {
   const params = await searchParams;
+  const activeTab = params.tab ?? "applications";
+
   const applications = getAllApplications().sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
   const experiences = getAllExperiences();
   const expMap = Object.fromEntries(experiences.map((e) => [e.id, e.title]));
+  const hostApplications = getAllHostApplications().sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   const counts = {
     total: applications.length,
     未確認: applications.filter((a) => a.status === "未確認").length,
     承認: applications.filter((a) => a.status === "承認").length,
+  };
+  const hostCounts = {
+    total: hostApplications.length,
+    審査中: hostApplications.filter((a) => a.status === "審査中").length,
   };
 
   return (
@@ -74,6 +100,43 @@ export default async function AdminPage({
         </div>
       </div>
 
+      {/* ── タブ ── */}
+      <div className="flex gap-2 mb-6 border-b border-stone-100">
+        <a
+          href="/admin?tab=applications"
+          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+            activeTab === "applications"
+              ? "border-amber-500 text-amber-700"
+              : "border-transparent text-stone-400 hover:text-stone-600"
+          }`}
+        >
+          📋 申し込み一覧
+          {counts.未確認 > 0 && (
+            <span className="ml-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+              {counts.未確認}
+            </span>
+          )}
+        </a>
+        <a
+          href="/admin?tab=hosts"
+          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+            activeTab === "hosts"
+              ? "border-amber-500 text-amber-700"
+              : "border-transparent text-stone-400 hover:text-stone-600"
+          }`}
+        >
+          🌿 ホスト申請
+          {hostCounts.審査中 > 0 && (
+            <span className="ml-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+              {hostCounts.審査中}
+            </span>
+          )}
+        </a>
+      </div>
+
+      {/* ── 申し込みタブ ── */}
+      {activeTab === "applications" && (
+      <>
       {/* ── サマリーカード ── */}
       <div className="grid grid-cols-3 gap-3 mb-8">
         <SummaryCard label="申し込み総数" value={counts.total} color="amber" />
@@ -168,6 +231,102 @@ export default async function AdminPage({
             );
           })}
         </div>
+      )}
+
+      </>
+      )}
+
+      {/* ── ホスト申請タブ ── */}
+      {activeTab === "hosts" && (
+      <>
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        <SummaryCard label="申請総数" value={hostCounts.total} color="amber" />
+        <SummaryCard label="審査中" value={hostCounts.審査中} color="stone" />
+      </div>
+
+      {hostApplications.length === 0 ? (
+        <div className="text-center py-24 bg-white rounded-2xl border border-stone-100">
+          <p className="text-4xl mb-4">📭</p>
+          <p className="text-stone-400">まだホスト申請はありません</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {hostApplications.map((app) => {
+            const sc = hostAppStatusConfig[app.status];
+            const nexts = hostAppNextStatuses[app.status] ?? [];
+            const dateStr = new Date(app.createdAt).toLocaleString("ja-JP", {
+              year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit",
+            });
+            return (
+              <div key={app.id} className="bg-white rounded-2xl border border-stone-100 shadow-sm p-4 sm:p-5 flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div>
+                    <p className="text-xs text-stone-400">{dateStr}</p>
+                    <p className="font-bold text-stone-800 text-sm sm:text-base mt-0.5">{app.name}</p>
+                  </div>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full shrink-0 ${sc.bg} ${sc.text}`}>
+                    {sc.label}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="bg-stone-50 rounded-xl px-4 py-3">
+                    <p className="text-xs text-stone-400 mb-0.5">メールアドレス</p>
+                    <a href={`mailto:${app.email}`} className="font-medium text-amber-700 hover:underline break-all">{app.email}</a>
+                  </div>
+                  <div className="bg-stone-50 rounded-xl px-4 py-3">
+                    <p className="text-xs text-stone-400 mb-0.5">電話番号</p>
+                    <p className="font-medium text-stone-800">{app.phone}</p>
+                  </div>
+                  <div className="bg-stone-50 rounded-xl px-4 py-3 sm:col-span-2">
+                    <p className="text-xs text-stone-400 mb-0.5">体験の概要</p>
+                    <p className="text-stone-700 whitespace-pre-wrap text-sm">{app.experienceOverview}</p>
+                  </div>
+                  <div className="bg-stone-50 rounded-xl px-4 py-3">
+                    <p className="text-xs text-stone-400 mb-0.5">対象年齢</p>
+                    <p className="font-medium text-stone-800">{app.targetAge}</p>
+                  </div>
+                  <div className="bg-stone-50 rounded-xl px-4 py-3">
+                    <p className="text-xs text-stone-400 mb-0.5">子どもとの関わり経験</p>
+                    <p className="text-stone-700 text-sm">{app.childExperience}</p>
+                  </div>
+                  {app.achievements && (
+                    <div className="bg-stone-50 rounded-xl px-4 py-3 sm:col-span-2">
+                      <p className="text-xs text-stone-400 mb-0.5">活動実績・SNS</p>
+                      <p className="text-stone-700 text-sm">{app.achievements}</p>
+                    </div>
+                  )}
+                  <div className="bg-stone-50 rounded-xl px-4 py-3 sm:col-span-2">
+                    <p className="text-xs text-stone-400 mb-0.5">安全への配慮</p>
+                    <p className="text-stone-700 whitespace-pre-wrap text-sm">{app.safetyConsideration}</p>
+                  </div>
+                </div>
+
+                {nexts.length > 0 && (
+                  <div className="flex items-center gap-2 flex-wrap border-t border-stone-100 pt-3">
+                    <span className="text-xs text-stone-400">ステータスを変更：</span>
+                    {nexts.map((next) => {
+                      const nc = hostAppStatusConfig[next];
+                      return (
+                        <form action={changeHostApplicationStatus} key={next}>
+                          <input type="hidden" name="id" value={app.id} />
+                          <input type="hidden" name="status" value={next} />
+                          <button type="submit"
+                            className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${nc.bg} ${nc.text} hover:opacity-80`}>
+                            {nc.label} にする
+                            {next === "承認" && " ✉️"}
+                          </button>
+                        </form>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      </>
       )}
 
       {/* ── 管理者設定（パスワード変更） ── */}

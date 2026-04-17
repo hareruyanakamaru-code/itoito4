@@ -39,6 +39,22 @@ export type Application = {
 
 export type AdminConfig = { username: string; password: string };
 
+export type HostApplicationStatus = "審査中" | "面談調整中" | "承認" | "非承認";
+
+export type HostApplication = {
+  id: string;
+  createdAt: string;
+  status: HostApplicationStatus;
+  name: string;
+  email: string;
+  phone: string;
+  experienceOverview: string;
+  targetAge: string;
+  childExperience: string;
+  achievements: string;
+  safetyConsideration: string;
+};
+
 /** host フィールドから表示名を取得するヘルパー */
 export function hostName(host: Experience["host"]): string {
   return typeof host === "string" ? host : host.name;
