@@ -34,7 +34,7 @@ export default function Footer() {
           </Link>
           <span className="text-stone-300 text-xs">|</span>
           <a
-            href="https://www.instagram.com/itoito_taiken"
+            href="https://www.instagram.com/itoito_tankyu"
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-stone-400 hover:text-amber-700 transition-colors flex items-center gap-1"
