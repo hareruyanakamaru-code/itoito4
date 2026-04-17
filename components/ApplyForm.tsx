@@ -10,6 +10,8 @@ type Step = 1 | 2;
 type FormValues = {
   name: string;
   email: string;
+  adults: string;
+  children: string;
   childAge: string;
   message: string;
 };
@@ -19,6 +21,8 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
   const [values, setValues] = useState<FormValues>({
     name: "",
     email: "",
+    adults: "1",
+    children: "0",
     childAge: "",
     message: "",
   });
@@ -119,6 +123,31 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             )}
           </div>
 
+          {/* 参加人数 */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-stone-700">
+              参加人数 <span className="text-red-400 text-xs">必須</span>
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-stone-500">大人</span>
+                <div className="flex items-center border border-stone-200 rounded-xl overflow-hidden">
+                  <button type="button" onClick={() => setValues({ ...values, adults: String(Math.max(0, Number(values.adults) - 1)) })} className="px-3 py-2.5 text-stone-500 hover:bg-stone-50 transition-colors text-lg">−</button>
+                  <span className="flex-1 text-center text-sm font-medium">{values.adults}名</span>
+                  <button type="button" onClick={() => setValues({ ...values, adults: String(Number(values.adults) + 1) })} className="px-3 py-2.5 text-stone-500 hover:bg-stone-50 transition-colors text-lg">＋</button>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-stone-500">子ども</span>
+                <div className="flex items-center border border-stone-200 rounded-xl overflow-hidden">
+                  <button type="button" onClick={() => setValues({ ...values, children: String(Math.max(0, Number(values.children) - 1)) })} className="px-3 py-2.5 text-stone-500 hover:bg-stone-50 transition-colors text-lg">−</button>
+                  <span className="flex-1 text-center text-sm font-medium">{values.children}名</span>
+                  <button type="button" onClick={() => setValues({ ...values, children: String(Number(values.children) + 1) })} className="px-3 py-2.5 text-stone-500 hover:bg-stone-50 transition-colors text-lg">＋</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* お子さまの年齢 */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-stone-700">
@@ -178,6 +207,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             <ConfirmRow label="開催日" value={`${dateLabel}　${exp.time}`} />
             <ConfirmRow label="場所" value={exp.location} />
             <ConfirmRow label="参加費" value={`¥${exp.price.toLocaleString()} / 人`} />
+            <ConfirmRow label="参加人数" value={`大人 ${values.adults}名・子ども ${values.children}名`} />
             <ConfirmRow label="ホスト" value={hostName(exp.host)} />
             <div className="border-t border-stone-100" />
             <ConfirmRow label="お名前" value={values.name} />
@@ -202,6 +232,8 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             <input type="hidden" name="experienceId" value={exp.id} />
             <input type="hidden" name="name" value={values.name} />
             <input type="hidden" name="email" value={values.email} />
+            <input type="hidden" name="adults" value={values.adults} />
+            <input type="hidden" name="children" value={values.children} />
             <input type="hidden" name="childAge" value={values.childAge} />
             <input type="hidden" name="message" value={values.message} />
 

@@ -1,5 +1,5 @@
 import { getAllExperiences } from "@/lib/experiences";
-import ExperienceCard from "@/components/ExperienceCard";
+import ExperienceGrid from "@/components/ExperienceGrid";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -68,57 +68,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── カテゴリバー ── */}
-      <section className="border-b border-stone-100 bg-white">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex gap-2 flex-wrap">
-          <span className="text-xs text-stone-400 self-center mr-1">カテゴリ:</span>
-          {[
-            "🍳 料理・ものづくり",
-            "🔍 探究・学び",
-            "🌿 自然・アウトドア",
-            "🖌️ アート・表現",
-          ].map((cat) => (
-            <span
-              key={cat}
-              className="text-sm text-stone-600 bg-stone-100 hover:bg-amber-100 hover:text-amber-700 px-3 py-1 rounded-full cursor-pointer transition-colors"
-            >
-              {cat}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      {/* ── 体験一覧 ── */}
-      <section id="experiences" className="max-w-5xl mx-auto px-4 py-10">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-stone-800">
-            開催予定の体験
-            <span className="ml-2 text-sm font-normal text-stone-400">
-              {experiences.length}件
-            </span>
-          </h2>
-          <p className="text-xs text-stone-400 hidden sm:block">終了済みは非表示</p>
-        </div>
-
-        {experiences.length === 0 ? (
-          <div className="text-center py-16 text-stone-400">
-            <p className="text-4xl mb-4">🌱</p>
-            <p>まだ体験が登録されていません。</p>
-            <Link
-              href="/host"
-              className="mt-4 inline-block text-amber-600 hover:underline"
-            >
-              最初の体験を投稿する →
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {experiences.map((exp) => (
-              <ExperienceCard key={exp.id} exp={exp} />
-            ))}
-          </div>
-        )}
-      </section>
+      {/* ── 体験一覧（カテゴリフィルター付き） ── */}
+      <ExperienceGrid experiences={experiences} />
 
       {/* ── itoitoについて（ストーリー）── */}
       <section className="py-16 px-4 bg-stone-800">

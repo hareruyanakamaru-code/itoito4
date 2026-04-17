@@ -30,6 +30,8 @@ export type Application = {
   name: string;
   email: string;
   childAge: string;
+  adults: number;
+  children: number;
   message: string;
   createdAt: string;
   status: ApplicationStatus;

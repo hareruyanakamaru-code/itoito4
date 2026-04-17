@@ -122,13 +122,15 @@ export async function submitApplication(formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const childAge = (formData.get("childAge") as string) ?? "";
+  const adults = Number(formData.get("adults") ?? 1);
+  const children = Number(formData.get("children") ?? 0);
   const message = (formData.get("message") as string) ?? "";
 
   if (!experienceId || !name || !email) {
     throw new Error("必須項目が入力されていません");
   }
 
-  const app = addApplication({ experienceId, name, email, childAge, message });
+  const app = addApplication({ experienceId, name, email, childAge, adults, children, message });
   const exp = getExperienceById(experienceId);
   const experienceTitle = exp?.title ?? `体験ID: ${experienceId}`;
 
