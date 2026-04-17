@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Experience, hostName } from "@/lib/experiences";
+import { Experience, hostName } from "@/lib/types";
 
 const categoryColors: Record<string, string> = {
   "料理・ものづくり": "bg-orange-100 text-orange-700",
@@ -22,82 +22,104 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
   const colorClass =
     categoryColors[exp.category] ?? "bg-stone-100 text-stone-600";
   const emoji = categoryEmoji[exp.category] ?? "✨";
-
-  const dateLabel = exp.dateTo
-    ? `${exp.date} 〜 ${exp.dateTo}`
-    : exp.date;
-
+  const dateLabel = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
   const imgSrc =
     exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
+  const hasRealImage = !!(exp.image && exp.image !== "null");
 
   return (
     <Link href={`/experiences/${exp.id}`} className="group block h-full">
-      <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-stone-100 overflow-hidden h-full flex flex-col">
+      <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1">
 
-        {/* Photo */}
-        <div className="relative h-44 w-full overflow-hidden bg-amber-50 shrink-0">
+        {/* 写真エリア（カード上部60%） */}
+        <div className="relative h-52 sm:h-56 w-full overflow-hidden bg-amber-50 shrink-0">
           <Image
             src={imgSrc}
             alt={exp.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className={`object-cover transition-transform duration-300 ${exp.image && exp.image !== "null" ? "group-hover:scale-105" : ""}`}
+            className={`object-cover transition-transform duration-500 ${hasRealImage ? "group-hover:scale-110" : ""}`}
           />
-          {/* Category badge */}
+          {/* グラデーションオーバーレイ */}
+          {hasRealImage && (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          )}
+          {/* カテゴリバッジ */}
           <span
             className={`absolute top-3 left-3 text-xs font-medium px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm ${colorClass}`}
           >
             {emoji} {exp.category}
           </span>
-          {/* Age badge */}
+          {/* 対象年齢バッジ */}
           {exp.targetAge && (
-            <span className="absolute top-3 right-3 text-xs font-medium px-2.5 py-1 rounded-full bg-white/80 text-stone-600 shadow-sm backdrop-blur-sm">
+            <span className="absolute top-3 right-3 text-xs font-medium px-2.5 py-1 rounded-full bg-white/90 text-stone-700 shadow-sm backdrop-blur-sm">
               👤 {exp.targetAge}
             </span>
           )}
+          {/* 価格（画像下部に重ねて表示） */}
+          {hasRealImage && (
+            <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1 shadow-sm">
+              <span className="font-bold text-amber-700 text-sm">
+                ¥{exp.price.toLocaleString()}
+              </span>
+              <span className="text-xs text-stone-500"> / 人</span>
+            </div>
+          )}
         </div>
 
-        <div className="p-5 flex flex-col gap-3 flex-1">
-          {/* Title */}
-          <h2 className="text-base font-bold text-stone-800 group-hover:text-amber-700 transition-colors leading-snug">
+        <div className="p-4 sm:p-5 flex flex-col gap-2.5 flex-1">
+          {/* タイトル */}
+          <h2 className="text-base font-bold text-stone-800 group-hover:text-amber-700 transition-colors leading-snug line-clamp-2">
             {exp.title}
           </h2>
 
-          {/* Description */}
-          <p className="text-sm text-stone-500 line-clamp-2 flex-1">
-            {exp.description}
-          </p>
+          {/* スキルタグ（得られること） */}
+          {exp.skillTags && exp.skillTags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {exp.skillTags.slice(0, 2).map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
 
-          {/* Info */}
-          <div className="flex flex-col gap-1.5 text-sm text-stone-600 border-t border-stone-100 pt-3">
+          {/* 日時・場所 */}
+          <div className="flex flex-col gap-1 text-sm text-stone-500 border-t border-stone-100 pt-2.5 mt-auto">
             <div className="flex items-center gap-1.5">
-              <span>📅</span>
-              <span>{dateLabel}　{exp.time}</span>
+              <span className="text-xs">📅</span>
+              <span className="text-xs">{dateLabel}　{exp.time}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span>📍</span>
-              <span>{exp.location}</span>
+              <span className="text-xs">📍</span>
+              <span className="text-xs">{exp.location}</span>
             </div>
-            <div className="flex items-center justify-between mt-1">
-              <span className="flex items-center gap-1.5">
-                <span>👥</span>
-                <span>定員 {exp.capacity}名</span>
-              </span>
+          </div>
+
+          {/* ホスト名＋定員 */}
+          <div className="flex items-center justify-between text-xs text-stone-400">
+            <span className="flex items-center gap-1">
+              <span className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-[10px]">🌿</span>
+              <span>{hostName(exp.host)}</span>
+            </span>
+            <span>定員 {exp.capacity}名</span>
+          </div>
+
+          {/* 価格（画像がない場合のみここに表示） */}
+          {!hasRealImage && (
+            <div className="text-right">
               <span className="font-bold text-amber-700 text-base">
                 ¥{exp.price.toLocaleString()}
-                <span className="text-xs font-normal text-stone-500"> / 人</span>
               </span>
+              <span className="text-xs text-stone-500"> / 人</span>
             </div>
-          </div>
-
-          {/* Host */}
-          <div className="text-xs text-stone-400 flex items-center gap-1">
-            <span>🌿</span>
-            <span>ホスト: {hostName(exp.host)}</span>
-          </div>
+          )}
 
           {/* CTA */}
-          <div className="mt-1 bg-amber-50 group-hover:bg-amber-100 text-amber-700 text-sm font-medium text-center py-2 rounded-xl transition-colors border border-amber-100">
+          <div className="bg-amber-50 group-hover:bg-amber-500 text-amber-700 group-hover:text-white text-sm font-medium text-center py-2 rounded-xl transition-all border border-amber-100 group-hover:border-amber-500">
             この体験を見る →
           </div>
         </div>

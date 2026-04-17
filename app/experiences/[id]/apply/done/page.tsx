@@ -10,8 +10,28 @@ export default function ApplyDonePage() {
       <p className="text-stone-500 text-sm leading-relaxed mb-8">
         お申し込みいただきありがとうございます。
         <br />
-        ホストから確認のご連絡をお待ちください。
+        ホストより<span className="font-semibold text-stone-700">3営業日以内</span>にメールでご連絡します。
       </p>
+
+      {/* 次のステップ */}
+      <div className="bg-amber-50 rounded-2xl p-6 border border-amber-100 text-left mb-8">
+        <h2 className="text-sm font-bold text-amber-700 mb-4">📋 次のステップ</h2>
+        <ol className="flex flex-col gap-3 text-sm text-stone-600">
+          <li className="flex items-start gap-3">
+            <span className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold shrink-0">1</span>
+            <span>ホストから確認メールが届きます（3営業日以内）</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold shrink-0">2</span>
+            <span>メールの案内に沿って参加準備をしてください</span>
+          </li>
+          <li className="flex items-start gap-3">
+            <span className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold shrink-0">3</span>
+            <span>当日は体験を思いきり楽しんでください！</span>
+          </li>
+        </ol>
+      </div>
+
       <Link
         href="/"
         className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-full transition-colors shadow-sm"

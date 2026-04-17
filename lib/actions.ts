@@ -19,11 +19,13 @@ async function sendApplicationNotification({
   experienceTitle,
   applicantName,
   applicantEmail,
+  childAge,
   message,
 }: {
   experienceTitle: string;
   applicantName: string;
   applicantEmail: string;
+  childAge: string;
   message: string;
 }) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -55,6 +57,10 @@ async function sendApplicationNotification({
             <td style="padding:8px 12px;font-weight:bold;">申し込み者</td>
             <td style="padding:8px 12px;">${applicantName}</td>
           </tr>
+          ${childAge ? `<tr>
+            <td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">お子さまの年齢</td>
+            <td style="padding:8px 12px;">${childAge}</td>
+          </tr>` : ""}
           <tr>
             <td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">メール</td>
             <td style="padding:8px 12px;">
@@ -115,13 +121,14 @@ export async function submitApplication(formData: FormData) {
   const experienceId = formData.get("experienceId") as string;
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
-  const message = formData.get("message") as string;
+  const childAge = (formData.get("childAge") as string) ?? "";
+  const message = (formData.get("message") as string) ?? "";
 
   if (!experienceId || !name || !email) {
     throw new Error("必須項目が入力されていません");
   }
 
-  const app = addApplication({ experienceId, name, email, message });
+  const app = addApplication({ experienceId, name, email, childAge, message });
   const exp = getExperienceById(experienceId);
   const experienceTitle = exp?.title ?? `体験ID: ${experienceId}`;
 
@@ -131,6 +138,7 @@ export async function submitApplication(formData: FormData) {
       experienceTitle,
       applicantName: name,
       applicantEmail: email,
+      childAge,
       message,
     });
   } catch (err) {

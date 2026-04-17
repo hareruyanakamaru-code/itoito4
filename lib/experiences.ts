@@ -1,54 +1,15 @@
 import fs from "fs";
 import path from "path";
 
-export type Experience = {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  date: string;
-  dateTo?: string;
-  time: string;
-  location: string;
-  capacity: number;
-  price: number;
-  targetAge?: string;
-  target?: string;
-  host: string | { name: string; bio: string };
-  hostProfile?: string;
-  benefits?: string[];
-  parentNote?: string;
-  tags?: string[];
-  image?: string | null;
-};
+// 型・純粋ヘルパーは lib/types.ts から re-export（クライアントコンポーネントでも使用可能）
+export type { Experience, Application, ApplicationStatus, AdminConfig } from "./types";
+export { hostName, hostBio } from "./types";
 
-/** host フィールドから表示名を取得するヘルパー */
-export function hostName(host: Experience["host"]): string {
-  return typeof host === "string" ? host : host.name;
-}
-
-/** host フィールドから bio を取得するヘルパー（文字列ホストは undefined） */
-export function hostBio(host: Experience["host"]): string | undefined {
-  return typeof host === "string" ? undefined : host.bio;
-}
-
-export type ApplicationStatus = "未確認" | "確認済み" | "承認" | "キャンセル";
-
-export type Application = {
-  id: string;
-  experienceId: string;
-  name: string;
-  email: string;
-  message: string;
-  createdAt: string;
-  status: ApplicationStatus;
-};
+import type { Experience, Application, ApplicationStatus, AdminConfig } from "./types";
 
 const experiencesPath = path.join(process.cwd(), "data", "experiences.json");
 const applicationsPath = path.join(process.cwd(), "data", "applications.json");
 const adminConfigPath = path.join(process.cwd(), "data", "admin-config.json");
-
-export type AdminConfig = { username: string; password: string };
 
 export function getAdminCredentials(): AdminConfig {
   try {

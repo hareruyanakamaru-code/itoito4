@@ -166,6 +166,31 @@ export default async function ExperienceDetailPage({
             </p>
           </div>
         )}
+
+        {/* よくある質問 */}
+        <div className="mt-6 bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
+          <h2 className="text-lg font-bold text-stone-800 mb-5 flex items-center gap-2">
+            💬 よくある質問
+          </h2>
+          <div className="flex flex-col divide-y divide-stone-100">
+            <FaqItem
+              q="対象年齢はありますか？"
+              a={
+                exp.targetAge
+                  ? `この体験の対象は「${exp.targetAge}」です。対象外の方もお気軽にお問い合わせください。`
+                  : "特に年齢制限はありません。詳しくはホストにお問い合わせください。"
+              }
+            />
+            <FaqItem
+              q="雨天の場合はどうなりますか？"
+              a="屋内開催の体験はそのまま実施します。屋外体験の場合、荒天時はホストから事前にご連絡いたします。"
+            />
+            <FaqItem
+              q="キャンセルはできますか？"
+              a="開催日の3日前までは無料でキャンセル可能です。それ以降のキャンセルについてはホストにご相談ください。"
+            />
+          </div>
+        </div>
       </div>
     </>
   );
@@ -191,6 +216,20 @@ function InfoItem({
           {value}
         </p>
       </div>
+    </div>
+  );
+}
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  return (
+    <div className="py-4 first:pt-0 last:pb-0">
+      <p className="text-sm font-semibold text-stone-800 mb-1.5 flex items-start gap-2">
+        <span className="text-amber-500 font-bold shrink-0">Q.</span>
+        {q}
+      </p>
+      <p className="text-sm text-stone-600 leading-relaxed pl-6">
+        {a}
+      </p>
     </div>
   );
 }
