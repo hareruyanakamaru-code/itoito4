@@ -17,6 +17,65 @@ import {
 } from "./experiences";
 
 
+/* ─── Payment Intent 作成（埋め込み決済用） ─── */
+export async function createPaymentIntent(amount: number): Promise<{ clientSecret: string }> {
+  const pi = await getStripe().paymentIntents.create({
+    amount,
+    currency: "jpy",
+  });
+  return { clientSecret: pi.client_secret! };
+}
+
+/* ─── 申し込み確定（決済完了後に呼ぶ） ─── */
+export async function finalizeApplication({
+  experienceId,
+  name,
+  email,
+  childAge,
+  adults,
+  children,
+  message,
+}: {
+  experienceId: string;
+  name: string;
+  email: string;
+  childAge: string;
+  adults: number;
+  children: number;
+  message: string;
+}): Promise<void> {
+  const exp = getExperienceById(experienceId);
+  if (!exp) throw new Error("体験が見つかりません");
+
+  const app = addApplication({ experienceId, name, email, childAge, adults, children, message });
+
+  try {
+    await sendApplicationNotification({
+      experienceTitle: exp.title,
+      applicantName: name,
+      applicantEmail: email,
+      childAge,
+      message,
+    });
+  } catch (err) {
+    console.error("[Resend]", err);
+  }
+
+  try {
+    await sendToSpreadsheet({
+      createdAt: app.createdAt,
+      experienceTitle: exp.title,
+      applicantName: name,
+      applicantEmail: email,
+      message,
+    });
+  } catch (err) {
+    console.error("[Sheets]", err);
+  }
+
+  redirect(`/experiences/${experienceId}/apply/done`);
+}
+
 /* ─── 申し込み送信（Stripe決済あり） ─── */
 export async function submitApplication(formData: FormData) {
   const experienceId = formData.get("experienceId") as string;
