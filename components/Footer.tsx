@@ -29,6 +29,10 @@ export default function Footer() {
             利用規約
           </Link>
           <span className="text-stone-300 text-xs">|</span>
+          <Link href="/about" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
+            運営者情報
+          </Link>
+          <span className="text-stone-300 text-xs">|</span>
           <a
             href="https://www.instagram.com/itoito_taiken"
             target="_blank"
@@ -38,13 +42,6 @@ export default function Footer() {
             📷 Instagram
           </a>
         </nav>
-
-        {/* 運営者情報 */}
-        <div className="bg-white/60 rounded-xl p-4 border border-amber-100 max-w-sm mx-auto mb-6">
-          <p className="text-xs text-stone-400 text-center mb-1">運営者</p>
-          <p className="text-sm font-semibold text-stone-700 text-center">中丸 晴也（Nakamaru Hareruya）</p>
-          <p className="text-xs text-stone-500 text-center mt-0.5">元公立中学校教師 / itoito 代表</p>
-        </div>
 
         {/* コピーライト */}
         <p className="text-xs text-stone-400 text-center">

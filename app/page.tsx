@@ -65,18 +65,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* 運営者紹介 */}
-          <div className="mt-8 bg-stone-50 rounded-2xl p-6 border border-stone-100 max-w-lg mx-auto flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-2xl shrink-0">
-              🧑‍🏫
-            </div>
-            <div>
-              <p className="text-sm font-bold text-stone-800">中丸 晴也（Nakamaru Hareruya）</p>
-              <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
-                元公立中学校教師。「学校の外にも学びがある」という想いから、itoitoを立ち上げました。
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 
