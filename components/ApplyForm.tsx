@@ -23,6 +23,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
     message: "",
   });
   const [errors, setErrors] = useState<Partial<FormValues>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   function validate(): boolean {
     const e: Partial<FormValues> = {};
@@ -190,7 +191,14 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
           </div>
 
           {/* 実際の送信フォーム（サーバーアクション） */}
-          <form action={submitApplication} className="flex flex-col gap-3">
+          <form
+            action={async (formData) => {
+              if (submitting) return; // 二重送信防止
+              setSubmitting(true);
+              await submitApplication(formData);
+            }}
+            className="flex flex-col gap-3"
+          >
             <input type="hidden" name="experienceId" value={exp.id} />
             <input type="hidden" name="name" value={values.name} />
             <input type="hidden" name="email" value={values.email} />
@@ -199,9 +207,21 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
 
             <button
               type="submit"
-              className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base"
+              disabled={submitting}
+              className={`font-bold py-3.5 rounded-xl transition-all shadow-sm text-base flex items-center justify-center gap-2 ${
+                submitting
+                  ? "bg-stone-300 text-stone-500 cursor-not-allowed"
+                  : "bg-amber-500 hover:bg-amber-600 text-white"
+              }`}
             >
-              申し込みを確定する ✓
+              {submitting ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-stone-400 border-t-transparent rounded-full animate-spin" />
+                  送信中...
+                </>
+              ) : (
+                "申し込みを確定する ✓"
+              )}
             </button>
           </form>
 
