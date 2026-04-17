@@ -6,6 +6,10 @@ import {
   type HostApplicationStatus,
 } from "@/lib/experiences";
 import {
+  kvGetApplications,
+  kvGetHostApplications,
+} from "@/lib/kv-store";
+import {
   changeApplicationStatus,
   changeHostApplicationStatus,
   logoutAdmin,
@@ -52,12 +56,24 @@ export default async function AdminPage({
   const params = await searchParams;
   const activeTab = params.tab ?? "applications";
 
-  const applications = getAllApplications().sort(
+  // KVから最新データを取得（ファイルシステムにフォールバック）
+  const [kvApps, kvHostApps] = await Promise.all([
+    kvGetApplications(),
+    kvGetHostApplications(),
+  ]);
+  const fileApps = getAllApplications();
+  const fileHostApps = getAllHostApplications();
+
+  // KVにデータがあればKVを優先、なければファイルシステムを使用
+  const rawApplications = kvApps.length > 0 ? kvApps : fileApps;
+  const rawHostApplications = kvHostApps.length > 0 ? kvHostApps : fileHostApps;
+
+  const applications = rawApplications.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
   const experiences = getAllExperiences();
   const expMap = Object.fromEntries(experiences.map((e) => [e.id, e.title]));
-  const hostApplications = getAllHostApplications().sort(
+  const hostApplications = rawHostApplications.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 

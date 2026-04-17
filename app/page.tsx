@@ -1,10 +1,19 @@
 import { getAllExperiences } from "@/lib/experiences";
+import { kvGetAddedExperiences } from "@/lib/kv-store";
 import ExperienceGrid from "@/components/ExperienceGrid";
 import Link from "next/link";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic"; // KVから最新データを常に取得
+
+export default async function HomePage() {
   const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
-  const experiences = getAllExperiences().filter((exp) => {
+
+  // JSONファイルの体験 + KVに追加された体験をマージ
+  const fileExperiences = getAllExperiences();
+  const kvExperiences = await kvGetAddedExperiences();
+  const allExperiences = [...fileExperiences, ...kvExperiences];
+
+  const experiences = allExperiences.filter((exp) => {
     const endDate = exp.dateTo ?? exp.date;
     return endDate >= today;
   });

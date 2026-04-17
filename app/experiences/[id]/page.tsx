@@ -4,16 +4,29 @@ import {
   hostName,
   hostBio,
 } from "@/lib/experiences";
+import { kvGetAddedExperiences } from "@/lib/kv-store";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import StickyApply from "@/components/StickyApply";
 import ImageSlider from "@/components/ImageSlider";
+import type { Experience } from "@/lib/types";
+
+export const dynamicParams = true; // KV由来のIDも動的に受け付ける
 
 export async function generateStaticParams() {
   const experiences = getAllExperiences();
   return experiences.map((e) => ({ id: e.id }));
+}
+
+async function getExperienceByIdWithKV(id: string): Promise<Experience | undefined> {
+  // まずJSONファイルから検索
+  const fromFile = getExperienceById(id);
+  if (fromFile) return fromFile;
+  // なければKVから検索
+  const kvExps = await kvGetAddedExperiences();
+  return kvExps.find((e) => e.id === id);
 }
 
 export async function generateMetadata({
@@ -22,7 +35,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const exp = getExperienceById(id);
+  const exp = await getExperienceByIdWithKV(id);
   if (!exp) return {};
 
   const BASE_URL = "https://itoito4.vercel.app";
@@ -56,7 +69,7 @@ export default async function ExperienceDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const exp = getExperienceById(id);
+  const exp = await getExperienceByIdWithKV(id);
   if (!exp) notFound();
 
   const categoryEmoji: Record<string, string> = {

@@ -1,4 +1,5 @@
 import { getExperienceById } from "@/lib/experiences";
+import { kvGetAddedExperiences } from "@/lib/kv-store";
 import ApplyForm from "@/components/ApplyForm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,7 +10,9 @@ export default async function ApplyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const exp = getExperienceById(id);
+  const exp =
+    getExperienceById(id) ??
+    (await kvGetAddedExperiences()).find((e) => e.id === id);
   if (!exp) notFound();
 
   const dateLabel = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;

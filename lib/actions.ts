@@ -26,6 +26,13 @@ import {
   type HostApplicationStatus,
 } from "./experiences";
 import { hostName } from "./types";
+import {
+  kvAddApplication,
+  kvUpdateApplicationStatus,
+  kvAddExperience,
+  kvAddHostApplication,
+  kvUpdateHostApplicationStatus,
+} from "./kv-store";
 
 
 /* ─── Payment Intent 作成（埋め込み決済用） ─── */
@@ -59,6 +66,9 @@ export async function finalizeApplication({
   if (!exp) throw new Error("体験が見つかりません");
 
   const app = addApplication({ experienceId, name, email, childAge, adults, children, message });
+
+  // KVに永続化（Vercel本番環境でもデータを保持）
+  await kvAddApplication(app);
 
   try {
     await sendApplicationNotification({
@@ -213,7 +223,7 @@ export async function submitExperience(formData: FormData) {
 
   const images = [image1, image2, image3].filter(Boolean) as string[];
 
-  addExperience({
+  const newExp = addExperience({
     title,
     description,
     category,
@@ -227,6 +237,9 @@ export async function submitExperience(formData: FormData) {
     image: images[0] ?? null,
     images: images.length > 0 ? images : undefined,
   });
+
+  // KVに永続化（Vercel本番環境でも体験が保存される）
+  await kvAddExperience(newExp);
 
   // 運営者へメールで体験投稿内容を通知（Vercel本番でファイル書き込みができない場合のバックアップ）
   const apiKey = process.env.RESEND_API_KEY;
@@ -278,7 +291,10 @@ export async function submitHostApplication(formData: FormData) {
     throw new Error("必須項目が入力されていません");
   }
 
-  addHostApplication({ name, email, phone, experienceOverview, targetAge, childExperience, achievements, safetyConsideration });
+  const newHostApp = addHostApplication({ name, email, phone, experienceOverview, targetAge, childExperience, achievements, safetyConsideration });
+
+  // KVに永続化
+  await kvAddHostApplication(newHostApp);
 
   try {
     await sendHostApplicationConfirmation({ applicantName: name, applicantEmail: email });
@@ -303,6 +319,8 @@ export async function changeHostApplicationStatus(formData: FormData) {
   if (!id || !status) throw new Error("パラメータ不正");
 
   const app = updateHostApplicationStatus(id, status);
+  // KVにも反映
+  await kvUpdateHostApplicationStatus(id, status);
   revalidatePath("/admin");
 
   // 承認時にホストへ承認メールを送信
@@ -323,6 +341,7 @@ export async function changeApplicationStatus(formData: FormData) {
   if (!id || !status) throw new Error("パラメータ不正");
 
   updateApplicationStatus(id, status);
+  await kvUpdateApplicationStatus(id, status);
   revalidatePath("/admin");
 }
 
