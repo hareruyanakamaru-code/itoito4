@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-20 px-4">
+      <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-14 sm:py-20 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-amber-600 text-sm font-medium mb-3 tracking-wide">
             🌱 教科書には載っていない学びがある
@@ -23,14 +23,15 @@ export default function HomePage() {
             <span className="text-amber-500">本物の体験に変える。</span>
           </h1>
           <p className="text-stone-500 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-            料理・ものづくり・自然探究——
-            <br className="hidden sm:block" />
-            プロや職人から直接学べる、少人数制の体験プラットフォーム。
+            教科書では出会えない、本物の現場へ。
+            <br />
+            子どもの好奇心を、プロと一緒に解き放とう。
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+          {/* ③ モバイルはボタン横幅いっぱい */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4 sm:px-0">
             <a
               href="#experiences"
-              className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-full transition-colors shadow-md text-base"
+              className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full transition-colors shadow-md text-base text-center"
             >
               体験をさがす →
             </a>
@@ -45,7 +46,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 安心して使える4つの理由 ── */}
-      <section className="bg-white border-b border-stone-100 py-12 px-4">
+      <section className="bg-white border-b border-stone-100 py-10 sm:py-12 px-4">
         <div className="max-w-5xl mx-auto">
           <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-8">
             安心して使える4つの理由

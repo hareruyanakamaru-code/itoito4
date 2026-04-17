@@ -27,9 +27,9 @@ export default function ExperienceGrid({ experiences }: { experiences: Experienc
   );
 
   return (
-    <section id="experiences" className="max-w-5xl mx-auto px-4 py-10">
+    <section id="experiences" className="max-w-5xl mx-auto px-3 sm:px-4 py-8 sm:py-10">
       {/* カテゴリフィルター */}
-      <div className="flex gap-2 flex-wrap mb-6">
+      <div className="flex gap-2 flex-wrap mb-5 sm:mb-6">
         {existingCategories.map((cat) => (
           <button
             key={cat.label}
@@ -48,7 +48,7 @@ export default function ExperienceGrid({ experiences }: { experiences: Experienc
       {/* 件数 */}
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-xl font-bold text-stone-800">
-          {selected ? `${selected}の体験` : "開催予定の体験"}
+          {selected ? `${selected}の体験` : "いま参加できる体験"}
           <span className="ml-2 text-sm font-normal text-stone-400">
             {filtered.length}件
           </span>

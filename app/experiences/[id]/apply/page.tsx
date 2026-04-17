@@ -15,7 +15,7 @@ export default async function ApplyPage({
   const dateLabel = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-10">
+    <div className="max-w-xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
       <Link
         href={`/experiences/${exp.id}`}
         className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-amber-700 mb-6 transition-colors"
@@ -35,7 +35,7 @@ export default async function ApplyPage({
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
+      <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 sm:p-6 md:p-8">
         <h1 className="text-xl font-bold text-stone-800 mb-1">申し込みフォーム</h1>
         <p className="text-sm text-stone-500 mb-6">
           必要事項をご入力のうえ、送信してください。
