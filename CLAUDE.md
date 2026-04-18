@@ -9,28 +9,34 @@
 
 ---
 
+## ✅ 自動承認ルール（確認不要でそのまま実行）
+
+以下は確認なしで即実行する：
+
+- ファイルの作成・編集・削除
+- `npm run dev` / `npm run build` などのコマンド実行
+- `git add` + `git commit`
+- ローカルサーバーの起動・停止
+
+## ❗ 事前報告が必要な操作（1行でよい）
+
+以下はオーナーに一言報告してから実行する：
+
+- **GitHubへのpush**（「pushします」と一言添える）
+- **外部サービスのAPIキー変更**
+- **`.env.local` の編集**
+- **新しい有料サービスの導入**
+
+---
+
 ## 🎯 CEOの行動原則
 
-あなたはitoitoのCEOです。以下の原則で動いてください。
-
 ### 自発的に動く
-- オーナーから指示を待つのではなく、**自分で考えて次のアクションを提案・実行する**
+- 指示を待たず、**自分で考えて次のアクションを提案・実行する**
 - 毎回の作業終了時に「次にやるべきこと」を必ず提示する
 - 問題を発見したら、解決策とセットで報告する
 
-### オーナーに確認するタイミング
-以下の場合のみオーナーに確認を取る：
-- **お金が発生する**決定（有料サービスの導入など）
-- **外部への公開・発信**（SNS投稿・プレスリリースなど）
-- **サービスの根本的な方向性**が変わる判断
-- **個人情報・セキュリティ**に関わる変更
-- **判断に迷った**とき
-
-それ以外は自分で判断して進める。
-
 ### 報告フォーマット
-作業完了時は必ず以下の形式で報告する：
-
 ```
 ✅ 完了したこと
 ⚠️ 発見した問題・懸念点
@@ -42,9 +48,10 @@
 
 ## 📋 プロジェクト概要
 
-**サービス名：** itoito（仮）
+**サービス名：** itoito（イトイト）
 **本番URL：** https://itoito4.vercel.app
-**GitHub：** https://github.com/itoito/itoito
+**GitHub：** https://github.com/hareruyanakamaru-code/itoito4
+**Instagram：** @itoito_tankyu
 **コンセプト：** 体験を提供したいホストと、体験したいゲストをつなぐCtoC体験マッチングプラットフォーム
 
 **ターゲット：**
@@ -53,6 +60,7 @@
 
 **エリア：** 江東区・東京東部からスタート → 全国展開
 **ビジネスモデル：** 手数料モデル（成約時10%）、初期は手数料ゼロで集客
+**運営者：** 中丸晴留哉
 
 ---
 
@@ -87,24 +95,32 @@
 
 ## 🛠️ 技術スタック
 
-- **フレームワーク：** Next.js (App Router)
-- **スタイル：** Tailwind CSS
-- **データ管理：** JSONファイル（DB導入前）
+- **フレームワーク：** Next.js 16 (App Router)
+- **スタイル：** Tailwind CSS v4
+- **データ管理：** JSONファイル（読み取り）+ Vercel KV（書き込み）
+- **画像ホスティング：** ImgBB（サーバー経由アップロード）
 - **メール通知：** Resend
+- **決済：** Stripe（PaymentElement埋め込み）
 - **デプロイ：** Vercel
-- **認証：** Basic認証（管理画面）
+- **認証：** Cookie認証（管理画面）
 
 ---
 
-## 🔐 環境変数（.env.local）
+## 🔐 環境変数
 
+### Vercel本番環境に設定済み
 ```
-RESEND_API_KEY=（メール通知用）
+RESEND_API_KEY
 NOTIFY_EMAIL=hareruyanakamaru@gmail.com
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=itoito2026
-SPREADSHEET_WEBHOOK_URL=（スプレッドシート連携用）
+ADMIN_USERNAME / ADMIN_PASSWORD
+STRIPE_SECRET_KEY / NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+IMGBB_API_KEY
+SPREADSHEET_WEBHOOK_URL
+KV_REST_API_URL / KV_REST_API_TOKEN  ← Vercel KV有効化で自動設定
 ```
+
+### ローカル（.env.local）
+- 上記と同様の変数をローカル用に設定
 
 ---
 
@@ -113,23 +129,38 @@ SPREADSHEET_WEBHOOK_URL=（スプレッドシート連携用）
 ```
 experience-matching/
 ├── app/
-│   ├── page.tsx          # トップ・体験一覧
-│   ├── experiences/[id]/ # 体験詳細・申し込み
-│   ├── host/             # 体験投稿フォーム
-│   ├── admin/            # 申し込み管理画面
-│   ├── lp/               # LP
-│   ├── for-host/         # ホスト向け説明
-│   ├── privacy/          # プライバシーポリシー
-│   └── terms/            # 利用規約
+│   ├── page.tsx                    # トップ・体験一覧（KV対応・force-dynamic）
+│   ├── experiences/[id]/           # 体験詳細（KV由来IDも対応）
+│   │   ├── apply/                  # 申し込みフォーム
+│   │   └── apply/done/             # 申し込み完了
+│   ├── host/                       # 体験投稿フォーム
+│   ├── host-apply/                 # ホスト申請フォーム（新設）
+│   ├── admin/                      # 申し込み＋ホスト申請管理画面
+│   ├── about/                      # 運営者情報
+│   ├── lp/                         # LP
+│   ├── for-host/                   # ホスト向け説明
+│   ├── contact/                    # お問い合わせ
+│   ├── privacy/                    # プライバシーポリシー
+│   └── terms/                      # 利用規約
 ├── components/
+│   ├── ApplyForm.tsx               # 3ステップ申し込み（Stripe埋め込み）
+│   ├── ExperienceCard.tsx          # 体験カード
+│   ├── ExperienceGrid.tsx          # カテゴリフィルター付き一覧
+│   ├── HostForm.tsx                # 体験投稿フォーム
+│   ├── HostApplyForm.tsx           # ホスト申請フォーム
+│   ├── ImageSlider.tsx             # 画像スライダー
+│   └── StickyApply.tsx            # スクロール追従CTAボタン
 ├── data/
-│   ├── experiences.json  # 体験データ
-│   └── applications.json # 申し込みデータ
+│   ├── experiences.json            # 初期体験データ（読み取り専用）
+│   └── host-applications.json     # ホスト申請（ローカル用）
 ├── lib/
-│   ├── experiences.ts
-│   ├── actions.ts
-│   └── types.ts
-└── public/images/        # 体験写真
+│   ├── actions.ts                  # Server Actions
+│   ├── experiences.ts              # データアクセス
+│   ├── kv-store.ts                 # Vercel KV操作ラッパー
+│   ├── types.ts                    # 型定義
+│   ├── done-helpers.ts             # メール送信ヘルパー
+│   └── stripe.ts                   # Stripe初期化
+└── public/images/
 ```
 
 ---
@@ -137,28 +168,27 @@ experience-matching/
 ## 🎨 デザイン方針
 
 - やわらかく温かみのある雰囲気
-- オレンジ（#f59e0b系）を基調
+- アンバー（#f59e0b系）を基調、ストーン系グレーをベース
 - 子どもから大人まで使いやすいUI
-- モバイルファースト
+- **モバイルファースト**（px-3 sm:px-4、w-full sm:w-auto など）
 
 ---
 
 ## 📣 プロモーション方針
 
-- **メインチャネル：** Instagram、Threads
+- **メインチャネル：** Instagram（@itoito_tankyu）、Threads
 - **ターゲット（保護者）：** 安心・信頼・教育的価値
 - **ターゲット（生徒）：** 探究心・自由・非学校的な学び
 - **トーン：** 押しつけがましくない、好奇心を刺激する
 
 ---
 
-## 🔜 現在の優先タスク（CEO判断で更新すること）
+## 🔜 現在の優先タスク
 
-1. 運営者バナーの削除・ヘッダー整理
-2. ホスト候補へのDM送付開始
-3. Instagramアカウント開設
-4. 実際の体験データ登録（ホスト候補に声かけ）
-5. /adminのVercel動作確認
+1. **Vercel KV有効化**（Storage → KV → Create → Connect）→ 体験投稿の自動反映が動く
+2. **Stripe審査通過待ち** → 承認後にテスト決済を確認
+3. **ホスト候補への営業DM** → 最初の実際の体験を登録
+4. **ImgBB APIキー設定済み** ✅
 
 ---
 
@@ -166,5 +196,6 @@ experience-matching/
 
 ```bash
 npm run dev    # 開発サーバー起動
-npm run build  # ビルド
+npm run build  # ビルド確認
+git add -A && git commit -m "メッセージ"  # コミット（pushは報告してから）
 ```
