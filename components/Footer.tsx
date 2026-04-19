@@ -16,9 +16,23 @@ export default function Footer() {
         </div>
 
         {/* リンク */}
+        {/* ホスト向けCTA */}
+        <div className="text-center mb-6">
+          <Link
+            href="/host-apply"
+            className="inline-block bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-5 py-2 rounded-full transition-colors shadow-sm"
+          >
+            🌿 ホストとして体験を提供する →
+          </Link>
+        </div>
+
         <nav className="flex items-center justify-center gap-3 mb-6 flex-wrap">
           <Link href="/contact" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
             お問い合わせ
+          </Link>
+          <span className="text-stone-300 text-xs">|</span>
+          <Link href="/for-host" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
+            ホストになる
           </Link>
           <span className="text-stone-300 text-xs">|</span>
           <Link href="/privacy" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
