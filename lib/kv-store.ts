@@ -5,11 +5,12 @@
  * - 環境変数: UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN
  */
 
-import type { Experience, Application, HostApplication } from "./types";
+import type { Experience, Application, HostApplication, Review } from "./types";
 
 const KV_EXPERIENCES_KEY = "itoito:experiences:added";
 const KV_APPLICATIONS_KEY = "itoito:applications";
 const KV_HOST_APPLICATIONS_KEY = "itoito:host-applications";
+const KV_REVIEWS_KEY = "itoito:reviews";
 
 function isKVAvailable(): boolean {
   return !!(
@@ -113,6 +114,35 @@ export async function kvAddHostApplication(app: HostApplication): Promise<void> 
   } catch (err) {
     console.warn("[KV] addHostApplication failed:", err);
   }
+}
+
+/* ─── レビュー ─── */
+export async function kvGetReviews(): Promise<Review[]> {
+  try {
+    const redis = await getRedis();
+    if (!redis) return [];
+    const data = await redis.get<Review[]>(KV_REVIEWS_KEY);
+    return data ?? [];
+  } catch (err) {
+    console.warn("[KV] getReviews failed:", err);
+    return [];
+  }
+}
+
+export async function kvAddReview(review: Review): Promise<void> {
+  try {
+    const redis = await getRedis();
+    if (!redis) return;
+    const existing = (await redis.get<Review[]>(KV_REVIEWS_KEY)) ?? [];
+    await redis.set(KV_REVIEWS_KEY, [...existing, review]);
+  } catch (err) {
+    console.warn("[KV] addReview failed:", err);
+  }
+}
+
+export async function kvGetReviewsByExperience(experienceId: string): Promise<Review[]> {
+  const all = await kvGetReviews();
+  return all.filter((r) => r.experienceId === experienceId);
 }
 
 export async function kvUpdateHostApplicationStatus(

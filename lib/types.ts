@@ -32,6 +32,35 @@ export type Experience = {
 
 export type ApplicationStatus = "未確認" | "確認済み" | "承認" | "キャンセル";
 
+/* ─── レビュー ─── */
+export type GuestReview = {
+  id: string;
+  experienceId: string;
+  type: "guest";
+  createdAt: string;
+  overallRating: number;   // 1-5
+  hostRating: number;      // 1-5
+  contentRating: number;   // 1-5
+  goodPoints: string;
+  improvements: string;
+  photoUrl?: string;
+  allowSnsShare: boolean;
+  displayName: string;     // "Aさん" など匿名表示名
+};
+
+export type HostReview = {
+  id: string;
+  experienceId: string;
+  type: "host";
+  createdAt: string;
+  guestImpression: number; // 1-5
+  satisfaction: number;    // 1-5
+  nextEventPlan: "yes" | "maybe" | "no";
+  comment: string;
+};
+
+export type Review = GuestReview | HostReview;
+
 export type Application = {
   id: string;
   experienceId: string;

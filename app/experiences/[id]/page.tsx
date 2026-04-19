@@ -4,14 +4,14 @@ import {
   hostName,
   hostBio,
 } from "@/lib/experiences";
-import { kvGetAddedExperiences } from "@/lib/kv-store";
+import { kvGetAddedExperiences, kvGetReviewsByExperience } from "@/lib/kv-store";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import StickyApply from "@/components/StickyApply";
 import ImageSlider from "@/components/ImageSlider";
-import type { Experience, FlowStep } from "@/lib/types";
+import type { Experience, FlowStep, GuestReview } from "@/lib/types";
 
 export const dynamicParams = true; // KV由来のIDも動的に受け付ける
 
@@ -71,6 +71,10 @@ export default async function ExperienceDetailPage({
   const { id } = await params;
   const exp = await getExperienceByIdWithKV(id);
   if (!exp) notFound();
+
+  // レビューを取得
+  const allReviews = await kvGetReviewsByExperience(id);
+  const guestReviews = allReviews.filter((r): r is GuestReview => r.type === "guest");
 
   const categoryEmoji: Record<string, string> = {
     "料理・ものづくり": "🍳",
@@ -235,6 +239,9 @@ export default async function ExperienceDetailPage({
           </div>
         )}
 
+        {/* レビューセクション */}
+        <ReviewSection reviews={guestReviews} expId={exp.id} />
+
         {/* よくある質問 */}
         <div className="mt-6 bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
           <h2 className="text-lg font-bold text-stone-800 mb-5 flex items-center gap-2">
@@ -298,6 +305,85 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <p className="text-sm text-stone-600 leading-relaxed pl-6">
         {a}
       </p>
+    </div>
+  );
+}
+
+function StarDisplay({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) {
+  const sz = size === "md" ? "text-xl" : "text-sm";
+  return (
+    <span className={sz}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <span key={n} className={n <= Math.round(rating) ? "text-amber-400" : "text-stone-200"}>★</span>
+      ))}
+    </span>
+  );
+}
+
+function ReviewSection({ reviews, expId }: { reviews: GuestReview[]; expId: string }) {
+  if (reviews.length === 0) {
+    return (
+      <div className="mt-6 bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-bold text-stone-800 flex items-center gap-2">⭐ レビュー</h2>
+          <Link
+            href={`/experiences/${expId}/review`}
+            className="text-xs text-amber-600 hover:underline"
+          >
+            フィードバックを書く →
+          </Link>
+        </div>
+        <p className="text-sm text-stone-400">まだレビューはありません。体験に参加した方はぜひ感想を投稿してください。</p>
+      </div>
+    );
+  }
+
+  const avg = (arr: number[]) => arr.reduce((s, v) => s + v, 0) / arr.length;
+  const avgOverall = avg(reviews.map((r) => r.overallRating));
+  const latest3 = [...reviews].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 3);
+
+  return (
+    <div className="mt-6 bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-base font-bold text-stone-800 flex items-center gap-2">⭐ レビュー</h2>
+        <Link href={`/experiences/${expId}/review`} className="text-xs text-amber-600 hover:underline">
+          フィードバックを書く →
+        </Link>
+      </div>
+
+      {/* 平均評価 */}
+      <div className="flex items-center gap-3 mb-6 bg-amber-50 rounded-xl p-4 border border-amber-100">
+        <span className="text-4xl font-extrabold text-amber-500">{avgOverall.toFixed(1)}</span>
+        <div>
+          <StarDisplay rating={avgOverall} size="md" />
+          <p className="text-xs text-stone-400 mt-0.5">{reviews.length}件のレビュー</p>
+        </div>
+      </div>
+
+      {/* 最新3件 */}
+      <div className="flex flex-col gap-4">
+        {latest3.map((r) => (
+          <div key={r.id} className="border-b border-stone-100 pb-4 last:border-0 last:pb-0">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-xs font-semibold text-stone-600">{r.displayName}</span>
+              <StarDisplay rating={r.overallRating} />
+              <span className="text-xs text-stone-400 ml-auto">
+                {new Date(r.createdAt).toLocaleDateString("ja-JP")}
+              </span>
+            </div>
+            <p className="text-sm text-stone-600 leading-relaxed">{r.goodPoints}</p>
+          </div>
+        ))}
+      </div>
+
+      {reviews.length > 3 && (
+        <Link
+          href={`/experiences/${expId}/review`}
+          className="block text-center text-sm text-amber-600 hover:underline mt-4"
+        >
+          もっと見る（{reviews.length}件）
+        </Link>
+      )}
     </div>
   );
 }

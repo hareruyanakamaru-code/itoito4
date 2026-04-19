@@ -8,7 +8,9 @@ import {
 import {
   kvGetApplications,
   kvGetHostApplications,
+  kvGetReviews,
 } from "@/lib/kv-store";
+import type { GuestReview, HostReview } from "@/lib/types";
 import {
   changeApplicationStatus,
   changeHostApplicationStatus,
@@ -57,9 +59,10 @@ export default async function AdminPage({
   const activeTab = params.tab ?? "applications";
 
   // KVから最新データを取得（ファイルシステムにフォールバック）
-  const [kvApps, kvHostApps] = await Promise.all([
+  const [kvApps, kvHostApps, allReviews] = await Promise.all([
     kvGetApplications(),
     kvGetHostApplications(),
+    kvGetReviews(),
   ]);
   const fileApps = getAllApplications();
   const fileHostApps = getAllHostApplications();
@@ -145,6 +148,21 @@ export default async function AdminPage({
           {hostCounts.審査中 > 0 && (
             <span className="ml-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
               {hostCounts.審査中}
+            </span>
+          )}
+        </a>
+        <a
+          href="/admin?tab=reviews"
+          className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+            activeTab === "reviews"
+              ? "border-amber-500 text-amber-700"
+              : "border-transparent text-stone-400 hover:text-stone-600"
+          }`}
+        >
+          ⭐ レビュー管理
+          {allReviews.length > 0 && (
+            <span className="ml-2 bg-amber-100 text-amber-700 text-xs font-bold px-1.5 py-0.5 rounded-full">
+              {allReviews.length}
             </span>
           )}
         </a>
@@ -345,6 +363,11 @@ export default async function AdminPage({
       </>
       )}
 
+      {/* ── レビュー管理タブ ── */}
+      {activeTab === "reviews" && (
+        <ReviewsTab reviews={allReviews} expMap={expMap} />
+      )}
+
       {/* ── 管理者設定（パスワード変更） ── */}
       <div className="mt-10 bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
         <h2 className="text-base font-bold text-stone-800 mb-1">⚙️ 管理者設定</h2>
@@ -430,6 +453,190 @@ export default async function AdminPage({
       </div>
 
     </div>
+  );
+}
+
+import type { Review } from "@/lib/types";
+
+function StarsBadge({ rating }: { rating: number }) {
+  const color = rating <= 2 ? "text-red-400" : rating === 3 ? "text-amber-400" : "text-amber-400";
+  return (
+    <span className={`text-sm font-bold ${color}`}>
+      {"★".repeat(rating)}{"☆".repeat(5 - rating)} {rating}/5
+    </span>
+  );
+}
+
+function ReviewsTab({
+  reviews,
+  expMap,
+}: {
+  reviews: Review[];
+  expMap: Record<string, string>;
+}) {
+  const guestReviews = reviews.filter((r): r is GuestReview => r.type === "guest");
+  const hostReviews = reviews.filter((r): r is HostReview => r.type === "host");
+
+  // 体験別平均評価
+  const expIds = [...new Set(guestReviews.map((r) => r.experienceId))];
+  const expAverages = expIds.map((id) => {
+    const rs = guestReviews.filter((r) => r.experienceId === id);
+    const avg = rs.reduce((s, r) => s + r.overallRating, 0) / rs.length;
+    return { id, title: expMap[id] ?? id, avg, count: rs.length };
+  }).sort((a, b) => a.avg - b.avg);
+
+  // CSV生成（クライアントサイド用データをdata属性に埋め込み）
+  const csvData = guestReviews.map((r) =>
+    [
+      r.createdAt,
+      expMap[r.experienceId] ?? r.experienceId,
+      r.overallRating,
+      r.hostRating,
+      r.contentRating,
+      `"${r.goodPoints.replace(/"/g, '""')}"`,
+      `"${r.improvements.replace(/"/g, '""')}"`,
+      r.allowSnsShare ? "はい" : "いいえ",
+    ].join(",")
+  ).join("\n");
+  const csvHeader = "日時,体験名,総合,ホスト,内容,よかった点,改善点,SNS許可\n";
+  const csvFull = csvHeader + csvData;
+
+  return (
+    <>
+      {/* サマリー */}
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        <SummaryCard label="総レビュー数" value={reviews.length} color="amber" />
+        <SummaryCard label="ゲストレビュー" value={guestReviews.length} color="emerald" />
+        <SummaryCard label="ホストフィードバック" value={hostReviews.length} color="stone" />
+      </div>
+
+      {/* 体験別平均評価 */}
+      {expAverages.length > 0 && (
+        <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 mb-6">
+          <h3 className="text-sm font-bold text-stone-800 mb-4">📊 体験別平均評価</h3>
+          <div className="flex flex-col gap-3">
+            {expAverages.map((e) => (
+              <div key={e.id} className="flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-stone-700 truncate">{e.title}</p>
+                  <p className="text-xs text-stone-400">{e.count}件</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <StarsBadge rating={Math.round(e.avg)} />
+                  {e.avg < 3 && (
+                    <span className="text-xs bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded-full">
+                      ⚠️ 要確認
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* CSVエクスポート */}
+      {guestReviews.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <a
+            href={`data:text/csv;charset=utf-8,${encodeURIComponent(csvFull)}`}
+            download="itoito-reviews.csv"
+            className="text-sm border border-stone-200 rounded-xl px-4 py-2 text-stone-600 hover:bg-stone-50 transition-colors"
+          >
+            📥 CSVエクスポート
+          </a>
+        </div>
+      )}
+
+      {/* 全レビュー一覧 */}
+      {reviews.length === 0 ? (
+        <div className="text-center py-24 bg-white rounded-2xl border border-stone-100">
+          <p className="text-4xl mb-4">📝</p>
+          <p className="text-stone-400">まだレビューはありません</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {[...reviews].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((r) => {
+            const dateStr = new Date(r.createdAt).toLocaleString("ja-JP", {
+              year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit",
+            });
+            return (
+              <div key={r.id} className="bg-white rounded-2xl border border-stone-100 shadow-sm p-4 sm:p-5">
+                <div className="flex items-start justify-between gap-3 flex-wrap mb-3">
+                  <div>
+                    <p className="text-xs text-stone-400">{dateStr}</p>
+                    <p className="font-bold text-stone-800 text-sm mt-0.5">
+                      {expMap[r.experienceId] ?? r.experienceId}
+                    </p>
+                  </div>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    r.type === "guest" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"
+                  }`}>
+                    {r.type === "guest" ? "👧 ゲスト" : "🌿 ホスト"}
+                  </span>
+                </div>
+
+                {r.type === "guest" ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+                    <div className="bg-stone-50 rounded-xl px-3 py-2">
+                      <p className="text-xs text-stone-400 mb-0.5">総合</p>
+                      <StarsBadge rating={r.overallRating} />
+                      {r.overallRating <= 2 && <span className="ml-1 text-xs text-red-500">⚠️</span>}
+                    </div>
+                    <div className="bg-stone-50 rounded-xl px-3 py-2">
+                      <p className="text-xs text-stone-400 mb-0.5">ホスト</p>
+                      <StarsBadge rating={r.hostRating} />
+                    </div>
+                    <div className="bg-stone-50 rounded-xl px-3 py-2">
+                      <p className="text-xs text-stone-400 mb-0.5">内容</p>
+                      <StarsBadge rating={r.contentRating} />
+                    </div>
+                    <div className="bg-stone-50 rounded-xl px-3 py-2 sm:col-span-3">
+                      <p className="text-xs text-stone-400 mb-0.5">よかった点</p>
+                      <p className="text-sm text-stone-700">{r.goodPoints}</p>
+                    </div>
+                    {r.improvements && (
+                      <div className="bg-stone-50 rounded-xl px-3 py-2 sm:col-span-3">
+                        <p className="text-xs text-stone-400 mb-0.5">改善点</p>
+                        <p className="text-sm text-stone-700">{r.improvements}</p>
+                      </div>
+                    )}
+                    {r.photoUrl && (
+                      <div className="sm:col-span-3">
+                        <img src={r.photoUrl} alt="レビュー写真" className="rounded-xl max-h-40 object-cover" />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                    <div className="bg-stone-50 rounded-xl px-3 py-2">
+                      <p className="text-xs text-stone-400 mb-0.5">ゲストの印象</p>
+                      <StarsBadge rating={r.guestImpression} />
+                    </div>
+                    <div className="bg-stone-50 rounded-xl px-3 py-2">
+                      <p className="text-xs text-stone-400 mb-0.5">満足度</p>
+                      <StarsBadge rating={r.satisfaction} />
+                    </div>
+                    <div className="bg-stone-50 rounded-xl px-3 py-2">
+                      <p className="text-xs text-stone-400 mb-0.5">次回開催</p>
+                      <p className="text-sm font-medium text-stone-800">
+                        {{ yes: "✅ はい", maybe: "🤔 未定", no: "❌ いいえ" }[r.nextEventPlan]}
+                      </p>
+                    </div>
+                    {r.comment && (
+                      <div className="bg-stone-50 rounded-xl px-3 py-2 sm:col-span-2">
+                        <p className="text-xs text-stone-400 mb-0.5">コメント</p>
+                        <p className="text-sm text-stone-700">{r.comment}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }
 
