@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 import { type Metadata } from "next";
 import StickyApply from "@/components/StickyApply";
 import ImageSlider from "@/components/ImageSlider";
-import type { Experience } from "@/lib/types";
+import type { Experience, FlowStep } from "@/lib/types";
 
 export const dynamicParams = true; // KV由来のIDも動的に受け付ける
 
@@ -192,6 +192,16 @@ export default async function ExperienceDetailPage({
               </div>
             )}
 
+            {/* 当日の流れ */}
+            {exp.flow && exp.flow.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-base font-bold text-stone-800 mb-4 flex items-center gap-2">
+                  🕐 当日の流れ
+                </h2>
+                <FlowTimeline steps={exp.flow} />
+              </div>
+            )}
+
             {/* 申し込みボタン（インライン） */}
             <Link
               href={`/experiences/${exp.id}/apply`}
@@ -289,5 +299,38 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         {a}
       </p>
     </div>
+  );
+}
+
+function FlowTimeline({ steps }: { steps: FlowStep[] }) {
+  return (
+    <ol className="relative border-l-2 border-amber-200 ml-3 flex flex-col gap-0">
+      {steps.map((step, i) => (
+        <li key={i} className="pl-6 pb-5 last:pb-0 relative">
+          {/* ドット */}
+          <span className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-amber-400 border-2 border-white shadow-sm flex items-center justify-center">
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+          </span>
+
+          <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+            {/* 時間バッジ */}
+            <span className="shrink-0 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5 w-fit">
+              {step.time}
+            </span>
+            {/* ラベル */}
+            <span className="text-sm font-semibold text-stone-800">
+              {step.label}
+            </span>
+          </div>
+
+          {/* 補足メモ */}
+          {step.note && (
+            <p className="mt-1 text-xs text-stone-400 leading-relaxed">
+              💬 {step.note}
+            </p>
+          )}
+        </li>
+      ))}
+    </ol>
   );
 }

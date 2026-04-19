@@ -1,3 +1,10 @@
+/** 当日の流れの1ステップ */
+export type FlowStep = {
+  time: string;   // 例: "10:00" "開始30分" など
+  label: string;  // 例: "集合・自己紹介"
+  note?: string;  // 例: "服装チェックあり"
+};
+
 /** 体験データの型定義（クライアント・サーバー共用） */
 export type Experience = {
   id: string;
@@ -15,6 +22,7 @@ export type Experience = {
   host: string | { name: string; bio: string };
   hostProfile?: string;
   benefits?: string[];
+  flow?: FlowStep[];      // 当日の流れ（タイムライン）
   parentNote?: string;
   tags?: string[];
   skillTags?: string[];
