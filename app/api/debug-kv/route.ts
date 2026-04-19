@@ -3,36 +3,28 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  // Upstash/KV関連の環境変数を全部チェック
-  const allVars: Record<string, string> = {};
-  const keys = [
-    "UPSTASH_REDIS_REST_URL",
-    "UPSTASH_REDIS_REST_TOKEN",
-    "UPSTASH_REDIS_URL",
-    "UPSTASH_REDIS_TOKEN",
-    "KV_REST_API_URL",
-    "KV_REST_API_TOKEN",
-    "KV_REST_API_READ_ONLY_TOKEN",
-    "KV_URL",
-    "REDIS_URL",
-  ];
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
 
-  for (const key of keys) {
-    const val = process.env[key];
-    if (val) {
-      allVars[key] = `✅ 設定済み: ${val.slice(0, 40)}...`;
-    } else {
-      allVars[key] = "❌ 未設定";
-    }
+  if (!url || !token) {
+    return NextResponse.json({ ok: false, message: "KV_REST_API_URL / KV_REST_API_TOKEN が未設定" });
   }
 
-  const hasAny = Object.values(allVars).some((v) => v.startsWith("✅"));
+  try {
+    const { Redis } = await import("@upstash/redis");
+    const redis = new Redis({ url, token });
 
-  return NextResponse.json({
-    hasAnyRedisVar: hasAny,
-    variables: allVars,
-    message: hasAny
-      ? "上記の変数名をClaude Codeに伝えてください"
-      : "Upstashの環境変数が1つも見つかりません。Vercel → Project Settings → Environment Variables を確認してください",
-  });
+    const ping = await redis.ping();
+    const experiences = await redis.get<unknown[]>("itoito:experiences:added");
+    const expCount = Array.isArray(experiences) ? experiences.length : 0;
+
+    return NextResponse.json({
+      ok: true,
+      ping,
+      experiences_in_kv: expCount,
+      message: "Upstash接続成功🎉",
+    });
+  } catch (err) {
+    return NextResponse.json({ ok: false, error: String(err) });
+  }
 }

@@ -13,8 +13,8 @@ const KV_HOST_APPLICATIONS_KEY = "itoito:host-applications";
 
 function isKVAvailable(): boolean {
   return !!(
-    process.env.UPSTASH_REDIS_REST_URL &&
-    process.env.UPSTASH_REDIS_REST_TOKEN
+    process.env.KV_REST_API_URL &&
+    process.env.KV_REST_API_TOKEN
   );
 }
 
@@ -22,8 +22,8 @@ async function getRedis() {
   if (!isKVAvailable()) return null;
   const { Redis } = await import("@upstash/redis");
   return new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    url: process.env.KV_REST_API_URL!,
+    token: process.env.KV_REST_API_TOKEN!,
   });
 }
 
