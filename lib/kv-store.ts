@@ -1,7 +1,8 @@
 /**
- * Vercel KV ラッパー
- * - KV未設定時（ローカル開発）はnullを返す安全な実装
- * - Vercelダッシュボードでストレージ → KV を有効化すると自動的に機能する
+ * Upstash Redis ラッパー
+ * - Upstash未設定時（ローカル開発）はnullを返す安全な実装
+ * - Vercel Dashboard → Storage → Upstash → Create → Connectで自動的に機能する
+ * - 環境変数: UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN
  */
 
 import type { Experience, Application, HostApplication } from "./types";
@@ -12,23 +13,26 @@ const KV_HOST_APPLICATIONS_KEY = "itoito:host-applications";
 
 function isKVAvailable(): boolean {
   return !!(
-    process.env.KV_REST_API_URL &&
-    process.env.KV_REST_API_TOKEN
+    process.env.UPSTASH_REDIS_REST_URL &&
+    process.env.UPSTASH_REDIS_REST_TOKEN
   );
 }
 
-async function getKV() {
+async function getRedis() {
   if (!isKVAvailable()) return null;
-  const { kv } = await import("@vercel/kv");
-  return kv;
+  const { Redis } = await import("@upstash/redis");
+  return new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL!,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  });
 }
 
 /* ─── 体験 ─── */
 export async function kvGetAddedExperiences(): Promise<Experience[]> {
   try {
-    const kv = await getKV();
-    if (!kv) return [];
-    const data = await kv.get<Experience[]>(KV_EXPERIENCES_KEY);
+    const redis = await getRedis();
+    if (!redis) return [];
+    const data = await redis.get<Experience[]>(KV_EXPERIENCES_KEY);
     return data ?? [];
   } catch (err) {
     console.warn("[KV] getAddedExperiences failed:", err);
@@ -38,10 +42,10 @@ export async function kvGetAddedExperiences(): Promise<Experience[]> {
 
 export async function kvAddExperience(exp: Experience): Promise<void> {
   try {
-    const kv = await getKV();
-    if (!kv) return;
-    const existing = await kv.get<Experience[]>(KV_EXPERIENCES_KEY) ?? [];
-    await kv.set(KV_EXPERIENCES_KEY, [...existing, exp]);
+    const redis = await getRedis();
+    if (!redis) return;
+    const existing = (await redis.get<Experience[]>(KV_EXPERIENCES_KEY)) ?? [];
+    await redis.set(KV_EXPERIENCES_KEY, [...existing, exp]);
   } catch (err) {
     console.warn("[KV] addExperience failed:", err);
   }
@@ -50,9 +54,9 @@ export async function kvAddExperience(exp: Experience): Promise<void> {
 /* ─── 申し込み ─── */
 export async function kvGetApplications(): Promise<Application[]> {
   try {
-    const kv = await getKV();
-    if (!kv) return [];
-    const data = await kv.get<Application[]>(KV_APPLICATIONS_KEY);
+    const redis = await getRedis();
+    if (!redis) return [];
+    const data = await redis.get<Application[]>(KV_APPLICATIONS_KEY);
     return data ?? [];
   } catch (err) {
     console.warn("[KV] getApplications failed:", err);
@@ -62,10 +66,10 @@ export async function kvGetApplications(): Promise<Application[]> {
 
 export async function kvAddApplication(app: Application): Promise<void> {
   try {
-    const kv = await getKV();
-    if (!kv) return;
-    const existing = await kv.get<Application[]>(KV_APPLICATIONS_KEY) ?? [];
-    await kv.set(KV_APPLICATIONS_KEY, [...existing, app]);
+    const redis = await getRedis();
+    if (!redis) return;
+    const existing = (await redis.get<Application[]>(KV_APPLICATIONS_KEY)) ?? [];
+    await redis.set(KV_APPLICATIONS_KEY, [...existing, app]);
   } catch (err) {
     console.warn("[KV] addApplication failed:", err);
   }
@@ -76,11 +80,11 @@ export async function kvUpdateApplicationStatus(
   status: Application["status"]
 ): Promise<void> {
   try {
-    const kv = await getKV();
-    if (!kv) return;
-    const all = await kv.get<Application[]>(KV_APPLICATIONS_KEY) ?? [];
+    const redis = await getRedis();
+    if (!redis) return;
+    const all = (await redis.get<Application[]>(KV_APPLICATIONS_KEY)) ?? [];
     const updated = all.map((a) => (a.id === id ? { ...a, status } : a));
-    await kv.set(KV_APPLICATIONS_KEY, updated);
+    await redis.set(KV_APPLICATIONS_KEY, updated);
   } catch (err) {
     console.warn("[KV] updateApplicationStatus failed:", err);
   }
@@ -89,9 +93,9 @@ export async function kvUpdateApplicationStatus(
 /* ─── ホスト申請 ─── */
 export async function kvGetHostApplications(): Promise<HostApplication[]> {
   try {
-    const kv = await getKV();
-    if (!kv) return [];
-    const data = await kv.get<HostApplication[]>(KV_HOST_APPLICATIONS_KEY);
+    const redis = await getRedis();
+    if (!redis) return [];
+    const data = await redis.get<HostApplication[]>(KV_HOST_APPLICATIONS_KEY);
     return data ?? [];
   } catch (err) {
     console.warn("[KV] getHostApplications failed:", err);
@@ -101,10 +105,11 @@ export async function kvGetHostApplications(): Promise<HostApplication[]> {
 
 export async function kvAddHostApplication(app: HostApplication): Promise<void> {
   try {
-    const kv = await getKV();
-    if (!kv) return;
-    const existing = await kv.get<HostApplication[]>(KV_HOST_APPLICATIONS_KEY) ?? [];
-    await kv.set(KV_HOST_APPLICATIONS_KEY, [...existing, app]);
+    const redis = await getRedis();
+    if (!redis) return;
+    const existing =
+      (await redis.get<HostApplication[]>(KV_HOST_APPLICATIONS_KEY)) ?? [];
+    await redis.set(KV_HOST_APPLICATIONS_KEY, [...existing, app]);
   } catch (err) {
     console.warn("[KV] addHostApplication failed:", err);
   }
@@ -115,11 +120,12 @@ export async function kvUpdateHostApplicationStatus(
   status: HostApplication["status"]
 ): Promise<HostApplication | null> {
   try {
-    const kv = await getKV();
-    if (!kv) return null;
-    const all = await kv.get<HostApplication[]>(KV_HOST_APPLICATIONS_KEY) ?? [];
+    const redis = await getRedis();
+    if (!redis) return null;
+    const all =
+      (await redis.get<HostApplication[]>(KV_HOST_APPLICATIONS_KEY)) ?? [];
     const updated = all.map((a) => (a.id === id ? { ...a, status } : a));
-    await kv.set(KV_HOST_APPLICATIONS_KEY, updated);
+    await redis.set(KV_HOST_APPLICATIONS_KEY, updated);
     return updated.find((a) => a.id === id) ?? null;
   } catch (err) {
     console.warn("[KV] updateHostApplicationStatus failed:", err);
