@@ -43,6 +43,10 @@ export default function Footer() {
             利用規約
           </Link>
           <span className="text-stone-300 text-xs">|</span>
+          <Link href="/tokushoho" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
+            特定商取引法に基づく表記
+          </Link>
+          <span className="text-stone-300 text-xs">|</span>
           <Link href="/about" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
             運営者情報
           </Link>
