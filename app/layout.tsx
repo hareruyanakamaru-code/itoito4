@@ -23,9 +23,9 @@ export const metadata: Metadata = {
       "料理・竹細工・農業・絵本づくり——学校では出会えない大人と、教科書には載っていない体験。子どもの「なんで？」「やりたい！」に本気で向き合う体験マッチングプラットフォーム。",
     images: [
       {
-        url: "/images/bamboo-light.jpg",
-        width: 1284,
-        height: 820,
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
         alt: "itoito — 子どもの体験マッチングプラットフォーム",
       },
     ],
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     title: "itoito（イトイト）— 子どもの「やってみたい」をかなえる体験マッチング",
     description:
       "料理・竹細工・農業・絵本づくり——学校では出会えない大人と教科書には載っていない体験。",
-    images: ["/images/bamboo-light.jpg"],
+    images: ["/opengraph-image"],
   },
 };
 
