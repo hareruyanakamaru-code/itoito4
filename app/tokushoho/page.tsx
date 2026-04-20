@@ -31,9 +31,12 @@ const rows: { label: string; value: React.ReactNode }[] = [
     label: "電話番号",
     value: (
       <>
+        <a href="tel:090-9725-1572" className="text-amber-700 hover:underline">
+          090-9725-1572
+        </a>
+        <br />
         <span className="text-stone-400 text-xs">
-          消費者からのご請求があった場合は遅滞なく開示いたします。
-          お急ぎの場合はメールまたはお問い合わせフォームをご利用ください。
+          ※ お問い合わせはメールまたはお問い合わせフォームでも受け付けております。
         </span>
       </>
     ),
@@ -69,11 +72,11 @@ const rows: { label: string; value: React.ReactNode }[] = [
   },
   {
     label: "支払方法",
-    value: "クレジットカード（Visa・Mastercard・JCB・American Express）※ Stripe による安全な決済",
+    value: "銀行振込（申し込み確定後、振込先口座をメールにてご案内します）／ クレジットカード（Visa・Mastercard・JCB・American Express）※ 順次対応予定",
   },
   {
     label: "支払時期",
-    value: "申し込み完了時（クレジットカードによる即時決済）",
+    value: "銀行振込：申し込み確定メール受信から3営業日以内にお振込みください。クレジットカード：申し込み完了時（即時決済）。",
   },
   {
     label: "サービス提供時期",
