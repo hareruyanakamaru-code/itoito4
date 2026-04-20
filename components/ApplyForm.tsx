@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { createPaymentIntent, finalizeApplication } from "@/lib/actions";
@@ -11,6 +12,8 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
   : null;
 
+const stripeEnabled = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 type Step = 1 | 2 | 3;
 
 type FormValues = {
@@ -19,10 +22,12 @@ type FormValues = {
   adults: string;
   children: string;
   childAge: string;
+  allergy: string;
   message: string;
 };
 
 export default function ApplyForm({ exp }: { exp: Experience }) {
+  const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [values, setValues] = useState<FormValues>({
     name: "",
@@ -30,16 +35,21 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
     adults: "1",
     children: "0",
     childAge: "",
+    allergy: "",
     message: "",
   });
   const [errors, setErrors] = useState<Partial<FormValues>>({});
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   function validate(): boolean {
     const e: Partial<FormValues> = {};
     if (!values.name.trim()) e.name = "お名前を入力してください";
     if (!values.email.trim()) e.email = "メールアドレスを入力してください";
     else if (!/\S+@\S+\.\S+/.test(values.email)) e.email = "正しいメールアドレスを入力してください";
+    if (Number(values.adults) + Number(values.children) === 0) {
+      e.adults = "参加人数を1名以上入力してください";
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -50,17 +60,39 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
   }
 
   async function handleConfirm() {
+    setConfirming(true);
     const total = (Number(values.adults) + Number(values.children)) * exp.price;
 
-    // Stripe設定あり → 埋め込み決済へ
-    if (stripePromise && process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-      const { clientSecret } = await createPaymentIntent(total);
-      setClientSecret(clientSecret);
-      setStep(3);
+    // メッセージにアレルギー情報を統合
+    const fullMessage = [
+      values.allergy ? `【アレルギー・配慮事項】${values.allergy}` : "",
+      values.message ? `【メッセージ】${values.message}` : "",
+    ].filter(Boolean).join("\n\n");
+
+    // Stripe有効 → 埋め込み決済へ
+    if (stripeEnabled && stripePromise) {
+      try {
+        const { clientSecret } = await createPaymentIntent(total);
+        setClientSecret(clientSecret);
+        setStep(3);
+      } catch {
+        setConfirming(false);
+      }
       return;
     }
 
-    // Stripe未設定 → 直接確定
+    // Stripe無効 → 銀行振込フローへ
+    setStep(3);
+    setConfirming(false);
+  }
+
+  async function handleBankTransferConfirm() {
+    setConfirming(true);
+    const fullMessage = [
+      values.allergy ? `【アレルギー・配慮事項】${values.allergy}` : "",
+      values.message ? `【メッセージ】${values.message}` : "",
+    ].filter(Boolean).join("\n\n");
+
     await finalizeApplication({
       experienceId: exp.id,
       name: values.name,
@@ -68,12 +100,15 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
       childAge: values.childAge,
       adults: Number(values.adults),
       children: Number(values.children),
-      message: values.message,
+      message: fullMessage,
     });
+
+    router.push(`/experiences/${exp.id}/apply/done`);
   }
 
   const dateLabel = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
   const totalPrice = (Number(values.adults) + Number(values.children)) * exp.price;
+  const stepLabel = stripeEnabled ? "お支払い" : "振込案内";
 
   return (
     <>
@@ -82,7 +117,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
         {[
           { n: 1, label: "参加者情報" },
           { n: 2, label: "確認" },
-          { n: 3, label: "お支払い" },
+          { n: 3, label: stepLabel },
         ].map(({ n, label }, i) => (
           <div key={n} className="flex items-center gap-2">
             {i > 0 && <div className="w-6 h-px bg-stone-200" />}
@@ -108,6 +143,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
       {/* ステップ1：入力 */}
       {step === 1 && (
         <form onSubmit={handleNext} className="flex flex-col gap-5">
+          {/* お名前 */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-stone-700">
               申し込み者のお名前 <span className="text-red-400 text-xs">必須</span>
@@ -119,6 +155,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
           </div>
 
+          {/* メール */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-stone-700">
               メールアドレス <span className="text-red-400 text-xs">必須</span>
@@ -154,8 +191,10 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
                 </div>
               ))}
             </div>
+            {errors.adults && <p className="text-xs text-red-500">{errors.adults}</p>}
           </div>
 
+          {/* お子さまの年齢 */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-stone-700">
               お子さまの年齢 <span className="text-stone-400 text-xs font-normal">任意</span>
@@ -174,14 +213,29 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             </select>
           </div>
 
+          {/* アレルギー・配慮事項（新規追加） */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-stone-700">
+              アレルギー・配慮事項
+              <span className="text-stone-400 text-xs font-normal ml-1">任意</span>
+            </label>
+            <textarea value={values.allergy}
+              onChange={(e) => setValues({ ...values, allergy: e.target.value })}
+              rows={2}
+              placeholder="食物アレルギー、身体的配慮が必要な点など"
+              className="border border-amber-200 bg-amber-50/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition resize-none" />
+            <p className="text-xs text-stone-400">ホストが事前に確認・準備するために使用します</p>
+          </div>
+
+          {/* メッセージ */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-stone-700">
               ホストへのメッセージ <span className="text-stone-400 text-xs font-normal">任意</span>
             </label>
             <textarea value={values.message}
               onChange={(e) => setValues({ ...values, message: e.target.value })}
-              rows={4}
-              placeholder="参加の動機・質問・アレルギーなどがあればご記入ください。"
+              rows={3}
+              placeholder="参加の動機・質問・その他気になることなど"
               className="border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition resize-none" />
           </div>
 
@@ -195,7 +249,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
       {/* ステップ2：確認 */}
       {step === 2 && (
         <div className="flex flex-col gap-5">
-          <p className="text-sm text-stone-500">内容をご確認のうえ、お支払いへ進んでください。</p>
+          <p className="text-sm text-stone-500">内容をご確認のうえ、次へ進んでください。</p>
 
           <div className="bg-stone-50 rounded-2xl overflow-hidden border border-stone-100">
             <ConfirmRow label="体験" value={exp.title} />
@@ -208,6 +262,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             <ConfirmRow label="お名前" value={values.name} />
             <ConfirmRow label="メールアドレス" value={values.email} />
             {values.childAge && <ConfirmRow label="お子さまの年齢" value={values.childAge} />}
+            {values.allergy && <ConfirmRow label="アレルギー・配慮" value={values.allergy} />}
             {values.message && <ConfirmRow label="メッセージ" value={values.message} />}
           </div>
 
@@ -219,9 +274,9 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             </span>
           </div>
 
-          <button type="button" onClick={handleConfirm}
-            className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base">
-            お支払いへ進む →
+          <button type="button" onClick={handleConfirm} disabled={confirming}
+            className="bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base">
+            {confirming ? "処理中…" : stripeEnabled ? "お支払いへ進む →" : "申し込みを確認する →"}
           </button>
 
           <button type="button" onClick={() => setStep(1)}
@@ -231,8 +286,58 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
         </div>
       )}
 
-      {/* ステップ3：カード入力（Stripe Elements） */}
-      {step === 3 && clientSecret && stripePromise && (
+      {/* ステップ3A：銀行振込フロー（Stripe無効時） */}
+      {step === 3 && !stripeEnabled && (
+        <div className="flex flex-col gap-5">
+          <div className="bg-emerald-50 rounded-2xl border border-emerald-200 p-5">
+            <h2 className="font-bold text-emerald-800 mb-1 flex items-center gap-2">
+              🏦 お振込みについて
+            </h2>
+            <p className="text-sm text-emerald-700 leading-relaxed">
+              申し込み確定後、振込先口座をメールでお送りします。
+              メール受信から<strong>3営業日以内</strong>にお振込みをお願いします。
+            </p>
+          </div>
+
+          <div className="bg-stone-50 rounded-2xl border border-stone-100 p-5 flex flex-col gap-2">
+            <p className="text-xs text-stone-400 mb-1">お支払い金額</p>
+            <p className="text-2xl font-extrabold text-amber-700">¥{totalPrice.toLocaleString()}</p>
+            <p className="text-xs text-stone-500 mt-1">
+              大人 {values.adults}名 + 子ども {values.children}名 × ¥{exp.price.toLocaleString()}
+            </p>
+          </div>
+
+          <div className="bg-amber-50 rounded-2xl border border-amber-100 p-4 text-sm text-stone-600 leading-relaxed">
+            <p className="font-semibold text-stone-800 mb-2">📋 申し込みの流れ</p>
+            <ol className="flex flex-col gap-2 list-none">
+              {[
+                "「申し込みを確定する」を押す",
+                "確認メールが届く（振込先口座が記載）",
+                "3営業日以内にお振込み",
+                "振込確認後、ホストより詳細連絡",
+              ].map((s, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center shrink-0 font-bold">{i + 1}</span>
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <button type="button" onClick={handleBankTransferConfirm} disabled={confirming}
+            className="bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base">
+            {confirming ? "送信中…" : "申し込みを確定する ✓"}
+          </button>
+
+          <button type="button" onClick={() => setStep(2)}
+            className="text-sm text-stone-500 hover:text-amber-700 transition-colors text-center">
+            ← 確認画面に戻る
+          </button>
+        </div>
+      )}
+
+      {/* ステップ3B：クレジットカード（Stripe有効時） */}
+      {step === 3 && stripeEnabled && clientSecret && stripePromise && (
         <Elements stripe={stripePromise} options={{ clientSecret, locale: "ja" }}>
           <PaymentStep
             exp={exp}
@@ -280,7 +385,11 @@ function PaymentStep({
       return;
     }
 
-    // 決済成功 → 申し込みを確定
+    const fullMessage = [
+      values.allergy ? `【アレルギー・配慮事項】${values.allergy}` : "",
+      values.message ? `【メッセージ】${values.message}` : "",
+    ].filter(Boolean).join("\n\n");
+
     await finalizeApplication({
       experienceId: exp.id,
       name: values.name,
@@ -288,7 +397,7 @@ function PaymentStep({
       childAge: values.childAge,
       adults: Number(values.adults),
       children: Number(values.children),
-      message: values.message,
+      message: fullMessage,
     });
   }
 
@@ -299,7 +408,6 @@ function PaymentStep({
         <span className="text-xl font-extrabold text-amber-700">¥{totalPrice.toLocaleString()}</span>
       </div>
 
-      {/* Stripe カード入力フォーム */}
       <div className="border border-stone-200 rounded-xl p-4">
         <PaymentElement options={{ layout: "tabs" }} />
       </div>
