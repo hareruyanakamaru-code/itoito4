@@ -136,9 +136,20 @@ export default async function ExperienceDetailPage({
             </span>
 
             {/* タイトル */}
-            <h1 className="text-2xl md:text-3xl font-bold text-stone-800 leading-snug mb-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-stone-800 leading-snug mb-3">
               {exp.title}
             </h1>
+
+            {/* 価格（Gifte!参考：タイトル直下に大きく） */}
+            <div className="flex items-baseline gap-2 mb-5">
+              <span className="text-3xl font-extrabold text-amber-600">
+                ¥{exp.price.toLocaleString()}
+              </span>
+              <span className="text-sm text-stone-400 font-normal">/ 人</span>
+              <span className="ml-auto text-xs text-stone-400 bg-stone-100 px-2.5 py-1 rounded-full">
+                {dateLabel}
+              </span>
+            </div>
 
             {/* 説明 */}
             <p className="text-stone-600 leading-relaxed mb-8 whitespace-pre-line">
@@ -147,7 +158,6 @@ export default async function ExperienceDetailPage({
 
             {/* 基本情報グリッド */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              <InfoItem emoji="📅" label="開催日" value={dateLabel} />
               <InfoItem emoji="🕐" label="所要時間" value={exp.time} />
               <InfoItem emoji="📍" label="場所" value={exp.location} />
               <InfoItem emoji="👥" label="定員" value={`${exp.capacity}名`} />
@@ -157,12 +167,6 @@ export default async function ExperienceDetailPage({
               {exp.target && (
                 <InfoItem emoji="🙋" label="対象" value={exp.target} />
               )}
-              <InfoItem
-                emoji="💴"
-                label="参加費"
-                value={`¥${exp.price.toLocaleString()} / 人`}
-                highlight
-              />
             </div>
 
             {/* この体験で得られること */}
