@@ -23,7 +23,8 @@ export const metadata: Metadata = {
       "料理・竹細工・農業・絵本づくり——学校では出会えない大人と、教科書には載っていない体験。子どもの「なんで？」「やりたい！」に本気で向き合う体験マッチングプラットフォーム。",
     images: [
       {
-        url: "/opengraph-image",
+        // Canva製OGP画像：/public/ogp.png を差し替えるだけで反映されます（1200×630px推奨）
+        url: "/ogp.png",
         width: 1200,
         height: 630,
         alt: "itoito — 子どもの体験マッチングプラットフォーム",
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     title: "itoito（イトイト）— 子どもの「やってみたい」をかなえる体験マッチング",
     description:
       "料理・竹細工・農業・絵本づくり——学校では出会えない大人と教科書には載っていない体験。",
-    images: ["/opengraph-image"],
+    images: ["/ogp.png"],
   },
 };
 
