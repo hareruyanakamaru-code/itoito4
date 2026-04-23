@@ -3,6 +3,25 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 export async function GET() {
+  // Poppins Black (900) をGoogle Fontsから取得
+  const cssRes = await fetch(
+    "https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap",
+    { headers: { "User-Agent": "Mozilla/5.0" } }
+  );
+  const css = await cssRes.text();
+  const fontUrls = [...css.matchAll(/src: url\((.+?)\) format\('woff2'\)/g)].map(m => m[1]);
+
+  const fontBuffers = await Promise.all(
+    fontUrls.map(url => fetch(url).then(r => r.arrayBuffer()))
+  );
+
+  const fonts = fontBuffers.map((data, i) => ({
+    name: "Poppins",
+    data,
+    weight: i === 0 ? 900 : 700,
+    style: "normal" as const,
+  }));
+
   return new ImageResponse(
     (
       <div
@@ -15,7 +34,7 @@ export async function GET() {
           justifyContent: "space-between",
           background: "linear-gradient(150deg, #fff7ed 0%, #ffedd5 45%, #fef3c7 100%)",
           padding: "80px 80px",
-          fontFamily: "sans-serif",
+          fontFamily: "Poppins, sans-serif",
           position: "relative",
           overflow: "hidden",
         }}
@@ -46,19 +65,20 @@ export async function GET() {
           {/* ロゴ */}
           <span
             style={{
-              fontSize: 100,
+              fontSize: 120,
               fontWeight: 900,
               color: "#f59e0b",
-              letterSpacing: "0.05em",
+              letterSpacing: "0.02em",
               lineHeight: 1,
               marginBottom: 36,
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             itoito
           </span>
 
           {/* メインコピー */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, marginBottom: 52 }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, marginBottom: 48 }}>
             <span style={{ fontSize: 46, fontWeight: 900, color: "#292524", letterSpacing: "-0.01em", lineHeight: 1.35 }}>
               習い事でもない。
             </span>
@@ -106,7 +126,7 @@ export async function GET() {
           <span style={{ fontSize: 22, color: "#d97706", letterSpacing: "0.06em", marginBottom: 4 }}>
             現場が、究極の学び場。
           </span>
-          <span style={{ fontSize: 30, fontWeight: 800, color: "#f59e0b", letterSpacing: "0.04em" }}>
+          <span style={{ fontSize: 30, fontWeight: 700, color: "#f59e0b", letterSpacing: "0.04em" }}>
             @itoito_tankyu
           </span>
           <span style={{ fontSize: 18, color: "#fbbf24", letterSpacing: "0.04em" }}>
@@ -115,6 +135,6 @@ export async function GET() {
         </div>
       </div>
     ),
-    { width: 1080, height: 1080 }
+    { width: 1080, height: 1080, fonts }
   );
 }
