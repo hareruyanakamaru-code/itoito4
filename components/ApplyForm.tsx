@@ -1,18 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { createPaymentIntent, finalizeApplication } from "@/lib/actions";
+import { finalizeApplication } from "@/lib/actions";
 import type { Experience } from "@/lib/types";
 import { hostName } from "@/lib/types";
 
-const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
-  : null;
-
-const stripeEnabled = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const payjpEnabled = Boolean(process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY);
 
 type Step = 1 | 2 | 3;
 
@@ -39,7 +33,6 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
     message: "",
   });
   const [errors, setErrors] = useState<Partial<FormValues>>({});
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
 
   function validate(): boolean {
@@ -59,31 +52,8 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
     if (validate()) setStep(2);
   }
 
-  async function handleConfirm() {
-    setConfirming(true);
-    const total = (Number(values.adults) + Number(values.children)) * exp.price;
-
-    // メッセージにアレルギー情報を統合
-    const fullMessage = [
-      values.allergy ? `【アレルギー・配慮事項】${values.allergy}` : "",
-      values.message ? `【メッセージ】${values.message}` : "",
-    ].filter(Boolean).join("\n\n");
-
-    // Stripe有効 → 埋め込み決済へ
-    if (stripeEnabled && stripePromise) {
-      try {
-        const { clientSecret } = await createPaymentIntent(total);
-        setClientSecret(clientSecret);
-        setStep(3);
-      } catch {
-        setConfirming(false);
-      }
-      return;
-    }
-
-    // Stripe無効 → 銀行振込フローへ
+  function handleConfirm() {
     setStep(3);
-    setConfirming(false);
   }
 
   async function handleBankTransferConfirm() {
@@ -108,7 +78,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
 
   const dateLabel = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
   const totalPrice = (Number(values.adults) + Number(values.children)) * exp.price;
-  const stepLabel = stripeEnabled ? "お支払い" : "振込案内";
+  const stepLabel = payjpEnabled ? "お支払い" : "振込案内";
 
   return (
     <>
@@ -274,9 +244,9 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             </span>
           </div>
 
-          <button type="button" onClick={handleConfirm} disabled={confirming}
-            className="bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base">
-            {confirming ? "処理中…" : stripeEnabled ? "お支払いへ進む →" : "申し込みを確認する →"}
+          <button type="button" onClick={handleConfirm}
+            className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base">
+            {payjpEnabled ? "お支払いへ進む →" : "申し込みを確認する →"}
           </button>
 
           <button type="button" onClick={() => setStep(1)}
@@ -286,8 +256,8 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
         </div>
       )}
 
-      {/* ステップ3A：銀行振込フロー（Stripe無効時） */}
-      {step === 3 && !stripeEnabled && (
+      {/* ステップ3A：銀行振込フロー（PAY.JP未設定時） */}
+      {step === 3 && !payjpEnabled && (
         <div className="flex flex-col gap-5">
           <div className="bg-emerald-50 rounded-2xl border border-emerald-200 p-5">
             <h2 className="font-bold text-emerald-800 mb-1 flex items-center gap-2">
@@ -336,22 +306,20 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
         </div>
       )}
 
-      {/* ステップ3B：クレジットカード（Stripe有効時） */}
-      {step === 3 && stripeEnabled && clientSecret && stripePromise && (
-        <Elements stripe={stripePromise} options={{ clientSecret, locale: "ja" }}>
-          <PaymentStep
-            exp={exp}
-            values={values}
-            totalPrice={totalPrice}
-            onBack={() => setStep(2)}
-          />
-        </Elements>
+      {/* ステップ3B：クレジットカード（PAY.JP有効時） */}
+      {step === 3 && payjpEnabled && (
+        <PayjpPaymentStep
+          exp={exp}
+          values={values}
+          totalPrice={totalPrice}
+          onBack={() => setStep(2)}
+        />
       )}
     </>
   );
 }
 
-function PaymentStep({
+function PayjpPaymentStep({
   exp,
   values,
   totalPrice,
@@ -362,25 +330,67 @@ function PaymentStep({
   totalPrice: number;
   onBack: () => void;
 }) {
-  const stripe = useStripe();
-  const elements = useElements();
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  const numberRef = useRef<HTMLDivElement>(null);
+  const expiryRef = useRef<HTMLDivElement>(null);
+  const cvcRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payjpRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const numberElRef = useRef<any>(null);
+
+  useEffect(() => {
+    function init() {
+      const pubKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY!;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const payjp = (window as any).Payjp(pubKey);
+      payjpRef.current = payjp;
+      const elements = payjp.elements();
+      const style = {
+        base: {
+          color: "#292524",
+          fontFamily: "sans-serif",
+          fontSize: "15px",
+          "::placeholder": { color: "#a8a29e" },
+        },
+      };
+      const numEl = elements.create("cardNumber", { style });
+      const expEl = elements.create("cardExpiry", { style });
+      const cvcEl = elements.create("cardCvc", { style });
+      if (numberRef.current) numEl.mount(numberRef.current);
+      if (expiryRef.current) expEl.mount(expiryRef.current);
+      if (cvcRef.current) cvcEl.mount(cvcRef.current);
+      numberElRef.current = numEl;
+      setReady(true);
+    }
+
+    if (document.getElementById("payjp-js")) {
+      init();
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = "payjp-js";
+    script.src = "https://js.pay.jp/v2/pay.js";
+    script.onload = init;
+    document.head.appendChild(script);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!stripe || !elements || processing) return;
+    if (!payjpRef.current || !numberElRef.current || processing) return;
 
     setProcessing(true);
     setError(null);
 
-    const result = await stripe.confirmPayment({
-      elements,
-      redirect: "if_required",
-    });
-
-    if (result.error) {
-      setError(result.error.message ?? "決済に失敗しました");
+    const { token, error: tokenErr } = await payjpRef.current.createToken(
+      numberElRef.current
+    );
+    if (tokenErr) {
+      setError(tokenErr.message || "カード情報が正しくありません");
       setProcessing(false);
       return;
     }
@@ -388,28 +398,77 @@ function PaymentStep({
     const fullMessage = [
       values.allergy ? `【アレルギー・配慮事項】${values.allergy}` : "",
       values.message ? `【メッセージ】${values.message}` : "",
-    ].filter(Boolean).join("\n\n");
+    ]
+      .filter(Boolean)
+      .join("\n\n");
 
-    await finalizeApplication({
-      experienceId: exp.id,
-      name: values.name,
-      email: values.email,
-      childAge: values.childAge,
-      adults: Number(values.adults),
-      children: Number(values.children),
-      message: fullMessage,
+    const res = await fetch("/api/payjp/charge", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: token.id,
+        amount: totalPrice,
+        applicationData: {
+          experienceId: exp.id,
+          name: values.name,
+          email: values.email,
+          childAge: values.childAge,
+          adults: Number(values.adults),
+          children: Number(values.children),
+          message: fullMessage,
+        },
+      }),
     });
+
+    const result = await res.json();
+    if (!result.success) {
+      setError(result.error || "決済に失敗しました");
+      setProcessing(false);
+      return;
+    }
+
+    router.push(`/experiences/${exp.id}/apply/done`);
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="flex items-center justify-between text-sm mb-1">
         <span className="text-stone-500">お支払い合計</span>
-        <span className="text-xl font-extrabold text-amber-700">¥{totalPrice.toLocaleString()}</span>
+        <span className="text-xl font-extrabold text-amber-700">
+          ¥{totalPrice.toLocaleString()}
+        </span>
       </div>
 
-      <div className="border border-stone-200 rounded-xl p-4">
-        <PaymentElement options={{ layout: "tabs" }} />
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-stone-500">
+            カード番号
+          </label>
+          <div
+            ref={numberRef}
+            className="border border-stone-200 rounded-xl px-4 py-3 min-h-[46px] bg-white"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-stone-500">
+              有効期限
+            </label>
+            <div
+              ref={expiryRef}
+              className="border border-stone-200 rounded-xl px-4 py-3 min-h-[46px] bg-white"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-stone-500">
+              セキュリティコード
+            </label>
+            <div
+              ref={cvcRef}
+              className="border border-stone-200 rounded-xl px-4 py-3 min-h-[46px] bg-white"
+            />
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -418,12 +477,15 @@ function PaymentStep({
         </div>
       )}
 
-      <button type="submit" disabled={!stripe || processing}
+      <button
+        type="submit"
+        disabled={!ready || processing}
         className={`font-bold py-3.5 rounded-xl transition-all shadow-sm text-base flex items-center justify-center gap-2 ${
-          processing || !stripe
+          processing || !ready
             ? "bg-stone-300 text-stone-500 cursor-not-allowed"
             : "bg-amber-500 hover:bg-amber-600 text-white"
-        }`}>
+        }`}
+      >
         {processing ? (
           <>
             <span className="w-4 h-4 border-2 border-stone-400 border-t-transparent rounded-full animate-spin" />
@@ -435,11 +497,14 @@ function PaymentStep({
       </button>
 
       <p className="text-xs text-stone-400 text-center flex items-center justify-center gap-1">
-        <span>🔒</span> Stripeの安全な決済システムを使用しています
+        <span>🔒</span> PAY.JPの安全な決済システムを使用しています
       </p>
 
-      <button type="button" onClick={onBack}
-        className="text-sm text-stone-500 hover:text-amber-700 transition-colors text-center">
+      <button
+        type="button"
+        onClick={onBack}
+        className="text-sm text-stone-500 hover:text-amber-700 transition-colors text-center"
+      >
         ← 確認画面に戻る
       </button>
     </form>
