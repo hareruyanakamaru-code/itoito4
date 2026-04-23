@@ -335,9 +335,6 @@ function PayjpPaymentStep({
   const [processing, setProcessing] = useState(false);
   const [ready, setReady] = useState(false);
 
-  const numberRef = useRef<HTMLDivElement>(null);
-  const expiryRef = useRef<HTMLDivElement>(null);
-  const cvcRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const payjpRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -345,33 +342,43 @@ function PayjpPaymentStep({
 
   useEffect(() => {
     function init() {
-      const pubKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY!;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const payjp = (window as any).Payjp(pubKey);
-      payjpRef.current = payjp;
-      const elements = payjp.elements();
-      const style = {
-        base: {
-          color: "#292524",
-          fontFamily: "sans-serif",
-          fontSize: "15px",
-          "::placeholder": { color: "#a8a29e" },
-        },
-      };
-      const numEl = elements.create("cardNumber", { style });
-      const expEl = elements.create("cardExpiry", { style });
-      const cvcEl = elements.create("cardCvc", { style });
-      if (numberRef.current) numEl.mount(numberRef.current);
-      if (expiryRef.current) expEl.mount(expiryRef.current);
-      if (cvcRef.current) cvcEl.mount(cvcRef.current);
-      numberElRef.current = numEl;
-      setReady(true);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const Payjp = (window as any).Payjp;
+        if (!Payjp) return;
+
+        const pubKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY!;
+        const payjp = Payjp(pubKey);
+        payjpRef.current = payjp;
+
+        const elements = payjp.elements();
+        const numEl = elements.create("cardNumber");
+        const expEl = elements.create("cardExpiry");
+        const cvcEl = elements.create("cardCvc");
+
+        numEl.mount("#payjp-number-form");
+        expEl.mount("#payjp-expiry-form");
+        cvcEl.mount("#payjp-cvc-form");
+
+        numberElRef.current = numEl;
+        setReady(true);
+      } catch (e) {
+        console.error("PAY.JP init error:", e);
+      }
     }
 
-    if (document.getElementById("payjp-js")) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((window as any).Payjp) {
       init();
       return;
     }
+
+    const existing = document.getElementById("payjp-js");
+    if (existing) {
+      existing.addEventListener("load", init);
+      return () => existing.removeEventListener("load", init);
+    }
+
     const script = document.createElement("script");
     script.id = "payjp-js";
     script.src = "https://js.pay.jp/v2/pay.js";
@@ -445,9 +452,9 @@ function PayjpPaymentStep({
             カード番号
           </label>
           <div
-            ref={numberRef}
+            id="payjp-number-form"
             className="border border-stone-200 rounded-xl px-4 py-3 min-h-[46px] bg-white"
-          />
+          ></div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
@@ -455,18 +462,18 @@ function PayjpPaymentStep({
               有効期限
             </label>
             <div
-              ref={expiryRef}
+              id="payjp-expiry-form"
               className="border border-stone-200 rounded-xl px-4 py-3 min-h-[46px] bg-white"
-            />
+            ></div>
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-stone-500">
               セキュリティコード
             </label>
             <div
-              ref={cvcRef}
+              id="payjp-cvc-form"
               className="border border-stone-200 rounded-xl px-4 py-3 min-h-[46px] bg-white"
-            />
+            ></div>
           </div>
         </div>
       </div>
