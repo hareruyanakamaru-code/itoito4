@@ -58,21 +58,19 @@ export async function GET() {
           </span>
 
           {/* メインコピー */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, marginBottom: 52 }}>
-            <span style={{ fontSize: 48, fontWeight: 900, color: "#292524", letterSpacing: "-0.01em", lineHeight: 1.3 }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, marginBottom: 52 }}>
+            <span style={{ fontSize: 46, fontWeight: 900, color: "#292524", letterSpacing: "-0.01em", lineHeight: 1.35 }}>
               習い事でもない。
             </span>
-            <span style={{ fontSize: 48, fontWeight: 900, color: "#292524", letterSpacing: "-0.01em", lineHeight: 1.3 }}>
+            <span style={{ fontSize: 46, fontWeight: 900, color: "#292524", letterSpacing: "-0.01em", lineHeight: 1.35 }}>
               テーマパークでもない。
             </span>
-            <div style={{ display: "flex", marginTop: 16, background: "rgba(245,158,11,0.12)", border: "2px solid rgba(245,158,11,0.3)", borderRadius: 16, padding: "14px 32px" }}>
-              <span style={{ fontSize: 32, fontWeight: 800, color: "#b45309", letterSpacing: "-0.01em", lineHeight: 1.4, textAlign: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 20 }}>
+              <span style={{ fontSize: 38, fontWeight: 900, color: "#f59e0b", letterSpacing: "-0.01em", lineHeight: 1.45 }}>
                 「やってみたい」から始まる、
               </span>
-            </div>
-            <div style={{ display: "flex", background: "rgba(245,158,11,0.12)", border: "2px solid rgba(245,158,11,0.3)", borderRadius: 16, padding: "14px 32px" }}>
-              <span style={{ fontSize: 32, fontWeight: 800, color: "#b45309", letterSpacing: "-0.01em", lineHeight: 1.4, textAlign: "center" }}>
-                一回きりの本物体験。
+              <span style={{ fontSize: 38, fontWeight: 900, color: "#f59e0b", letterSpacing: "-0.01em", lineHeight: 1.45 }}>
+                本物の「学び体験」。
               </span>
             </div>
           </div>
