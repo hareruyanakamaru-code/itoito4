@@ -15,10 +15,11 @@ export async function GET() {
     fontUrls.map(url => fetch(url).then(r => r.arrayBuffer()))
   );
 
+  const weights = [900, 700] as const;
   const fonts = fontBuffers.map((data, i) => ({
     name: "Poppins",
     data,
-    weight: i === 0 ? 900 : 700,
+    weight: weights[i] ?? 900,
     style: "normal" as const,
   }));
 
