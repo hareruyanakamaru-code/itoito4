@@ -23,7 +23,7 @@ export default async function ReviewDonePage({
       <p className="text-stone-500 text-base leading-relaxed mb-8">
         フィードバックを受け取りました。
         <br />
-        あなたの声がホストと次のゲストのために活かされます。
+        あなたの声がパートナーと次の参加者のために活かされます。
       </p>
 
       <div className="bg-amber-50 rounded-2xl border border-amber-100 p-5 mb-8 text-left">

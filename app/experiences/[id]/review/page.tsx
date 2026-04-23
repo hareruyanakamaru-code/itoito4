@@ -32,7 +32,7 @@ export default async function ReviewPage({
           フィードバックをお送りください
         </h1>
         <p className="text-sm text-stone-500 mb-6 leading-relaxed">
-          体験への率直なご意見がホストの改善と、次のゲストへの参考になります。
+          体験への率直なご意見がパートナーの改善と、次の参加者への参考になります。
           ご協力ありがとうございます。
         </p>
         <ReviewForm experienceId={id} experienceTitle={exp.title} />

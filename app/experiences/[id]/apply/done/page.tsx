@@ -76,13 +76,13 @@ export default async function ApplyDonePage({
           <>
             <span className="font-semibold text-stone-700">{paymentInfo.name}</span> さんの申し込みを受け付けました。
             <br />
-            ホストより<span className="font-semibold text-stone-700">3営業日以内</span>にメールでご連絡します。
+            パートナーより<span className="font-semibold text-stone-700">3営業日以内</span>にメールでご連絡します。
           </>
         ) : (
           <>
             お申し込みいただきありがとうございます。
             <br />
-            ホストより<span className="font-semibold text-stone-700">3営業日以内</span>にメールでご連絡します。
+            パートナーより<span className="font-semibold text-stone-700">3営業日以内</span>にメールでご連絡します。
           </>
         )}
       </p>
@@ -93,7 +93,7 @@ export default async function ApplyDonePage({
         <ol className="flex flex-col gap-3 text-sm text-stone-600">
           <li className="flex items-start gap-3">
             <span className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold shrink-0">1</span>
-            <span>ホストから確認メールが届きます（3営業日以内）</span>
+            <span>パートナーから確認メールが届きます（3営業日以内）</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold shrink-0">2</span>

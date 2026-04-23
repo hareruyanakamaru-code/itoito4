@@ -16,13 +16,13 @@ export default function Footer() {
         </div>
 
         {/* リンク */}
-        {/* ホスト向けCTA */}
+        {/* パートナー向けCTA */}
         <div className="text-center mb-6">
           <Link
             href="/host-apply"
             className="inline-block bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-5 py-2 rounded-full transition-colors shadow-sm"
           >
-            🌿 ホストとして体験を提供する →
+            🌿 パートナーとして体験を提供する →
           </Link>
         </div>
 
@@ -32,7 +32,7 @@ export default function Footer() {
           </Link>
           <span className="text-stone-300 text-xs">|</span>
           <Link href="/for-host" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
-            ホストになる
+            パートナーになる
           </Link>
           <span className="text-stone-300 text-xs">|</span>
           <Link href="/privacy" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">

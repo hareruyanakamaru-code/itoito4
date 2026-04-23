@@ -11,7 +11,7 @@ export default function HostPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-stone-800 mb-1">体験を投稿する</h1>
         <p className="text-sm text-stone-500">
-          あなたの素敵な体験を登録して、ゲストと出会いましょう。
+          あなたの素敵な体験を登録して、参加者と出会いましょう。
         </p>
       </div>
 

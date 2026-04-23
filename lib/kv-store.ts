@@ -91,7 +91,7 @@ export async function kvUpdateApplicationStatus(
   }
 }
 
-/* ─── ホスト申請 ─── */
+/* ─── パートナー申請 ─── */
 export async function kvGetHostApplications(): Promise<HostApplication[]> {
   try {
     const redis = await getRedis();

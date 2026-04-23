@@ -140,11 +140,11 @@ export default function HostForm() {
 
       {/* Host info */}
       <div className="border-t border-stone-100 pt-4">
-        <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-4">ホスト情報</p>
+        <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-4">パートナー情報</p>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="hostName" className="text-sm font-medium text-stone-700">
-              ホスト名 <span className="text-red-400 text-xs">必須</span>
+              パートナー名 <span className="text-red-400 text-xs">必須</span>
             </label>
             <input type="text" id="hostName" name="hostName" required placeholder="例：田中 花子"
               className="border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition" />

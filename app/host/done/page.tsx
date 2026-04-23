@@ -10,7 +10,7 @@ export default function HostDonePage() {
       <p className="text-stone-500 text-sm leading-relaxed mb-8">
         素敵な体験の投稿ありがとうございます。
         <br />
-        一覧ページに掲載されましたので、ゲストからの申し込みをお待ちください。
+        一覧ページに掲載されましたので、参加者からの申し込みをお待ちください。
       </p>
       <div className="flex gap-3 justify-center">
         <Link

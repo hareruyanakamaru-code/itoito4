@@ -260,7 +260,7 @@ export async function submitExperience(formData: FormData) {
               <tr><td style="padding:8px 12px;font-weight:bold;">カテゴリ</td><td style="padding:8px 12px;">${category}</td></tr>
               <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">開催日</td><td style="padding:8px 12px;">${date} ${time}</td></tr>
               <tr><td style="padding:8px 12px;font-weight:bold;">場所</td><td style="padding:8px 12px;">${location}</td></tr>
-              <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">ホスト名</td><td style="padding:8px 12px;">${hostName}</td></tr>
+              <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">パートナー名</td><td style="padding:8px 12px;">${hostName}</td></tr>
               <tr><td style="padding:8px 12px;font-weight:bold;">参加費</td><td style="padding:8px 12px;">¥${price.toLocaleString()}</td></tr>
               <tr><td style="padding:8px 12px;background:#fef3c7;font-weight:bold;">説明</td><td style="padding:8px 12px;white-space:pre-wrap;">${description.slice(0, 300)}</td></tr>
             </table>
@@ -276,7 +276,7 @@ export async function submitExperience(formData: FormData) {
   redirect("/host/done");
 }
 
-/* ─── ホスト申請送信 ─── */
+/* ─── パートナー申請送信 ─── */
 export async function submitHostApplication(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
   const email = (formData.get("email") as string)?.trim();
@@ -299,19 +299,19 @@ export async function submitHostApplication(formData: FormData) {
   try {
     await sendHostApplicationConfirmation({ applicantName: name, applicantEmail: email });
   } catch (err) {
-    console.error("[Resend ホスト申請自動返信]", err);
+    console.error("[Resend パートナー申請自動返信]", err);
   }
 
   try {
     await sendHostApplicationNotification({ applicantName: name, applicantEmail: email, phone, experienceOverview, targetAge, childExperience, achievements, safetyConsideration });
   } catch (err) {
-    console.error("[Resend ホスト申請運営通知]", err);
+    console.error("[Resend パートナー申請運営通知]", err);
   }
 
   redirect("/host-apply/done");
 }
 
-/* ─── ホスト申請ステータス更新（管理画面用） ─── */
+/* ─── パートナー申請ステータス更新（管理画面用） ─── */
 export async function changeHostApplicationStatus(formData: FormData) {
   const id = formData.get("id") as string;
   const status = formData.get("status") as HostApplicationStatus;
@@ -323,12 +323,12 @@ export async function changeHostApplicationStatus(formData: FormData) {
   await kvUpdateHostApplicationStatus(id, status);
   revalidatePath("/admin");
 
-  // 承認時にホストへ承認メールを送信
+  // 承認時にパートナーへ承認メールを送信
   if (status === "承認") {
     try {
       await sendHostApprovalEmail({ applicantName: app.name, applicantEmail: app.email });
     } catch (err) {
-      console.error("[Resend ホスト承認メール]", err);
+      console.error("[Resend パートナー承認メール]", err);
     }
   }
 }

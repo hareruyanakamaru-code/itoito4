@@ -194,13 +194,13 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
               rows={2}
               placeholder="食物アレルギー、身体的配慮が必要な点など"
               className="border border-amber-200 bg-amber-50/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 transition resize-none" />
-            <p className="text-xs text-stone-400">ホストが事前に確認・準備するために使用します</p>
+            <p className="text-xs text-stone-400">パートナーが事前に確認・準備するために使用します</p>
           </div>
 
           {/* メッセージ */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-stone-700">
-              ホストへのメッセージ <span className="text-stone-400 text-xs font-normal">任意</span>
+              パートナーへのメッセージ <span className="text-stone-400 text-xs font-normal">任意</span>
             </label>
             <textarea value={values.message}
               onChange={(e) => setValues({ ...values, message: e.target.value })}
@@ -227,7 +227,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             <ConfirmRow label="場所" value={exp.location} />
             <ConfirmRow label="参加費" value={`¥${exp.price.toLocaleString()} / 人`} />
             <ConfirmRow label="参加人数" value={`大人 ${values.adults}名・子ども ${values.children}名`} />
-            <ConfirmRow label="ホスト" value={hostName(exp.host)} />
+            <ConfirmRow label="パートナー" value={hostName(exp.host)} />
             <div className="border-t border-stone-100" />
             <ConfirmRow label="お名前" value={values.name} />
             <ConfirmRow label="メールアドレス" value={values.email} />
@@ -284,7 +284,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
                 "「申し込みを確定する」を押す",
                 "確認メールが届く（振込先口座が記載）",
                 "3営業日以内にお振込み",
-                "振込確認後、ホストより詳細連絡",
+                "振込確認後、パートナーより詳細連絡",
               ].map((s, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <span className="w-5 h-5 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center shrink-0 font-bold">{i + 1}</span>

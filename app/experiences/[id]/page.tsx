@@ -220,10 +220,10 @@ export default async function ExperienceDetailPage({
           </div>
         </div>
 
-        {/* ホストプロフィール */}
+        {/* パートナープロフィール */}
         <div className="mt-6 bg-amber-50 rounded-2xl p-6 border border-amber-100">
           <h2 className="text-sm font-bold text-amber-700 mb-3 flex items-center gap-1.5">
-            🌿 ホストのプロフィール
+            🌿 パートナーのプロフィール
           </h2>
           <p className="font-semibold text-stone-800 mb-2">{hostName(exp.host)}</p>
           {bio && (
@@ -257,16 +257,16 @@ export default async function ExperienceDetailPage({
               a={
                 exp.targetAge
                   ? `この体験の対象は「${exp.targetAge}」です。対象外の方もお気軽にお問い合わせください。`
-                  : "特に年齢制限はありません。詳しくはホストにお問い合わせください。"
+                  : "特に年齢制限はありません。詳しくはパートナーにお問い合わせください。"
               }
             />
             <FaqItem
               q="雨天の場合はどうなりますか？"
-              a="屋内開催の体験はそのまま実施します。屋外体験の場合、荒天時はホストから事前にご連絡いたします。"
+              a="屋内開催の体験はそのまま実施します。屋外体験の場合、荒天時はパートナーから事前にご連絡いたします。"
             />
             <FaqItem
               q="キャンセルはできますか？"
-              a="開催日の3日前までは無料でキャンセル可能です。それ以降のキャンセルについてはホストにご相談ください。"
+              a="開催日の3日前までは無料でキャンセル可能です。それ以降のキャンセルについてはパートナーにご相談ください。"
             />
           </div>
         </div>

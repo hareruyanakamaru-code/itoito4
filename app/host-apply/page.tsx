@@ -2,8 +2,8 @@ import Link from "next/link";
 import HostApplyForm from "@/components/HostApplyForm";
 
 export const metadata = {
-  title: "ホスト申請",
-  description: "itoito でホストとして体験を提供しませんか？申請フォームよりご応募ください。",
+  title: "パートナー申請",
+  description: "itoito でパートナーとして体験を提供しませんか？申請フォームよりご応募ください。",
 };
 
 export default function HostApplyPage() {
@@ -17,7 +17,7 @@ export default function HostApplyPage() {
       </Link>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-stone-800 mb-1">ホスト申請</h1>
+        <h1 className="text-2xl font-bold text-stone-800 mb-1">パートナー申請</h1>
         <p className="text-sm text-stone-500 leading-relaxed">
           あなたの「得意」や「好き」を体験として提供しませんか。<br />
           内容を確認後、<strong className="text-stone-700">3営業日以内</strong>にご連絡します。

@@ -144,7 +144,7 @@ export default async function AdminPage({
               : "border-transparent text-stone-400 hover:text-stone-600"
           }`}
         >
-          🌿 ホスト申請
+          🌿 パートナー申請
           {hostCounts.審査中 > 0 && (
             <span className="ml-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
               {hostCounts.審査中}
@@ -270,7 +270,7 @@ export default async function AdminPage({
       </>
       )}
 
-      {/* ── ホスト申請タブ ── */}
+      {/* ── パートナー申請タブ ── */}
       {activeTab === "hosts" && (
       <>
       <div className="grid grid-cols-2 gap-3 mb-8">
@@ -281,7 +281,7 @@ export default async function AdminPage({
       {hostApplications.length === 0 ? (
         <div className="text-center py-24 bg-white rounded-2xl border border-stone-100">
           <p className="text-4xl mb-4">📭</p>
-          <p className="text-stone-400">まだホスト申請はありません</p>
+          <p className="text-stone-400">まだパートナー申請はありません</p>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -498,7 +498,7 @@ function ReviewsTab({
       r.allowSnsShare ? "はい" : "いいえ",
     ].join(",")
   ).join("\n");
-  const csvHeader = "日時,体験名,総合,ホスト,内容,よかった点,改善点,SNS許可\n";
+  const csvHeader = "日時,体験名,総合,パートナー,内容,よかった点,改善点,SNS許可\n";
   const csvFull = csvHeader + csvData;
 
   return (
@@ -506,8 +506,8 @@ function ReviewsTab({
       {/* サマリー */}
       <div className="grid grid-cols-3 gap-3 mb-8">
         <SummaryCard label="総レビュー数" value={reviews.length} color="amber" />
-        <SummaryCard label="ゲストレビュー" value={guestReviews.length} color="emerald" />
-        <SummaryCard label="ホストフィードバック" value={hostReviews.length} color="stone" />
+        <SummaryCard label="参加者レビュー" value={guestReviews.length} color="emerald" />
+        <SummaryCard label="パートナーフィードバック" value={hostReviews.length} color="stone" />
       </div>
 
       {/* 体験別平均評価 */}
@@ -572,7 +572,7 @@ function ReviewsTab({
                   <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                     r.type === "guest" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"
                   }`}>
-                    {r.type === "guest" ? "👧 ゲスト" : "🌿 ホスト"}
+                    {r.type === "guest" ? "👧 参加者" : "🌿 パートナー"}
                   </span>
                 </div>
 
@@ -584,7 +584,7 @@ function ReviewsTab({
                       {r.overallRating <= 2 && <span className="ml-1 text-xs text-red-500">⚠️</span>}
                     </div>
                     <div className="bg-stone-50 rounded-xl px-3 py-2">
-                      <p className="text-xs text-stone-400 mb-0.5">ホスト</p>
+                      <p className="text-xs text-stone-400 mb-0.5">パートナー</p>
                       <StarsBadge rating={r.hostRating} />
                     </div>
                     <div className="bg-stone-50 rounded-xl px-3 py-2">
@@ -610,7 +610,7 @@ function ReviewsTab({
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
                     <div className="bg-stone-50 rounded-xl px-3 py-2">
-                      <p className="text-xs text-stone-400 mb-0.5">ゲストの印象</p>
+                      <p className="text-xs text-stone-400 mb-0.5">参加者の印象</p>
                       <StarsBadge rating={r.guestImpression} />
                     </div>
                     <div className="bg-stone-50 rounded-xl px-3 py-2">

@@ -167,7 +167,7 @@ export default function ReviewForm({
                 : "text-stone-400 hover:text-stone-600"
             }`}
           >
-            {r === "guest" ? "👧 ゲストとして回答" : "🌿 ホストとして回答"}
+            {r === "guest" ? "👧 参加者として回答" : "🌿 パートナーとして回答"}
           </button>
         ))}
       </div>
@@ -175,14 +175,14 @@ export default function ReviewForm({
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {role === "guest" ? (
           <>
-            {/* ゲスト：星評価 */}
+            {/* 参加者：星評価 */}
             <div className="bg-stone-50 rounded-2xl p-5 flex flex-col gap-5">
               <StarInput label="総合評価" name="overall" value={overallRating} onChange={setOverallRating} />
-              <StarInput label="ホストへの評価" name="host" value={hostRating} onChange={setHostRating} />
+              <StarInput label="パートナーへの評価" name="host" value={hostRating} onChange={setHostRating} />
               <StarInput label="体験内容への評価" name="content" value={contentRating} onChange={setContentRating} />
             </div>
 
-            {/* ゲスト：テキスト */}
+            {/* 参加者：テキスト */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-stone-700">
                 よかった点 <span className="text-red-400">*</span>
@@ -258,9 +258,9 @@ export default function ReviewForm({
           </>
         ) : (
           <>
-            {/* ホスト：星評価 */}
+            {/* パートナー：星評価 */}
             <div className="bg-stone-50 rounded-2xl p-5 flex flex-col gap-5">
-              <StarInput label="ゲストの印象" name="guest" value={guestImpression} onChange={setGuestImpression} />
+              <StarInput label="参加者の印象" name="guest" value={guestImpression} onChange={setGuestImpression} />
               <StarInput label="体験の満足度" name="sat" value={satisfaction} onChange={setSatisfaction} />
             </div>
 

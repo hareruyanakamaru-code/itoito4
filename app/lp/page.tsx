@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "itoito — やってみたい体験が、きっと見つかる",
   description:
-    "料理・ものづくり・自然探究など、ユニークな体験を提供するホストとゲストをつなぐプラットフォーム itoito。",
+    "料理・ものづくり・自然探究など、ユニークな体験を提供するパートナーと参加者をつなぐプラットフォーム itoito。",
 };
 
 export default function LpPage() {
@@ -46,7 +46,7 @@ export default function LpPage() {
             href="/for-host"
             className="bg-white hover:bg-amber-50 text-amber-700 font-bold px-8 py-3 rounded-full border border-amber-200 transition-colors text-base"
           >
-            ホストになる
+            パートナーになる
           </Link>
         </div>
 
@@ -128,7 +128,7 @@ export default function LpPage() {
         </div>
       </section>
 
-      {/* ── ホスト募集 ── */}
+      {/* ── パートナー募集 ── */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-3xl px-8 py-14 text-center text-white relative overflow-hidden">
@@ -142,7 +142,7 @@ export default function LpPage() {
               className="pointer-events-none absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-white/10"
             />
             <p className="relative text-amber-100 text-sm font-medium mb-3">
-              🌱 ホスト募集中
+              🌱 パートナー募集中
             </p>
             <h2 className="relative text-2xl md:text-3xl font-extrabold mb-4 leading-snug">
               あなたの体験を、
@@ -158,7 +158,7 @@ export default function LpPage() {
                 href="/for-host"
                 className="bg-white text-amber-600 hover:bg-amber-50 font-bold px-8 py-3 rounded-full transition-colors shadow-sm"
               >
-                ホストページを見る
+                パートナーページを見る
               </Link>
               <Link
                 href="/host"
@@ -179,18 +179,18 @@ export default function LpPage() {
 const features = [
   {
     icon: "🤝",
-    title: "ホスト × ゲストをつなぐ",
-    body: "体験を提供したいホストと、新しいことに挑戦したいゲストを安心・簡単にマッチングします。",
+    title: "パートナー × 参加者をつなぐ",
+    body: "体験を提供したいパートナーと、新しいことに挑戦したい参加者を安心・簡単にマッチングします。",
   },
   {
     icon: "🎒",
-    title: "ゲストはすぐ申し込める",
-    body: "気になった体験はワンクリックで申し込み。メッセージでホストに直接質問もできます。",
+    title: "参加者はすぐ申し込める",
+    body: "気になった体験はワンクリックで申し込み。メッセージでパートナーに直接質問もできます。",
   },
   {
     icon: "🛡️",
     title: "安心して使える設計",
-    body: "ホストのプロフィール・体験詳細を事前にしっかり確認。透明性のある情報で安心して参加できます。",
+    body: "パートナーのプロフィール・体験詳細を事前にしっかり確認。透明性のある情報で安心して参加できます。",
   },
 ];
 

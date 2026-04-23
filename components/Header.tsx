@@ -24,7 +24,7 @@ export default function Header() {
               href="/for-host"
               className="text-sm text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors hidden sm:inline-flex"
             >
-              ホストになる
+              パートナーになる
             </Link>
             <Link
               href="/host"
@@ -48,7 +48,7 @@ export default function Header() {
             href="/for-host"
             className="text-xs text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full bg-stone-50 hover:bg-amber-50 transition-colors whitespace-nowrap shrink-0"
           >
-            🌿 ホストになる
+            🌿 パートナーになる
           </Link>
           <Link
             href="/contact"

@@ -93,7 +93,7 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
             </div>
           </div>
 
-          {/* ホスト名＋定員 */}
+          {/* パートナー名＋定員 */}
           <div className="flex items-center justify-between text-xs text-stone-400">
             <span className="flex items-center gap-1">
               <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-amber-100 flex items-center justify-center text-[9px]">🌿</span>

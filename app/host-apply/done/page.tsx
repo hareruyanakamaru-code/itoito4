@@ -5,7 +5,7 @@ export default function HostApplyDonePage() {
     <div className="max-w-md mx-auto px-4 py-20 text-center">
       <div className="text-5xl mb-4">🌿</div>
       <h1 className="text-2xl font-bold text-stone-800 mb-3">
-        ホスト申請を受け付けました！
+        パートナー申請を受け付けました！
       </h1>
       <p className="text-stone-500 text-sm leading-relaxed mb-8">
         ご応募いただきありがとうございます。<br />

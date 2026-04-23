@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ホストになる | itoito",
+  title: "パートナーになる | itoito",
   description:
     "あなたの得意なことを体験として届けよう。掲載無料・初期手数料ゼロ。料理・ものづくり・自然・探究——子どもたちと一緒につくる特別な時間を。",
 };
@@ -13,7 +13,7 @@ export default function ForHostPage() {
 
       {/* ── 先着特典バナー ── */}
       <div className="bg-amber-500 text-white text-center py-2.5 px-4 text-sm font-semibold">
-        🎁 先着10名のホスト限定：初年度の手数料が永久ゼロ！
+        🎁 先着10名のパートナー限定：初年度の手数料が永久ゼロ！
         <Link href="/host-apply" className="underline ml-2 opacity-90 hover:opacity-100">
           今すぐ申請 →
         </Link>
@@ -52,7 +52,7 @@ export default function ForHostPage() {
             href="/host-apply"
             className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold px-10 py-3.5 rounded-full transition-colors shadow-md text-base"
           >
-            ホストに申請する（無料）
+            パートナーに申請する（無料）
           </Link>
           <Link
             href="/host"
@@ -66,14 +66,14 @@ export default function ForHostPage() {
         </p>
       </section>
 
-      {/* ── こんな方がホストになれます ── */}
+      {/* ── こんな方がパートナーになれます ── */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
           <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
             Who can be a host
           </p>
           <h2 className="text-center text-2xl md:text-3xl font-bold text-stone-800 mb-4">
-            こんな方がホストになれます
+            こんな方がパートナーになれます
           </h2>
           <p className="text-center text-sm text-stone-400 mb-12">
             「プロじゃないと無理では？」——そんなことはありません。
@@ -123,8 +123,8 @@ export default function ForHostPage() {
             </h3>
             <ul className="flex flex-col gap-3">
               {[
-                { label: "先着10名のホスト", value: "手数料 0%（永久）", highlight: true },
-                { label: "通常ホスト", value: "成約時のみ 10%", highlight: false },
+                { label: "先着10名のパートナー", value: "手数料 0%（永久）", highlight: true },
+                { label: "通常パートナー", value: "成約時のみ 10%", highlight: false },
                 { label: "掲載・編集・削除", value: "何度でも無料", highlight: false },
               ].map((row) => (
                 <li key={row.label} className="flex items-center justify-between border-b border-stone-100 pb-3 last:border-0 last:pb-0">
@@ -195,7 +195,7 @@ export default function ForHostPage() {
               href="/host-apply"
               className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-10 py-3.5 rounded-full transition-colors shadow-md text-base"
             >
-              ホストに申請する（無料）
+              パートナーに申請する（無料）
             </Link>
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function ForHostPage() {
               href="/host-apply"
               className="bg-white text-amber-600 hover:bg-amber-50 font-bold px-8 py-3 rounded-full transition-colors shadow-sm"
             >
-              ホストに申請する
+              パートナーに申請する
             </Link>
             <Link
               href="/contact"
@@ -324,7 +324,7 @@ const simulations = [
   {
     label: "月4回 × 8名 × ¥5,000",
     amount: "¥160,000",
-    detail: "本業並みの収入も。人気ホストの実績モデル。",
+    detail: "本業並みの収入も。人気パートナーの実績モデル。",
   },
 ];
 
@@ -342,17 +342,17 @@ const whyPoints = [
   {
     icon: "🛡️",
     title: "審査制で質の高い体験を守る",
-    body: "掲載前に内容を確認。質の高い体験が集まる場所に育てているため、ホスト同士の評判が守られます。",
+    body: "掲載前に内容を確認。質の高い体験が集まる場所に育てているため、パートナー同士の評判が守られます。",
   },
   {
     icon: "📬",
     title: "申し込み管理はシンプル",
-    body: "ゲストの申し込みはメールで即通知。複雑な管理画面は不要で、メールだけでやり取りできます。",
+    body: "参加者の申し込みはメールで即通知。複雑な管理画面は不要で、メールだけでやり取りできます。",
   },
   {
     icon: "🌱",
     title: "元教師が運営・サポート",
-    body: "運営者は元公立中学校教師。教育現場の経験から、ホストが安心して体験を提供できるようサポートします。",
+    body: "運営者は元公立中学校教師。教育現場の経験から、パートナーが安心して体験を提供できるようサポートします。",
   },
   {
     icon: "📸",
@@ -364,7 +364,7 @@ const whyPoints = [
 const steps = [
   {
     icon: "📝",
-    title: "ホスト申請フォームに記入する",
+    title: "パートナー申請フォームに記入する",
     body: "体験の概要・対象年齢・得意なことを入力して送信するだけ。難しい準備は不要です。",
     time: "約5分",
   },
@@ -377,7 +377,7 @@ const steps = [
   {
     icon: "🌐",
     title: "体験ページを公開・申し込みを受ける",
-    body: "承認後、体験の詳細ページを作成して公開。ゲストからの申し込みが届いたらメールでお知らせします。",
+    body: "承認後、体験の詳細ページを作成して公開。参加者からの申し込みが届いたらメールでお知らせします。",
     time: "承認後すぐ",
   },
 ];
@@ -385,11 +385,11 @@ const steps = [
 const faqs = [
   {
     q: "「教えた経験」がなくても大丈夫ですか？",
-    a: "大丈夫です。itoitoのホストに求めるのは「資格」や「指導歴」ではなく、「自分が好きなことを一緒にやりたい」という気持ちです。子どもは本物のプロセスに感動します。",
+    a: "大丈夫です。itoitoのパートナーに求めるのは「資格」や「指導歴」ではなく、「自分が好きなことを一緒にやりたい」という気持ちです。子どもは本物のプロセスに感動します。",
   },
   {
     q: "子どもとの接し方がわからなくて不安です",
-    a: "ほとんどのホストが最初はそう感じています。itoitoでは開催前に運営者がアドバイスをします。子どもは「教わる」より「一緒にやる」ことを喜びます。難しく考えなくて大丈夫です。",
+    a: "ほとんどのパートナーが最初はそう感じています。itoitoでは開催前に運営者がアドバイスをします。子どもは「教わる」より「一緒にやる」ことを喜びます。難しく考えなくて大丈夫です。",
   },
   {
     q: "どんな体験でも投稿できますか？",

@@ -28,7 +28,7 @@ export default function PrivacyPage() {
             1. 事業者情報
           </h2>
           <p>
-            itoito（以下「当サービス」）は、体験を提供したいホストと体験したいゲストをつなぐプラットフォームです。
+            itoito（以下「当サービス」）は、体験を提供したいパートナーと体験したい参加者をつなぐプラットフォームです。
             個人情報の取り扱いについて、以下のとおりご説明します。
           </p>
         </section>
@@ -60,7 +60,7 @@ export default function PrivacyPage() {
           <ul className="list-none flex flex-col gap-2">
             {[
               "体験の申し込み対応・確認連絡",
-              "ホスト（体験提供者）への連絡・情報共有",
+              "パートナー（体験提供者）への連絡・情報共有",
               "サービス運営上の重要なお知らせ",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2">
@@ -82,7 +82,7 @@ export default function PrivacyPage() {
             {[
               "ご本人の同意がある場合",
               "法令に基づき開示が必要な場合",
-              "体験の申し込み対応のためにホストへ必要最低限の情報を共有する場合",
+              "体験の申し込み対応のためにパートナーへ必要最低限の情報を共有する場合",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <span className="text-amber-500 mt-0.5">▸</span>
