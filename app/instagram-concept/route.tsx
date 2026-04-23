@@ -49,7 +49,7 @@ export async function GET() {
               fontSize: 100,
               fontWeight: 900,
               color: "#f59e0b",
-              letterSpacing: "-0.04em",
+              letterSpacing: "0.05em",
               lineHeight: 1,
               marginBottom: 36,
             }}
