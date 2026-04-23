@@ -3,25 +3,6 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 export async function GET() {
-  const cssRes = await fetch(
-    "https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap",
-    { headers: { "User-Agent": "Mozilla/5.0" } }
-  );
-  const css = await cssRes.text();
-  const fontUrls = [...css.matchAll(/src: url\((.+?)\) format\('woff2'\)/g)].map(m => m[1]);
-
-  const fontBuffers = await Promise.all(
-    fontUrls.map(url => fetch(url).then(r => r.arrayBuffer()))
-  );
-
-  const weights = [900, 700] as const;
-  const fonts = fontBuffers.map((data, i) => ({
-    name: "Poppins",
-    data,
-    weight: weights[i] ?? 900,
-    style: "normal" as const,
-  }));
-
   return new ImageResponse(
     (
       <div
@@ -34,7 +15,7 @@ export async function GET() {
           justifyContent: "space-between",
           background: "linear-gradient(150deg, #e0f2fe 0%, #bae6fd 45%, #e0f7fa 100%)",
           padding: "80px 80px",
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "sans-serif",
           position: "relative",
           overflow: "hidden",
         }}
@@ -68,10 +49,9 @@ export async function GET() {
               fontSize: 110,
               fontWeight: 900,
               color: "#0284c7",
-              letterSpacing: "0.02em",
+              letterSpacing: "0.08em",
               lineHeight: 1,
               marginBottom: 40,
-              fontFamily: "Poppins, sans-serif",
             }}
           >
             itoito
@@ -118,7 +98,7 @@ export async function GET() {
           <span style={{ fontSize: 22, color: "#7dd3fc", letterSpacing: "0.06em", marginBottom: 4 }}>
             現場が、究極の学び場。
           </span>
-          <span style={{ fontSize: 30, fontWeight: 700, color: "#0284c7", letterSpacing: "0.04em" }}>
+          <span style={{ fontSize: 30, fontWeight: 800, color: "#0284c7", letterSpacing: "0.04em" }}>
             @itoito_tankyu
           </span>
           <span style={{ fontSize: 18, color: "#7dd3fc", letterSpacing: "0.04em" }}>
@@ -127,6 +107,6 @@ export async function GET() {
         </div>
       </div>
     ),
-    { width: 1080, height: 1080, fonts }
+    { width: 1080, height: 1080 }
   );
 }
