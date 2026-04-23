@@ -71,9 +71,9 @@ export async function GET() {
           {/* 特徴リスト */}
           <div style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%" }}>
             {[
-              { icon: "📅", text: "1回からOK・場所はどこでもOK" },
-              { icon: "💰", text: "初期費用ゼロ・手数料も今なら無料" },
-              { icon: "🕐", text: "自分のペースで企画・開催" },
+              { icon: "✌️", text: "1回からOK・資格も実績も不要" },
+              { icon: "🌱", text: "好きなことが、子どもの一生の記憶に" },
+              { icon: "🤝", text: "企画作りはitoitoがサポート" },
             ].map(({ icon, text }) => (
               <div
                 key={text}
