@@ -213,6 +213,10 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
             className="mt-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm text-base">
             確認画面へ進む →
           </button>
+          <p className="text-center text-xs text-stone-400 flex flex-wrap justify-center gap-x-3 gap-y-1 mt-1">
+            <span>✔ 最短3分で完了</span>
+            <span>✔ ホストより3営業日以内にご連絡</span>
+          </p>
         </form>
       )}
 

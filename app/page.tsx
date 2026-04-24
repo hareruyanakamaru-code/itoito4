@@ -134,8 +134,56 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 利用者の声 ── */}
+      {/* ── 注目のホスト（B） ── */}
       <section className="py-16 sm:py-20 px-4 bg-[#fdfaf6]">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
+            Featured Hosts
+          </p>
+          <h2 className="text-center text-2xl md:text-3xl font-bold text-stone-800 mb-2">
+            現場を教える、プロの師匠たち。
+          </h2>
+          <p className="text-center text-sm text-stone-400 mb-10">
+            教科書には載っていない、本物の経験を持つ大人たち。
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredHosts.map((h) => (
+              <div key={h.name} className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col items-center text-center gap-4 shadow-sm">
+                {/* 円形アバター */}
+                <div
+                  className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-md shrink-0 overflow-hidden relative"
+                  style={{ background: h.avatarBg }}
+                >
+                  {h.avatarImg ? (
+                    <Image src={h.avatarImg} alt={h.name} fill className="object-cover" />
+                  ) : (
+                    <span>{h.avatarInitial}</span>
+                  )}
+                </div>
+                {/* 名前・肩書き */}
+                <div>
+                  <p className="font-extrabold text-stone-800 text-base">{h.name}</p>
+                  <p className="text-xs text-amber-600 mt-0.5">{h.role}</p>
+                </div>
+                {/* 一言 */}
+                <p className="text-sm text-stone-500 leading-relaxed flex-1 italic">
+                  「{h.quote}」
+                </p>
+                {/* ボタン */}
+                <Link
+                  href={h.href}
+                  className="text-xs font-semibold text-amber-600 hover:text-amber-700 border border-amber-200 hover:border-amber-400 px-4 py-2 rounded-full transition-colors"
+                >
+                  この人の体験を見る →
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 利用者の声（C 強化版） ── */}
+      <section className="py-16 sm:py-20 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
           <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
             Reviews
@@ -152,17 +200,27 @@ export default async function HomePage() {
                 key={i}
                 className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col gap-4 shadow-sm"
               >
+                {/* 星 */}
                 <div className="flex gap-0.5">
                   {[...Array(5)].map((_, j) => (
                     <span key={j} className="text-amber-400 text-base">★</span>
                   ))}
                 </div>
+                {/* 感想 */}
                 <p className="text-stone-700 text-sm leading-relaxed flex-1">
                   「{r.comment}」
                 </p>
+                {/* 帰宅後の変化 */}
+                <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-xl px-3 py-2">
+                  <p className="text-[10px] font-semibold text-amber-500 mb-0.5 tracking-wide uppercase">
+                    その後の変化 →
+                  </p>
+                  <p className="text-xs text-stone-600 leading-relaxed">{r.change}</p>
+                </div>
+                {/* 体験名・属性 */}
                 <div className="border-t border-stone-100 pt-3">
                   <p className="text-xs font-semibold text-amber-600 mb-0.5">{r.experience}</p>
-                  <p className="text-xs text-stone-400">{r.participant}</p>
+                  <p className="text-xs text-stone-400">{r.attribute}</p>
                 </div>
               </div>
             ))}
@@ -179,13 +237,12 @@ export default async function HomePage() {
       </section>
 
       {/* ── 運営者紹介 ── */}
-      <section className="py-16 sm:py-20 px-4 bg-white border-t border-stone-100">
+      <section className="py-16 sm:py-20 px-4 bg-[#fdfaf6] border-t border-stone-100">
         <div className="max-w-3xl mx-auto">
           <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-10">
             Founder
           </p>
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 sm:gap-12">
-            {/* 写真エリア */}
             <div className="shrink-0">
               <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-amber-100 shadow-md relative bg-amber-50">
                 <Image
@@ -193,11 +250,9 @@ export default async function HomePage() {
                   alt="中丸 はれるや"
                   fill
                   className="object-cover"
-                  onError={undefined}
                 />
               </div>
             </div>
-            {/* テキストエリア */}
             <div className="flex-1 text-center sm:text-left">
               <p className="text-xs text-amber-600 font-semibold tracking-wide mb-1">
                 元公立中学校教師・体験プロデューサー
@@ -206,20 +261,16 @@ export default async function HomePage() {
                 中丸 はれるや
               </h3>
               <blockquote className="text-stone-600 text-base leading-relaxed space-y-3">
-                <p>
-                  「教師として10年以上、子どもたちと向き合ってきました。
-                </p>
+                <p>「教師として10年以上、子どもたちと向き合ってきました。</p>
                 <p>
                   学校の授業では絶対に届かない『本物の現場』が、
                   子どもの目を輝かせる瞬間を何度も見てきました。
                 </p>
-                <p>
-                  itoitoは、そんな瞬間をもっと多くの子どもたちに届けるために作りました。」
-                </p>
+                <p>itoitoは、そんな瞬間をもっと多くの子どもたちに届けるために作りました。」</p>
               </blockquote>
               <div className="mt-6">
                 <Link
-                  href="/about"
+                  href="/operator"
                   className="text-sm text-amber-600 hover:text-amber-700 underline underline-offset-4 transition-colors"
                 >
                   運営者について詳しく →
@@ -258,23 +309,56 @@ const trustPoints = [
   },
 ];
 
+const featuredHosts = [
+  {
+    name: "中丸 晴留哉",
+    role: "竹あかり作家・元中学校教師",
+    quote: "光と影の間に、子どもの目が輝く瞬間があります。",
+    avatarBg: "#f59e0b",
+    avatarImg: "/images/founder.jpg",
+    avatarInitial: "中",
+    href: "/experiences/1",
+  },
+  {
+    name: "山本 誠",
+    role: "パン職人・フランス修行10年",
+    quote: "パン生地の声を聞く。それが職人の仕事です。",
+    avatarBg: "#d97706",
+    avatarImg: null,
+    avatarInitial: "山",
+    href: "/experiences/2",
+  },
+  {
+    name: "佐々木農園",
+    role: "有機農家・千葉県富津市",
+    quote: "土に触れた手は、生涯忘れない感覚を持ちます。",
+    avatarBg: "#65a30d",
+    avatarImg: null,
+    avatarInitial: "佐",
+    href: "/experiences/3",
+  },
+];
+
 const reviews = [
   {
     experience: "竹あかり設営体験",
-    participant: "小学5年生（10歳）の保護者より",
+    attribute: "小学5年生・男子の保護者",
     comment:
       "竹に穴を開けて光が灯った瞬間、感動して泣いてしまいました。自分の手で何かを作れるって、こんなに嬉しいんだと初めて知りました。",
+    change: "帰宅後、家にある竹で工作を始めました。",
   },
   {
     experience: "パン職人と学ぶ天然酵母パン作り",
-    participant: "中学1年生（12歳）",
+    attribute: "中学1年生・女子本人",
     comment:
       "発酵のしくみを実際に見て触って学べた。学校の授業より100倍面白かったし、理科が好きになりました。",
+    change: "翌日、図書館で発酵について調べていました。",
   },
   {
     experience: "川の生き物を探せ！フィールド生態観察",
-    participant: "小学3年生（8歳）と保護者",
+    attribute: "小学3年生・保護者",
     comment:
       "子どもが生き物に夢中になる姿を久しぶりに見ました。スマホを一切触らず3時間没頭していたのが印象的でした。",
+    change: "その後、毎週末に川や公園に行きたがるようになりました。",
   },
 ];

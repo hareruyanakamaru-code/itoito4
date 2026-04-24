@@ -47,6 +47,10 @@ export default function Footer() {
             特定商取引法に基づく表記
           </Link>
           <span className="text-stone-300 text-xs">|</span>
+          <Link href="/operator" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
+            運営者について
+          </Link>
+          <span className="text-stone-300 text-xs">|</span>
           <Link href="/about" className="text-xs text-stone-400 hover:text-amber-700 transition-colors">
             運営者情報
           </Link>

@@ -52,8 +52,11 @@ export default function ForHostPage() {
             まず体験を投稿してみる →
           </Link>
         </div>
-        <p className="relative mt-4 text-xs text-stone-400">
-          審査あり · 掲載無料 · いつでもやめられる
+        {/* マイクロコピー */}
+        <p className="relative mt-3 text-xs text-stone-400 flex flex-wrap justify-center gap-x-3 gap-y-1">
+          <span>✔ 3分で入力完了</span>
+          <span>✔ まずは相談だけでもOK</span>
+          <span>✔ 掲載は完全無料</span>
         </p>
       </section>
 

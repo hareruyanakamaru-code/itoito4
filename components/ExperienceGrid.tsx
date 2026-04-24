@@ -7,12 +7,12 @@ import Link from "next/link";
 import { Leaf, Palette, Briefcase, FlaskConical, UtensilsCrossed } from "lucide-react";
 
 const categories = [
-  { label: "すべて", icon: null, value: null },
-  { label: "自然・アウトドア", icon: Leaf, value: "自然・アウトドア" },
-  { label: "アート・ものづくり", icon: Palette, value: "アート・ものづくり" },
-  { label: "社会・お仕事探究", icon: Briefcase, value: "社会・お仕事探究" },
-  { label: "サイエンス・実験", icon: FlaskConical, value: "サイエンス・実験" },
-  { label: "ライフスキル・料理", icon: UtensilsCrossed, value: "ライフスキル・料理" },
+  { label: "すべて", icon: null, value: null, keywords: null },
+  { label: "自然・アウトドア", icon: Leaf, value: "自然・アウトドア", keywords: "森・川・生き物観察" },
+  { label: "アート・ものづくり", icon: Palette, value: "アート・ものづくり", keywords: "創作・表現・職人技" },
+  { label: "社会・お仕事探究", icon: Briefcase, value: "社会・お仕事探究", keywords: "プロの技術・社会の仕組み" },
+  { label: "サイエンス・実験", icon: FlaskConical, value: "サイエンス・実験", keywords: "仮説・観察・発見" },
+  { label: "ライフスキル・料理", icon: UtensilsCrossed, value: "ライフスキル・料理", keywords: "食・暮らし・生きる力" },
 ];
 
 export default function ExperienceGrid({ experiences }: { experiences: Experience[] }) {
@@ -38,18 +38,25 @@ export default function ExperienceGrid({ experiences }: { experiences: Experienc
             <button
               key={cat.label}
               onClick={() => setSelected(cat.value)}
-              className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-full transition-all font-medium border ${
+              className={`flex flex-col items-start gap-0.5 text-sm px-4 py-2 rounded-full transition-all font-medium border ${
                 isSelected
                   ? "bg-amber-500 text-white border-amber-500 shadow-sm"
                   : "bg-white text-stone-600 border-stone-200 hover:border-amber-300 hover:text-amber-700"
               }`}
             >
-              {Icon ? (
-                <Icon size={14} className={isSelected ? "text-white" : "text-amber-500"} />
-              ) : (
-                <span className="text-xs">✨</span>
+              <span className="flex items-center gap-1.5">
+                {Icon ? (
+                  <Icon size={14} className={isSelected ? "text-white" : "text-amber-500"} />
+                ) : (
+                  <span className="text-xs">✨</span>
+                )}
+                {cat.label}
+              </span>
+              {cat.keywords && (
+                <span className={`text-[10px] font-normal leading-none pl-5 ${isSelected ? "text-white/75" : "text-stone-400"}`}>
+                  {cat.keywords}
+                </span>
               )}
-              {cat.label}
             </button>
           );
         })}
