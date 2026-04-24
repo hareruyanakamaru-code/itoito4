@@ -100,9 +100,9 @@
     "parentNote": "田んぼに入るため、汚れてもよい服装と長靴をご用意ください（レンタル可）。虫が苦手な方は事前にご相談ください。日焼け止め・帽子の持参をおすすめします。雨天時は一部プログラムを室内に変更して実施します。",
     "tags": ["農業", "食育", "自然", "虫"],
     "skillTags": ["#命の大切さ", "#自然への感謝"],
-    "image": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80",
+    "image": "/images/farm-experience.jpg",
     "images": [
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80",
+      "/images/farm-experience.jpg",
       "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&q=80",
       "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=600&q=80"
     ]
