@@ -13,7 +13,7 @@ export default function ForHostPage() {
 
       {/* ── 先着特典バナー ── */}
       <div className="bg-amber-500 text-white text-center py-2.5 px-4 text-sm font-semibold">
-        🎁 先着10名のパートナー限定：初年度の手数料が永久ゼロ！
+        🎁 先着10名のパートナー限定：成約手数料がずっと0円（永久無料）
         <Link href="/host-apply" className="underline ml-2 opacity-90 hover:opacity-100">
           今すぐ申請 →
         </Link>
@@ -44,7 +44,7 @@ export default function ForHostPage() {
           <p className="text-2xl font-extrabold text-amber-600">
             月 <span className="text-4xl">48,000</span> 円の収入
           </p>
-          <p className="text-xs text-stone-400 mt-0.5">※ 初期手数料ゼロ期間中は全額あなたの収入になります</p>
+          <p className="text-xs text-stone-400 mt-0.5">※ 手数料ゼロ期間中は全額あなたの収入になります</p>
         </div>
 
         <div className="relative flex flex-col sm:flex-row gap-3 justify-center items-center">
@@ -66,8 +66,49 @@ export default function ForHostPage() {
         </p>
       </section>
 
-      {/* ── こんな方がパートナーになれます ── */}
+      {/* ── 3つのメリット ── */}
       <section className="py-20 px-4 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
+            Why partner with itoito
+          </p>
+          <h2 className="text-center text-2xl md:text-3xl font-bold text-stone-800 mb-12">
+            itoitoと組む、3つのメリット
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {benefits.map((b) => (
+              <div
+                key={b.title}
+                className="flex flex-col items-center text-center rounded-2xl border border-amber-100 bg-gradient-to-b from-amber-50 to-white p-8 gap-4 shadow-sm"
+              >
+                <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-3xl shrink-0">
+                  {b.icon}
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-stone-800 text-lg leading-snug mb-2">
+                    {b.title}
+                  </h3>
+                  <p className="text-sm text-stone-500 leading-relaxed">{b.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Hero直下CTA */}
+          <div className="mt-12 text-center">
+            <Link
+              href="/host-apply"
+              className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-10 py-4 rounded-full transition-colors shadow-md text-base"
+            >
+              お申し込み・ご相談はこちら
+            </Link>
+            <p className="mt-3 text-xs text-stone-400">無料 · 審査あり · いつでもやめられる</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── こんな方がパートナーになれます ── */}
+      <section className="py-20 px-4 bg-[#fdfaf6]">
         <div className="max-w-4xl mx-auto">
           <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
             Who can be a host
@@ -82,7 +123,7 @@ export default function ForHostPage() {
             {personas.map((p) => (
               <div
                 key={p.title}
-                className="rounded-2xl border border-stone-100 bg-[#fdfaf6] p-6 flex flex-col gap-3"
+                className="rounded-2xl border border-stone-100 bg-white p-6 flex flex-col gap-3"
               >
                 <div className="text-3xl">{p.icon}</div>
                 <div>
@@ -123,7 +164,7 @@ export default function ForHostPage() {
             </h3>
             <ul className="flex flex-col gap-3">
               {[
-                { label: "先着10名のパートナー", value: "手数料 0%（永久）", highlight: true },
+                { label: "先着10名のパートナー", value: "成約手数料 0%（永久）", highlight: true },
                 { label: "通常パートナー", value: "成約時のみ 10%", highlight: false },
                 { label: "掲載・編集・削除", value: "何度でも無料", highlight: false },
               ].map((row) => (
@@ -240,7 +281,7 @@ export default function ForHostPage() {
       <section className="py-20 px-4 bg-gradient-to-r from-amber-500 to-orange-500">
         <div className="max-w-xl mx-auto text-center text-white">
           <p className="text-amber-100 text-sm font-medium mb-3">
-            🌱 先着10名は手数料永久ゼロ
+            🌱 先着10名は成約手数料が永久ゼロ
           </p>
           <h2 className="text-2xl md:text-3xl font-extrabold mb-4 leading-snug">
             まず、話を聞かせてください。
@@ -252,17 +293,18 @@ export default function ForHostPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/host-apply"
-              className="bg-white text-amber-600 hover:bg-amber-50 font-bold px-8 py-3 rounded-full transition-colors shadow-sm"
+              className="bg-white text-amber-600 hover:bg-amber-50 font-bold px-8 py-4 rounded-full transition-colors shadow-sm text-base"
             >
-              パートナーに申請する
+              お申し込み・ご相談はこちら
             </Link>
             <Link
               href="/contact"
-              className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-8 py-3 rounded-full border border-amber-400/50 transition-colors"
+              className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-8 py-4 rounded-full border border-amber-400/50 transition-colors text-base"
             >
               まず相談してみる
             </Link>
           </div>
+          <p className="mt-4 text-xs text-amber-200">無料 · 審査あり · いつでもやめられる</p>
         </div>
       </section>
     </div>
@@ -270,6 +312,24 @@ export default function ForHostPage() {
 }
 
 /* ── データ ── */
+
+const benefits = [
+  {
+    icon: "🌱",
+    title: "あなたの日常が\n誰かの学びになる",
+    body: "特別な資格も指導歴も不要。あなたが日常でやっていること、好きなことが、子どもにとっての「本物の探究体験」になります。",
+  },
+  {
+    icon: "💴",
+    title: "手数料一律\n事業に新たな価値を",
+    body: "成約時のみ10%。掲載・編集は何度でも無料。先着10名のパートナーは成約手数料が永久0円。副業・本業問わず、あなたのビジネスに新たな収益軸を。",
+  },
+  {
+    icon: "🤝",
+    title: "体験の流れは\nitoitoがサポート",
+    body: "「どんな体験にすれば？」「当日どう進める？」——企画の相談から当日の流れまで、itoitoが一緒に考えます。はじめてでも安心してスタートできます。",
+  },
+];
 
 const personas = [
   {
@@ -337,7 +397,7 @@ const whyPoints = [
   {
     icon: "👨‍👩‍👧",
     title: "子ども連れ家族が集まるプラットフォーム",
-    body: "itoitoは「子どもの体験」に特化。体験に積極的な保護者が多く、申し込み率が高いのが特徴です。",
+    body: "itoitoは「子どもの学び体験」に特化。体験に積極的な保護者が多く、申し込み率が高いのが特徴です。",
   },
   {
     icon: "🛡️",
