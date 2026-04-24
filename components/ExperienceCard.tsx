@@ -3,19 +3,29 @@ import Image from "next/image";
 import { Experience, hostName } from "@/lib/types";
 
 const categoryColors: Record<string, string> = {
-  "料理・ものづくり": "bg-orange-100 text-orange-700",
-  "ものづくり・アート": "bg-orange-100 text-orange-700",
-  "アート・表現": "bg-purple-100 text-purple-700",
-  "探究・学び": "bg-emerald-100 text-emerald-700",
-  "自然・アウトドア": "bg-lime-100 text-lime-700",
+  // 新カテゴリ
+  "自然・アウトドア":     "bg-lime-100 text-lime-700",
+  "アート・ものづくり":   "bg-orange-100 text-orange-700",
+  "社会・お仕事探究":     "bg-blue-100 text-blue-700",
+  "サイエンス・実験":     "bg-emerald-100 text-emerald-700",
+  "ライフスキル・料理":   "bg-amber-100 text-amber-700",
+  // 旧カテゴリ（後方互換）
+  "料理・ものづくり":     "bg-orange-100 text-orange-700",
+  "ものづくり・アート":   "bg-orange-100 text-orange-700",
+  "アート・表現":         "bg-purple-100 text-purple-700",
+  "探究・学び":           "bg-emerald-100 text-emerald-700",
 };
 
 const categoryEmoji: Record<string, string> = {
-  "料理・ものづくり": "🍳",
-  "ものづくり・アート": "🎨",
-  "アート・表現": "🖌️",
-  "探究・学び": "🔍",
-  "自然・アウトドア": "🌿",
+  "自然・アウトドア":     "🌿",
+  "アート・ものづくり":   "🎨",
+  "社会・お仕事探究":     "💼",
+  "サイエンス・実験":     "🔬",
+  "ライフスキル・料理":   "🍳",
+  "料理・ものづくり":     "🍳",
+  "ものづくり・アート":   "🎨",
+  "アート・表現":         "🖌️",
+  "探究・学び":           "🔍",
 };
 
 export default function ExperienceCard({ exp }: { exp: Experience }) {
@@ -27,9 +37,11 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
     exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
   const hasRealImage = !!(exp.image && exp.image !== "null");
 
+  // benefitタグ: benefits[0] を短縮表示
+  const benefitRaw = exp.benefits?.[0] ?? "";
+
   return (
     <Link href={`/experiences/${exp.id}`} className="group block h-full">
-      {/* ① hover: shadow-xl + -translate-y-1 */}
       <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
 
         {/* 写真エリア */}
@@ -54,7 +66,7 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
               {exp.targetAge}
             </span>
           )}
-          {/* ① 価格：「¥3,000 / 人」形式を画像下部に統一表示 */}
+          {/* 価格 */}
           {hasRealImage && (
             <div className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1 shadow-sm">
               <span className="font-bold text-amber-700 text-sm">¥{exp.price.toLocaleString()}</span>
@@ -63,22 +75,18 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
           )}
         </div>
 
-        {/* ① モバイルのpaddingを p-3 に最適化、sm以上はp-5 */}
         <div className="p-3 sm:p-5 flex flex-col gap-2 flex-1">
           {/* タイトル */}
           <h2 className="text-sm sm:text-base font-bold text-stone-800 group-hover:text-amber-700 transition-colors leading-snug line-clamp-2">
             {exp.title}
           </h2>
 
-          {/* スキルタグ */}
-          {exp.skillTags && exp.skillTags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {exp.skillTags.slice(0, 2).map((tag) => (
-                <span key={tag} className="text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
-                  {tag}
-                </span>
-              ))}
-            </div>
+          {/* ✦ 変化の一言（benefits[0]） */}
+          {benefitRaw && (
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5 leading-snug line-clamp-2">
+              <span className="mr-1 font-bold">✦</span>
+              {benefitRaw}
+            </p>
           )}
 
           {/* 日時・場所 */}
@@ -102,7 +110,7 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
             <span>定員 {exp.capacity}名</span>
           </div>
 
-          {/* 価格（画像がない場合のフォールバック） */}
+          {/* 価格（画像なし時のフォールバック） */}
           {!hasRealImage && (
             <div className="flex items-baseline justify-end gap-0.5">
               <span className="font-bold text-amber-700 text-base">¥{exp.price.toLocaleString()}</span>

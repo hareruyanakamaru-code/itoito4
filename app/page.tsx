@@ -2,13 +2,13 @@ import { getAllExperiences } from "@/lib/experiences";
 import { kvGetAddedExperiences } from "@/lib/kv-store";
 import ExperienceGrid from "@/components/ExperienceGrid";
 import Link from "next/link";
+import Image from "next/image";
 
-export const dynamic = "force-dynamic"; // KVから最新データを常に取得
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+  const today = new Date().toISOString().split("T")[0];
 
-  // JSONファイルの体験 + KVに追加された体験をマージ
   const fileExperiences = getAllExperiences();
   const kvExperiences = await kvGetAddedExperiences();
   const allExperiences = [...fileExperiences, ...kvExperiences];
@@ -27,14 +27,12 @@ export default async function HomePage() {
             🌱 教科書には載っていない学びがある
           </p>
           <h1 className="text-3xl md:text-5xl font-extrabold text-stone-800 leading-snug mb-4">
-            子どもの「やってみたい」を、
+            教室を飛び出し、
             <br />
-            <span className="text-amber-500">本物の体験に変える。</span>
+            <span className="text-amber-500">プロの現場へ。</span>
           </h1>
           <p className="text-stone-500 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-            教科書では出会えない、本物の現場へ。
-            <br />
-            子どもの好奇心を、プロと一緒に解き放とう。
+            元教師が審査した、本物の体験だけを届けます。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4 sm:px-0">
             <a
@@ -54,7 +52,10 @@ export default async function HomePage() {
       </section>
 
       {/* ── メインメッセージ ── */}
-      <section className="py-14 sm:py-20 px-4" style={{ background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)" }}>
+      <section
+        className="py-14 sm:py-20 px-4"
+        style={{ background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)" }}
+      >
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-5xl md:text-6xl font-extrabold text-white leading-tight mb-5 tracking-tight">
             現場が、究極の学び場。
@@ -88,10 +89,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 体験一覧（カテゴリフィルター付き） ── */}
+      {/* ── 体験一覧 ── */}
       <ExperienceGrid experiences={experiences} />
 
-      {/* ── itoitoについて（ストーリー）── */}
+      {/* ── About itoito ── */}
       <section className="py-16 px-4 bg-stone-800">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-4">
@@ -122,8 +123,7 @@ export default async function HomePage() {
             <span className="text-amber-400">子どもたちの学びの種になる。</span>
           </h2>
           <p className="text-stone-400 text-sm leading-relaxed mb-8 max-w-sm mx-auto">
-            料理・ものづくり・自然体験・専門知識…<br />
-            スキルを持つ大人の方、ホストとして体験を届けませんか？
+            スキルを持つ大人の方、ホストとして参加しませんか。
           </p>
           <Link
             href="/for-host"
@@ -148,18 +148,18 @@ export default async function HomePage() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {reviews.map((r, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col gap-4 shadow-sm">
-                {/* 星 */}
+              <div
+                key={i}
+                className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col gap-4 shadow-sm"
+              >
                 <div className="flex gap-0.5">
                   {[...Array(5)].map((_, j) => (
                     <span key={j} className="text-amber-400 text-base">★</span>
                   ))}
                 </div>
-                {/* 感想 */}
                 <p className="text-stone-700 text-sm leading-relaxed flex-1">
                   「{r.comment}」
                 </p>
-                {/* 体験名・参加者 */}
                 <div className="border-t border-stone-100 pt-3">
                   <p className="text-xs font-semibold text-amber-600 mb-0.5">{r.experience}</p>
                   <p className="text-xs text-stone-400">{r.participant}</p>
@@ -167,7 +167,6 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-          {/* もっと見るボタン（disabled） */}
           <div className="text-center mt-8">
             <button
               disabled
@@ -175,6 +174,58 @@ export default async function HomePage() {
             >
               もっと見る（準備中）
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 運営者紹介 ── */}
+      <section className="py-16 sm:py-20 px-4 bg-white border-t border-stone-100">
+        <div className="max-w-3xl mx-auto">
+          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-10">
+            Founder
+          </p>
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 sm:gap-12">
+            {/* 写真エリア */}
+            <div className="shrink-0">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-amber-100 shadow-md relative bg-amber-50">
+                <Image
+                  src="/images/founder.jpg"
+                  alt="中丸 はれるや"
+                  fill
+                  className="object-cover"
+                  onError={undefined}
+                />
+              </div>
+            </div>
+            {/* テキストエリア */}
+            <div className="flex-1 text-center sm:text-left">
+              <p className="text-xs text-amber-600 font-semibold tracking-wide mb-1">
+                元公立中学校教師・体験プロデューサー
+              </p>
+              <h3 className="text-2xl font-extrabold text-stone-800 mb-5">
+                中丸 はれるや
+              </h3>
+              <blockquote className="text-stone-600 text-base leading-relaxed space-y-3">
+                <p>
+                  「教師として10年以上、子どもたちと向き合ってきました。
+                </p>
+                <p>
+                  学校の授業では絶対に届かない『本物の現場』が、
+                  子どもの目を輝かせる瞬間を何度も見てきました。
+                </p>
+                <p>
+                  itoitoは、そんな瞬間をもっと多くの子どもたちに届けるために作りました。」
+                </p>
+              </blockquote>
+              <div className="mt-6">
+                <Link
+                  href="/about"
+                  className="text-sm text-amber-600 hover:text-amber-700 underline underline-offset-4 transition-colors"
+                >
+                  運営者について詳しく →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -211,16 +262,19 @@ const reviews = [
   {
     experience: "竹あかり設営体験",
     participant: "小学5年生（10歳）の保護者より",
-    comment: "竹に穴を開けて光が灯った瞬間、感動して泣いてしまいました。自分の手で何かを作れるって、こんなに嬉しいんだと初めて知りました。",
+    comment:
+      "竹に穴を開けて光が灯った瞬間、感動して泣いてしまいました。自分の手で何かを作れるって、こんなに嬉しいんだと初めて知りました。",
   },
   {
     experience: "パン職人と学ぶ天然酵母パン作り",
     participant: "中学1年生（12歳）",
-    comment: "発酵のしくみを実際に見て触って学べた。学校の授業より100倍面白かったし、理科が好きになりました。",
+    comment:
+      "発酵のしくみを実際に見て触って学べた。学校の授業より100倍面白かったし、理科が好きになりました。",
   },
   {
     experience: "川の生き物を探せ！フィールド生態観察",
     participant: "小学3年生（8歳）と保護者",
-    comment: "子どもが生き物に夢中になる姿を久しぶりに見ました。スマホを一切触らず3時間没頭していたのが印象的でした。",
+    comment:
+      "子どもが生き物に夢中になる姿を久しぶりに見ました。スマホを一切触らず3時間没頭していたのが印象的でした。",
   },
 ];
