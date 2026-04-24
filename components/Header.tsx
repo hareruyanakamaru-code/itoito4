@@ -8,9 +8,14 @@ export default function Header() {
         <div className="py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
             <span className="text-2xl">🌱</span>
-            <span className="text-xl font-bold text-amber-700 group-hover:text-amber-600 transition-colors tracking-tight">
-              itoito
-            </span>
+            <div className="flex flex-col leading-none">
+              <span className="text-xl font-bold text-amber-700 group-hover:text-amber-600 transition-colors tracking-tight">
+                itoito
+              </span>
+              <span className="text-[10px] text-stone-400 font-medium tracking-wide hidden sm:block">
+                体験をつなぐプラットフォーム
+              </span>
+            </div>
           </Link>
           <nav className="flex items-center gap-1">
             {/* デスクトップのみ表示 */}

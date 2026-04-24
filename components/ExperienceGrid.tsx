@@ -4,14 +4,15 @@ import { useState } from "react";
 import type { Experience } from "@/lib/types";
 import ExperienceCard from "@/components/ExperienceCard";
 import Link from "next/link";
+import { Leaf, Palette, Briefcase, FlaskConical, UtensilsCrossed } from "lucide-react";
 
 const categories = [
-  { label: "すべて", emoji: "✨", value: null },
-  { label: "料理・ものづくり", emoji: "🍳", value: "料理・ものづくり" },
-  { label: "探究・学び", emoji: "🔍", value: "探究・学び" },
-  { label: "自然・アウトドア", emoji: "🌿", value: "自然・アウトドア" },
-  { label: "アート・表現", emoji: "🖌️", value: "アート・表現" },
-  { label: "ものづくり・アート", emoji: "🎨", value: "ものづくり・アート" },
+  { label: "すべて", icon: null, value: null },
+  { label: "自然・アウトドア", icon: Leaf, value: "自然・アウトドア" },
+  { label: "アート・ものづくり", icon: Palette, value: "アート・ものづくり" },
+  { label: "社会・お仕事探究", icon: Briefcase, value: "社会・お仕事探究" },
+  { label: "サイエンス・実験", icon: FlaskConical, value: "サイエンス・実験" },
+  { label: "ライフスキル・料理", icon: UtensilsCrossed, value: "ライフスキル・料理" },
 ];
 
 export default function ExperienceGrid({ experiences }: { experiences: Experience[] }) {
@@ -30,19 +31,28 @@ export default function ExperienceGrid({ experiences }: { experiences: Experienc
     <section id="experiences" className="max-w-5xl mx-auto px-3 sm:px-4 py-8 sm:py-10">
       {/* カテゴリフィルター */}
       <div className="flex gap-2 flex-wrap mb-5 sm:mb-6">
-        {existingCategories.map((cat) => (
-          <button
-            key={cat.label}
-            onClick={() => setSelected(cat.value)}
-            className={`text-sm px-4 py-1.5 rounded-full transition-all font-medium border ${
-              selected === cat.value
-                ? "bg-amber-500 text-white border-amber-500 shadow-sm"
-                : "bg-white text-stone-600 border-stone-200 hover:border-amber-300 hover:text-amber-700"
-            }`}
-          >
-            {cat.emoji} {cat.label}
-          </button>
-        ))}
+        {existingCategories.map((cat) => {
+          const Icon = cat.icon;
+          const isSelected = selected === cat.value;
+          return (
+            <button
+              key={cat.label}
+              onClick={() => setSelected(cat.value)}
+              className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-full transition-all font-medium border ${
+                isSelected
+                  ? "bg-amber-500 text-white border-amber-500 shadow-sm"
+                  : "bg-white text-stone-600 border-stone-200 hover:border-amber-300 hover:text-amber-700"
+              }`}
+            >
+              {Icon ? (
+                <Icon size={14} className={isSelected ? "text-white" : "text-amber-500"} />
+              ) : (
+                <span className="text-xs">✨</span>
+              )}
+              {cat.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* 件数 */}

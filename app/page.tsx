@@ -36,7 +36,6 @@ export default async function HomePage() {
             <br />
             子どもの好奇心を、プロと一緒に解き放とう。
           </p>
-          {/* ③ モバイルはボタン横幅いっぱい */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4 sm:px-0">
             <a
               href="#experiences"
@@ -51,6 +50,18 @@ export default async function HomePage() {
               体験を提供したい方はこちら
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ── メインメッセージ ── */}
+      <section className="py-14 sm:py-20 px-4" style={{ background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)" }}>
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-5xl md:text-6xl font-extrabold text-white leading-tight mb-5 tracking-tight">
+            現場が、究極の学び場。
+          </p>
+          <p className="text-white/90 text-lg md:text-xl font-light leading-relaxed max-w-xl mx-auto">
+            "本物の現場"を体験することで、本物の"学び"が生まれる。
+          </p>
         </div>
       </section>
 
@@ -74,7 +85,6 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-
         </div>
       </section>
 
@@ -100,27 +110,79 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── ホスト募集CTA ── */}
-      <section className="bg-gradient-to-r from-amber-500 to-orange-500 py-12 px-4">
-        <div className="max-w-xl mx-auto text-center text-white">
-          <h2 className="text-xl font-bold mb-2">
-            あなたの体験をシェアしませんか？
+      {/* ── ホスト向けCTA ── */}
+      <section className="py-16 px-4 bg-stone-900">
+        <div className="max-w-xl mx-auto text-center">
+          <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-4">
+            For Partners
+          </p>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white leading-snug mb-4">
+            あなたの得意が、
+            <br />
+            <span className="text-amber-400">子どもたちの学びの種になる。</span>
           </h2>
-          <p className="text-amber-100 text-sm mb-6">
-            料理・ものづくり・自然体験など、あなたの得意なことで
-            素敵な体験を提供してみましょう。
+          <p className="text-stone-400 text-sm leading-relaxed mb-8 max-w-sm mx-auto">
+            料理・ものづくり・自然体験・専門知識…<br />
+            スキルを持つ大人の方、ホストとして体験を届けませんか？
           </p>
           <Link
             href="/for-host"
-            className="bg-white text-amber-600 hover:bg-amber-50 font-bold px-8 py-2.5 rounded-full transition-colors shadow-sm"
+            className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full transition-colors shadow-md"
           >
             ホストになる →
           </Link>
         </div>
       </section>
+
+      {/* ── 利用者の声 ── */}
+      <section className="py-16 sm:py-20 px-4 bg-[#fdfaf6]">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
+            Reviews
+          </p>
+          <h2 className="text-center text-2xl md:text-3xl font-bold text-stone-800 mb-2">
+            参加者の声
+          </h2>
+          <p className="text-center text-sm text-stone-400 mb-10">
+            実際に体験した方からいただいたコメントです。
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {reviews.map((r, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col gap-4 shadow-sm">
+                {/* 星 */}
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, j) => (
+                    <span key={j} className="text-amber-400 text-base">★</span>
+                  ))}
+                </div>
+                {/* 感想 */}
+                <p className="text-stone-700 text-sm leading-relaxed flex-1">
+                  「{r.comment}」
+                </p>
+                {/* 体験名・参加者 */}
+                <div className="border-t border-stone-100 pt-3">
+                  <p className="text-xs font-semibold text-amber-600 mb-0.5">{r.experience}</p>
+                  <p className="text-xs text-stone-400">{r.participant}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* もっと見るボタン（disabled） */}
+          <div className="text-center mt-8">
+            <button
+              disabled
+              className="text-sm text-stone-400 border border-stone-200 px-6 py-2 rounded-full cursor-not-allowed opacity-60"
+            >
+              もっと見る（準備中）
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
+
+/* ── データ ── */
 
 const trustPoints = [
   {
@@ -142,5 +204,23 @@ const trustPoints = [
     icon: "🏫",
     title: "元教師が運営",
     body: "元公立中学校教師が運営。教育現場の経験を活かし、安全で学びのある体験を厳選しています。",
+  },
+];
+
+const reviews = [
+  {
+    experience: "竹あかり設営体験",
+    participant: "小学5年生（10歳）の保護者より",
+    comment: "竹に穴を開けて光が灯った瞬間、感動して泣いてしまいました。自分の手で何かを作れるって、こんなに嬉しいんだと初めて知りました。",
+  },
+  {
+    experience: "パン職人と学ぶ天然酵母パン作り",
+    participant: "中学1年生（12歳）",
+    comment: "発酵のしくみを実際に見て触って学べた。学校の授業より100倍面白かったし、理科が好きになりました。",
+  },
+  {
+    experience: "川の生き物を探せ！フィールド生態観察",
+    participant: "小学3年生（8歳）と保護者",
+    comment: "子どもが生き物に夢中になる姿を久しぶりに見ました。スマホを一切触らず3時間没頭していたのが印象的でした。",
   },
 ];
