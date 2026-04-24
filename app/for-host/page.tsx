@@ -38,16 +38,7 @@ export default function ForHostPage() {
           あなたが日常でやっていることが、誰かの「初めて」になります。
         </p>
 
-        {/* 収益ハイライト */}
-        <div className="relative inline-block bg-white rounded-2xl border border-amber-200 px-6 py-3 mb-10 shadow-sm">
-          <p className="text-sm text-stone-500 mb-0.5">例）月2回 × 6名 × ¥4,000</p>
-          <p className="text-2xl font-extrabold text-amber-600">
-            月 <span className="text-4xl">48,000</span> 円の収入
-          </p>
-          <p className="text-xs text-stone-400 mt-0.5">※ 手数料ゼロ期間中は全額あなたの収入になります</p>
-        </div>
-
-        <div className="relative flex flex-col sm:flex-row gap-3 justify-center items-center">
+        <div className="relative flex flex-col sm:flex-row gap-3 justify-center items-center mt-4">
           <Link
             href="/host-apply"
             className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold px-10 py-3.5 rounded-full transition-colors shadow-md text-base"
@@ -137,46 +128,6 @@ export default function ForHostPage() {
           <p className="text-center text-sm text-stone-400 mt-8">
             上記に当てはまらなくても大丈夫。「子どもに伝えたいことがある」方なら、ぜひご相談ください。
           </p>
-        </div>
-      </section>
-
-      {/* ── 収益シミュレーション ── */}
-      <section className="py-20 px-4 bg-gradient-to-br from-amber-50 to-orange-50">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
-            Earnings simulation
-          </p>
-          <h2 className="text-center text-2xl md:text-3xl font-bold text-stone-800 mb-12">
-            実際どのくらい収入になる？
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            {simulations.map((s) => (
-              <div key={s.label} className="bg-white rounded-2xl border border-amber-100 p-6 text-center shadow-sm">
-                <p className="text-xs text-stone-400 mb-1">{s.label}</p>
-                <p className="text-3xl font-extrabold text-amber-600 mb-1">{s.amount}</p>
-                <p className="text-xs text-stone-500 leading-relaxed">{s.detail}</p>
-              </div>
-            ))}
-          </div>
-          <div className="bg-white rounded-2xl border border-amber-200 p-6">
-            <h3 className="font-bold text-stone-800 mb-4 flex items-center gap-2">
-              💴 手数料の仕組み
-            </h3>
-            <ul className="flex flex-col gap-3">
-              {[
-                { label: "先着10名のパートナー", value: "成約手数料 0%（永久）", highlight: true },
-                { label: "通常パートナー", value: "成約時のみ 10%", highlight: false },
-                { label: "掲載・編集・削除", value: "何度でも無料", highlight: false },
-              ].map((row) => (
-                <li key={row.label} className="flex items-center justify-between border-b border-stone-100 pb-3 last:border-0 last:pb-0">
-                  <span className="text-sm text-stone-600">{row.label}</span>
-                  <span className={`text-sm font-bold ${row.highlight ? "text-amber-600 bg-amber-50 px-3 py-0.5 rounded-full" : "text-stone-800"}`}>
-                    {row.value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </section>
 
@@ -367,24 +318,6 @@ const personas = [
     tag: "教育・元教師",
     title: "教育に関わってきた方",
     body: "元教師・塾講師・支援員。学校の外で子どもと関わりたい方。",
-  },
-];
-
-const simulations = [
-  {
-    label: "月1回 × 4名 × ¥3,000",
-    amount: "¥12,000",
-    detail: "ちょっとしたお小遣い程度。まずは試してみたい方向け。",
-  },
-  {
-    label: "月2回 × 6名 × ¥4,000",
-    amount: "¥48,000",
-    detail: "副業として安定した収入に。月2回の開催で実現。",
-  },
-  {
-    label: "月4回 × 8名 × ¥5,000",
-    amount: "¥160,000",
-    detail: "本業並みの収入も。人気パートナーの実績モデル。",
   },
 ];
 
