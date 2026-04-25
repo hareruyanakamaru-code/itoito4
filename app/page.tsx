@@ -1,6 +1,8 @@
 import { getAllExperiences } from "@/lib/experiences";
 import { kvGetAddedExperiences } from "@/lib/kv-store";
 import ExperienceGrid from "@/components/ExperienceGrid";
+import CategoryCards from "@/components/CategoryCards";
+import HeroImage from "@/components/HeroImage";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -21,17 +23,19 @@ export default async function HomePage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-14 sm:py-20 px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-amber-600 text-sm font-medium mb-3 tracking-wide">
+      <section className="relative bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-20 sm:py-28 px-4 overflow-hidden">
+        {/* hero.jpg + オーバーレイ（画像がない場合はグラデーション表示） */}
+        <HeroImage />
+        <div className="relative max-w-5xl mx-auto text-center">
+          <p className="text-amber-300 text-sm font-medium mb-3 tracking-wide drop-shadow">
             🌱 教科書には載っていない学びがある
           </p>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-stone-800 leading-snug mb-4">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-snug mb-4 drop-shadow-md">
             教室を飛び出し、
             <br />
-            <span className="text-amber-500">プロの現場へ。</span>
+            <span className="text-amber-400">プロの現場へ。</span>
           </h1>
-          <p className="text-stone-500 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+          <p className="text-white/80 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed drop-shadow">
             元教師が審査した、本物の体験だけを届けます。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4 sm:px-0">
@@ -43,7 +47,7 @@ export default async function HomePage() {
             </a>
             <Link
               href="/for-host"
-              className="text-sm text-stone-500 hover:text-amber-700 transition-colors underline underline-offset-4"
+              className="text-sm text-white/80 hover:text-white transition-colors underline underline-offset-4"
             >
               体験を提供したい方はこちら
             </Link>
@@ -88,6 +92,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── カテゴリー ── */}
+      <CategoryCards />
 
       {/* ── 体験一覧 ── */}
       <ExperienceGrid experiences={experiences} />
@@ -146,7 +153,7 @@ export default async function HomePage() {
           <p className="text-center text-sm text-stone-400 mb-10">
             教科書には載っていない、本物の経験を持つ大人たち。
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {featuredHosts.map((h) => (
               <div key={h.name} className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col items-center text-center gap-4 shadow-sm">
                 {/* 円形アバター */}
@@ -336,6 +343,33 @@ const featuredHosts = [
     avatarImg: null,
     avatarInitial: "佐",
     href: "/experiences/3",
+  },
+  {
+    name: "渡辺 翔",
+    role: "ネイチャーガイド・生態学研究者",
+    quote: "自然の中に入ると、子どもは別人みたいに生き生きします。",
+    avatarBg: "#16a34a",
+    avatarImg: null,
+    avatarInitial: "渡",
+    href: "/experiences/5",
+  },
+  {
+    name: "中村 理恵",
+    role: "理系研究者・大学非常勤講師",
+    quote: "『なぜ？』という問いを持てた子どもは、一生学び続けられます。",
+    avatarBg: "#0891b2",
+    avatarImg: null,
+    avatarInitial: "中",
+    href: "/experiences/7",
+  },
+  {
+    name: "田中 健一",
+    role: "イタリアンシェフ・料理研究家",
+    quote: "食材を選ぶことから、料理は始まっています。",
+    avatarBg: "#e11d48",
+    avatarImg: null,
+    avatarInitial: "田",
+    href: "/experiences/2",
   },
 ];
 
