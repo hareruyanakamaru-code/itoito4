@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 
-const PEEK = 56;  // 両サイドにチラ見えするpx量
+const PEEK = 96;  // 両サイドにチラ見えするpx量
 const GAP  = 12;  // スライド間の隙間
 
 const slides = [
@@ -40,10 +40,11 @@ export default function HeroCarousel() {
   const offset = slideW > 0 ? PEEK - current * (slideW + GAP) : 0;
 
   return (
-    <section className="py-6 bg-white overflow-hidden">
+    <section className="py-6 bg-white">
+      <div className="max-w-5xl mx-auto px-4">
 
-      {/* ── カルーセル本体：wrapRefで全幅を測定、overflowはsectionでクリップ ── */}
-      <div ref={wrapRef} className="relative">
+        {/* ── カルーセル本体：overflow-hidden でチラ見えをクリップ ── */}
+        <div ref={wrapRef} className="relative overflow-hidden">
         {/* スライドトラック */}
         <div
           className="flex transition-transform duration-700 ease-in-out"
@@ -93,22 +94,23 @@ export default function HeroCarousel() {
         </button>
       </div>
 
-      {/* ── ドットインジケーター ── */}
-      <div className="flex justify-center gap-2 mt-4">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={`transition-all duration-300 rounded-full ${
-              i === current
-                ? "w-6 h-2 bg-amber-400"
-                : "w-2 h-2 bg-stone-300 hover:bg-stone-400"
-            }`}
-            aria-label={`スライド${i + 1}`}
-          />
-        ))}
-      </div>
+        {/* ── ドットインジケーター ── */}
+        <div className="flex justify-center gap-2 mt-4">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`transition-all duration-300 rounded-full ${
+                i === current
+                  ? "w-6 h-2 bg-amber-400"
+                  : "w-2 h-2 bg-stone-300 hover:bg-stone-400"
+              }`}
+              aria-label={`スライド${i + 1}`}
+            />
+          ))}
+        </div>
 
+      </div>
     </section>
   );
 }
