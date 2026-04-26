@@ -4,6 +4,7 @@ import ExperienceGrid from "@/components/ExperienceGrid";
 import CategoryCards from "@/components/CategoryCards";
 import HeroCarousel from "@/components/HeroCarousel";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import DateCalendar from "@/components/DateCalendar";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -80,9 +81,37 @@ export default async function HomePage() {
       <CategoryCards />
 
       {/* ══════════════════════════════
-          ④ 体験一覧
+          ④ 日付から探す
       ══════════════════════════════ */}
-      <section className="bg-stone-50 py-2">
+      <section className="py-14 sm:py-20 px-4 bg-stone-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
+              ✦ Calendar
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">
+              日付から探す
+            </h2>
+            <p className="text-sm text-stone-400">
+              お子さまの予定に合わせて、ぴったりの学び体験を見つけよう
+            </p>
+          </div>
+          <DateCalendar experiences={experiences} compact />
+          <div className="text-center mt-8">
+            <Link
+              href="/experiences/calendar"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 border border-amber-200 bg-white px-6 py-2.5 rounded-full hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all shadow-sm"
+            >
+              📅 カレンダーで全体験を見る →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════
+          ⑤ 体験一覧
+      ══════════════════════════════ */}
+      <section className="bg-white py-2">
         <ExperienceGrid experiences={experiences} />
       </section>
 

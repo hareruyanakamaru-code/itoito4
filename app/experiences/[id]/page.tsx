@@ -246,6 +246,22 @@ export default async function ExperienceDetailPage({
         {/* レビューセクション */}
         <ReviewSection reviews={guestReviews} expId={exp.id} />
 
+        {/* 同じ日の他の体験を見る */}
+        <div className="mt-6 bg-amber-50 rounded-2xl p-5 border border-amber-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-stone-800">同じ日の他の体験も見てみませんか？</p>
+            <p className="text-xs text-stone-500 mt-0.5">
+              📅 {dateLabel} の開催体験をカレンダーで確認できます
+            </p>
+          </div>
+          <Link
+            href={`/experiences/calendar?date=${exp.date}`}
+            className="shrink-0 text-xs font-bold text-amber-600 bg-white border border-amber-200 px-5 py-2 rounded-full hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all whitespace-nowrap"
+          >
+            同じ日の体験を見る →
+          </Link>
+        </div>
+
         {/* よくある質問 */}
         <div className="mt-6 bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-8">
           <h2 className="text-lg font-bold text-stone-800 mb-5 flex items-center gap-2">

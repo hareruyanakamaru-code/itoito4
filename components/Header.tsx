@@ -26,6 +26,12 @@ export default function Header() {
               体験を探す
             </Link>
             <Link
+              href="/experiences/calendar"
+              className="text-sm text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors hidden sm:inline-flex"
+            >
+              📅 日付から探す
+            </Link>
+            <Link
               href="/for-host"
               className="text-sm text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors hidden sm:inline-flex"
             >
@@ -48,6 +54,12 @@ export default function Header() {
             className="text-xs text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full bg-stone-50 hover:bg-amber-50 transition-colors whitespace-nowrap shrink-0"
           >
             🔍 体験を探す
+          </Link>
+          <Link
+            href="/experiences/calendar"
+            className="text-xs text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full bg-stone-50 hover:bg-amber-50 transition-colors whitespace-nowrap shrink-0"
+          >
+            📅 日付から探す
           </Link>
           <Link
             href="/for-host"
