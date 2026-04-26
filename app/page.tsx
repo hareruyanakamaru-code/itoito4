@@ -2,7 +2,8 @@ import { getAllExperiences } from "@/lib/experiences";
 import { kvGetAddedExperiences } from "@/lib/kv-store";
 import ExperienceGrid from "@/components/ExperienceGrid";
 import CategoryCards from "@/components/CategoryCards";
-import HeroImage from "@/components/HeroImage";
+import HeroCarousel from "@/components/HeroCarousel";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -21,70 +22,50 @@ export default async function HomePage() {
   });
 
   return (
-    <div>
-      {/* ── Hero ── */}
-      <section className="relative bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-20 sm:py-28 px-4 overflow-hidden">
-        {/* hero.jpg + オーバーレイ（画像がない場合はグラデーション表示） */}
-        <HeroImage />
-        <div className="relative max-w-5xl mx-auto text-center">
-          <p className="text-amber-300 text-sm font-medium mb-3 tracking-wide drop-shadow">
-            🌱 教科書には載っていない学びがある
-          </p>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-snug mb-4 drop-shadow-md">
-            教室を飛び出し、
-            <br />
-            <span className="text-amber-400">プロの現場へ。</span>
-          </h1>
-          <p className="text-white/80 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed drop-shadow">
-            元教師が審査した、本物の体験だけを届けます。
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4 sm:px-0">
-            <a
-              href="#experiences"
-              className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full transition-colors shadow-md text-base text-center"
-            >
-              体験をさがす →
-            </a>
-            <Link
-              href="/for-host"
-              className="text-sm text-white/80 hover:text-white transition-colors underline underline-offset-4"
-            >
-              体験を提供したい方はこちら
-            </Link>
-          </div>
-        </div>
-      </section>
+    <div className="bg-white">
 
-      {/* ── メインメッセージ ── */}
-      <section
-        className="py-14 sm:py-20 px-4"
-        style={{ background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)" }}
-      >
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-5xl md:text-6xl font-extrabold text-white leading-tight mb-5 tracking-tight">
-            現場が、究極の学び場。
-          </p>
-          <p className="text-white/90 text-lg md:text-xl font-light leading-relaxed max-w-xl mx-auto">
-            "本物の現場"を体験することで、本物の"学び"が生まれる。
-          </p>
-        </div>
-      </section>
+      {/* ══════════════════════════════
+          ① ヒーローカルーセル
+      ══════════════════════════════ */}
+      <HeroCarousel />
 
-      {/* ── 安心して使える4つの理由 ── */}
-      <section className="bg-white border-b border-stone-100 py-10 sm:py-12 px-4">
+      {/* オレンジアクセントライン */}
+      <div className="h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300" />
+
+      {/* ══════════════════════════════
+          ② 安心できる理由（装飾あり）
+      ══════════════════════════════ */}
+      <section className="relative py-16 sm:py-24 px-4 bg-white overflow-hidden">
+        {/* 装飾：星 */}
+        <span className="absolute top-8 right-10 text-amber-200 text-3xl pointer-events-none select-none hidden sm:block">✦</span>
+        <span className="absolute top-20 right-24 text-amber-100 text-lg pointer-events-none select-none hidden sm:block">✧</span>
+        <span className="absolute bottom-10 left-8 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
+        {/* 装飾：SVG曲線 */}
+        <svg className="absolute top-0 right-0 w-72 h-72 opacity-[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none">
+          <path d="M 180 10 Q 100 100 10 180" stroke="#f59e0b" strokeWidth="4" />
+        </svg>
+        <svg className="absolute bottom-0 left-0 w-48 h-48 opacity-[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none">
+          <path d="M 10 10 Q 100 80 190 30" stroke="#f59e0b" strokeWidth="4" />
+        </svg>
+
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-8">
-            安心して使える4つの理由
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="text-center mb-12">
+            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
+              ✦ Why itoito
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800">
+              安心して参加できる<span className="text-amber-500">4つの理由</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {trustPoints.map((t) => (
               <div
                 key={t.title}
-                className="flex items-start gap-3 bg-amber-50 rounded-2xl px-5 py-4 border border-amber-100"
+                className="flex flex-col items-center text-center gap-3 bg-white rounded-2xl px-5 py-6 border border-stone-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
               >
-                <span className="text-2xl shrink-0">{t.icon}</span>
+                <span className="text-3xl">{t.icon}</span>
                 <div>
-                  <p className="text-sm font-bold text-stone-800 mb-0.5">{t.title}</p>
+                  <p className="text-sm font-bold text-stone-800 mb-1">{t.title}</p>
                   <p className="text-xs text-stone-500 leading-relaxed">{t.body}</p>
                 </div>
               </div>
@@ -93,69 +74,46 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── カテゴリー ── */}
+      {/* ══════════════════════════════
+          ③ カテゴリー
+      ══════════════════════════════ */}
       <CategoryCards />
 
-      {/* ── 体験一覧 ── */}
-      <ExperienceGrid experiences={experiences} />
-
-      {/* ── About itoito ── */}
-      <section className="py-16 px-4 bg-stone-800">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-4">
-            About itoito
-          </p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white leading-snug mb-6">
-            「やってみたい」が、
-            <br />
-            人生を変える。
-          </h2>
-          <p className="text-stone-300 text-base leading-relaxed">
-            学校では出会えない大人、教科書には載っていない体験。
-            <br className="hidden sm:block" />
-            itoitoは、子どもたちの好奇心と、本物の現場をつなぐプラットフォームです。
-          </p>
-        </div>
+      {/* ══════════════════════════════
+          ④ 体験一覧
+      ══════════════════════════════ */}
+      <section className="bg-stone-50 py-2">
+        <ExperienceGrid experiences={experiences} />
       </section>
 
-      {/* ── ホスト向けCTA ── */}
-      <section className="py-16 px-4 bg-stone-900">
-        <div className="max-w-xl mx-auto text-center">
-          <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-4">
-            For Partners
-          </p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white leading-snug mb-4">
-            あなたの得意が、
-            <br />
-            <span className="text-amber-400">子どもたちの学びの種になる。</span>
-          </h2>
-          <p className="text-stone-400 text-sm leading-relaxed mb-8 max-w-sm mx-auto">
-            スキルを持つ大人の方、ホストとして参加しませんか。
-          </p>
-          <Link
-            href="/for-host"
-            className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full transition-colors shadow-md"
-          >
-            ホストになる →
-          </Link>
-        </div>
-      </section>
+      {/* ══════════════════════════════
+          ⑤ 注目のホスト（横スクロール対応）
+      ══════════════════════════════ */}
+      <section className="relative py-16 sm:py-20 px-4 bg-white overflow-hidden">
+        {/* 装飾 */}
+        <span className="absolute top-6 left-6 text-amber-100 text-4xl pointer-events-none select-none hidden sm:block">✦</span>
+        <span className="absolute bottom-8 right-8 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">✧</span>
 
-      {/* ── 注目のホスト（B） ── */}
-      <section className="py-16 sm:py-20 px-4 bg-[#fdfaf6]">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
-            Featured Hosts
-          </p>
-          <h2 className="text-center text-2xl md:text-3xl font-bold text-stone-800 mb-2">
-            現場を教える、プロの師匠たち。
-          </h2>
-          <p className="text-center text-sm text-stone-400 mb-10">
-            教科書には載っていない、本物の経験を持つ大人たち。
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="text-center mb-10">
+            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
+              Featured Hosts
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">
+              現場を教える、プロの師匠たち。
+            </h2>
+            <p className="text-sm text-stone-400">
+              教科書には載っていない、本物の経験を持つ大人たち。
+            </p>
+          </div>
+
+          {/* モバイル：横スクロール / sm以上：grid */}
+          <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide sm:grid sm:grid-cols-3 sm:overflow-visible">
             {featuredHosts.map((h) => (
-              <div key={h.name} className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col items-center text-center gap-4 shadow-sm">
+              <div
+                key={h.name}
+                className="shrink-0 w-64 sm:w-auto bg-white rounded-2xl border border-stone-100 p-6 flex flex-col items-center text-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+              >
                 {/* 円形アバター */}
                 <div
                   className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-md shrink-0 overflow-hidden relative"
@@ -179,7 +137,7 @@ export default async function HomePage() {
                 {/* ボタン */}
                 <Link
                   href={h.href}
-                  className="text-xs font-semibold text-amber-600 hover:text-amber-700 border border-amber-200 hover:border-amber-400 px-4 py-2 rounded-full transition-colors"
+                  className="text-xs font-semibold text-amber-600 hover:text-amber-700 border border-amber-200 hover:border-amber-400 hover:bg-amber-50 px-4 py-2 rounded-full transition-all"
                 >
                   この人の体験を見る →
                 </Link>
@@ -189,29 +147,40 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 利用者の声（C 強化版） ── */}
-      <section className="py-16 sm:py-20 px-4 bg-white">
+      {/* ══════════════════════════════
+          ⑥ 利用者の声
+      ══════════════════════════════ */}
+      <section className="relative py-16 sm:py-20 px-4 bg-stone-50 overflow-hidden">
+        {/* 装飾 */}
+        <span className="absolute top-8 right-12 text-amber-200 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
+        <svg className="absolute top-0 left-0 w-56 h-56 opacity-[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none">
+          <path d="M 10 100 Q 100 20 190 100" stroke="#f59e0b" strokeWidth="4" />
+        </svg>
+
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-3">
-            Reviews
-          </p>
-          <h2 className="text-center text-2xl md:text-3xl font-bold text-stone-800 mb-2">
-            参加者の声
-          </h2>
-          <p className="text-center text-sm text-stone-400 mb-10">
-            実際に体験した方からいただいたコメントです。
-          </p>
+          <div className="text-center mb-10">
+            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
+              Reviews
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">
+              参加者の声
+            </h2>
+            <p className="text-sm text-stone-400">実際に体験した方からいただいたコメントです。</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {reviews.map((r, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col gap-4 shadow-sm"
+                className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow"
               >
-                {/* 星 */}
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, j) => (
-                    <span key={j} className="text-amber-400 text-base">★</span>
-                  ))}
+                {/* 星 + 属性 */}
+                <div className="flex items-start justify-between">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, j) => (
+                      <span key={j} className="text-amber-400 text-base">★</span>
+                    ))}
+                  </div>
+                  <span className="text-xs text-stone-400 text-right leading-snug max-w-[100px]">{r.attribute}</span>
                 </div>
                 {/* 感想 */}
                 <p className="text-stone-700 text-sm leading-relaxed flex-1">
@@ -224,69 +193,139 @@ export default async function HomePage() {
                   </p>
                   <p className="text-xs text-stone-600 leading-relaxed">{r.change}</p>
                 </div>
-                {/* 体験名・属性 */}
-                <div className="border-t border-stone-100 pt-3">
-                  <p className="text-xs font-semibold text-amber-600 mb-0.5">{r.experience}</p>
-                  <p className="text-xs text-stone-400">{r.attribute}</p>
-                </div>
+                {/* 体験名 */}
+                <p className="text-xs font-semibold text-amber-600 border-t border-stone-100 pt-3">
+                  {r.experience}
+                </p>
               </div>
             ))}
-          </div>
-          <div className="text-center mt-8">
-            <button
-              disabled
-              className="text-sm text-stone-400 border border-stone-200 px-6 py-2 rounded-full cursor-not-allowed opacity-60"
-            >
-              もっと見る（準備中）
-            </button>
           </div>
         </div>
       </section>
 
-      {/* ── 運営者紹介 ── */}
-      <section className="py-16 sm:py-20 px-4 bg-[#fdfaf6] border-t border-stone-100">
+      {/* ══════════════════════════════
+          ⑦ 運営者紹介
+      ══════════════════════════════ */}
+      <section className="relative py-16 sm:py-20 px-4 bg-white overflow-hidden">
+        {/* 装飾 */}
+        <span className="absolute top-10 right-10 text-amber-100 text-3xl pointer-events-none select-none hidden sm:block">✦</span>
+        <span className="absolute bottom-10 left-10 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
+
         <div className="max-w-3xl mx-auto">
-          <p className="text-center text-xs font-semibold text-amber-500 tracking-widest uppercase mb-10">
+          <p className="text-center text-amber-500 text-xs font-semibold tracking-widest uppercase mb-10">
             Founder
           </p>
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 sm:gap-12">
+            {/* 写真 */}
             <div className="shrink-0">
-              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-amber-100 shadow-md relative bg-amber-50">
+              <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden border-4 border-amber-100 shadow-lg relative bg-amber-50">
                 <Image
                   src="/images/founder.jpg"
-                  alt="中丸 はれるや"
+                  alt="中丸 晴留哉"
                   fill
                   className="object-cover"
                 />
               </div>
             </div>
+            {/* テキスト */}
             <div className="flex-1 text-center sm:text-left">
               <p className="text-xs text-amber-600 font-semibold tracking-wide mb-1">
                 元公立中学校教師・体験プロデューサー
               </p>
-              <h3 className="text-2xl font-extrabold text-stone-800 mb-5">
-                中丸 はれるや
+              <h3 className="text-xl sm:text-2xl font-extrabold text-stone-800 mb-5 leading-snug">
+                子どもたちの「やってみたい！」を、<br className="hidden sm:block" />
+                本物の現場で叶えたい。
               </h3>
-              <blockquote className="text-stone-600 text-base leading-relaxed space-y-3">
-                <p>「教師として10年以上、子どもたちと向き合ってきました。</p>
+              <div className="text-stone-600 text-base leading-[1.9] space-y-3">
                 <p>
-                  学校の授業では絶対に届かない『本物の現場』が、
-                  子どもの目を輝かせる瞬間を何度も見てきました。
+                  教師として10年以上、子どもたちと向き合ってきました。
+                  学校の授業では届かない「本物の現場」が、子どもの目を輝かせる瞬間を何度も見てきました。
                 </p>
-                <p>itoitoは、そんな瞬間をもっと多くの子どもたちに届けるために作りました。」</p>
-              </blockquote>
-              <div className="mt-6">
+                <p>
+                  itoitoは、そんな瞬間をもっと多くの子どもたちに届けるために作りました。
+                </p>
+              </div>
+              <p className="text-sm font-bold text-stone-700 mt-5">
+                代表　中丸 晴留哉<span className="ml-2 font-normal text-xs text-stone-400">（元中学校教師）</span>
+              </p>
+              <div className="mt-4">
                 <Link
                   href="/operator"
                   className="text-sm text-amber-600 hover:text-amber-700 underline underline-offset-4 transition-colors"
                 >
-                  運営者について詳しく →
+                  もっと読む →
                 </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ══════════════════════════════
+          ⑧ ホスト募集 + ⑩ メルマガ
+      ══════════════════════════════ */}
+      <section className="relative py-16 sm:py-20 px-4 bg-amber-50 overflow-hidden">
+        {/* 装飾 */}
+        <span className="absolute top-6 left-6 text-amber-200 text-4xl pointer-events-none select-none hidden sm:block">✦</span>
+        <span className="absolute bottom-6 right-8 text-amber-200 text-3xl pointer-events-none select-none hidden sm:block">✧</span>
+        <span className="absolute top-1/2 right-1/4 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
+        <svg className="absolute top-0 right-0 w-64 h-64 opacity-[0.06] pointer-events-none" viewBox="0 0 200 200" fill="none">
+          <path d="M 190 10 Q 100 100 10 190" stroke="#f59e0b" strokeWidth="5" />
+        </svg>
+
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+
+            {/* ── 左：ホスト募集 ── */}
+            <div>
+              <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
+                For Partners
+              </p>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800 leading-snug mb-7">
+                あなたの得意が、
+                <br />
+                <span className="text-amber-600">子どもたちの学びの種になる。</span>
+              </h2>
+              <div className="space-y-5 mb-8">
+                {hostCTAPoints.map((p) => (
+                  <div key={p.title} className="flex gap-4 items-start">
+                    <span className="text-2xl shrink-0 mt-0.5">{p.icon}</span>
+                    <div>
+                      <p className="font-bold text-stone-800 text-sm mb-0.5">{p.title}</p>
+                      <p className="text-xs text-stone-500 leading-relaxed">{p.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/for-host"
+                className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full transition-colors shadow-md"
+              >
+                ホストとして登録する →
+              </Link>
+            </div>
+
+            {/* ── 右：メルマガ登録 ── */}
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-amber-100">
+              <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
+                Newsletter
+              </p>
+              <h3 className="text-lg font-extrabold text-stone-800 mb-2">
+                最新情報を受け取る
+              </h3>
+              <p className="text-sm text-stone-500 mb-5 leading-relaxed">
+                新しい体験・ホストの情報をメールでお届けします。
+              </p>
+              <NewsletterSignup />
+              <p className="text-xs text-stone-400 mt-3 leading-relaxed">
+                ✔ スパムメールは送りません<br />
+                ✔ いつでも配信解除できます
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
@@ -356,7 +395,7 @@ const featuredHosts = [
   {
     name: "中村 理恵",
     role: "理系研究者・大学非常勤講師",
-    quote: "『なぜ？』という問いを持てた子どもは、一生学び続けられます。",
+    quote: "「なぜ？」という問いを持てた子どもは、一生学び続けられます。",
     avatarBg: "#0891b2",
     avatarImg: null,
     avatarInitial: "中",
@@ -394,5 +433,23 @@ const reviews = [
     comment:
       "子どもが生き物に夢中になる姿を久しぶりに見ました。スマホを一切触らず3時間没頭していたのが印象的でした。",
     change: "その後、毎週末に川や公園に行きたがるようになりました。",
+  },
+];
+
+const hostCTAPoints = [
+  {
+    icon: "🌱",
+    title: "子どもたちの未来を育てる",
+    body: "あなたの経験が、子どもの「好き」の種になります。",
+  },
+  {
+    icon: "🎨",
+    title: "自分らしいスタイルで",
+    body: "場所・日程・料金はすべてあなたが決められます。",
+  },
+  {
+    icon: "🤝",
+    title: "新しい出会いと可能性",
+    body: "itoitoのコミュニティで、同志や家族と繋がれます。",
   },
 ];

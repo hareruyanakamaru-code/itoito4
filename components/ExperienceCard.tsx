@@ -37,8 +37,8 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
     exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
   const hasRealImage = !!(exp.image && exp.image !== "null");
 
-  // benefitタグ: benefits[0] を短縮表示
-  const benefitRaw = exp.benefits?.[0] ?? "";
+  // benefitタグ: 最大3個表示
+  const benefits = exp.benefits?.slice(0, 3) ?? [];
 
   return (
     <Link href={`/experiences/${exp.id}`} className="group block h-full">
@@ -60,9 +60,9 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
           <span className={`absolute top-2.5 left-2.5 text-xs font-medium px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm ${colorClass}`}>
             {emoji} {exp.category}
           </span>
-          {/* 対象年齢バッジ */}
+          {/* 対象年齢バッジ（オレンジ） */}
           {exp.targetAge && (
-            <span className="absolute top-2.5 right-2.5 text-xs font-medium px-2 py-0.5 rounded-full bg-white/90 text-stone-700 shadow-sm backdrop-blur-sm">
+            <span className="absolute top-2.5 right-2.5 text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500 text-white shadow-sm">
               {exp.targetAge}
             </span>
           )}
@@ -81,12 +81,18 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
             {exp.title}
           </h2>
 
-          {/* ✦ 変化の一言（benefits[0]） */}
-          {benefitRaw && (
-            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5 leading-snug line-clamp-2">
-              <span className="mr-1 font-bold">✦</span>
-              {benefitRaw}
-            </p>
+          {/* 得られることタグ（最大3個） */}
+          {benefits.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {benefits.map((b, i) => (
+                <span
+                  key={i}
+                  className="text-[10px] text-stone-600 bg-stone-50 border border-stone-100 px-2 py-1 rounded-full leading-none"
+                >
+                  ✦ {b}
+                </span>
+              ))}
+            </div>
           )}
 
           {/* 日時・場所 */}
