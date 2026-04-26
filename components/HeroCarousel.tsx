@@ -7,7 +7,6 @@ const slides = [
   { img: "/images/hero/hero-2.jpg", fallbackBg: "from-lime-400 to-green-600" },
   { img: "/images/hero/hero-3.jpg", fallbackBg: "from-blue-400 to-cyan-600" },
   { img: "/images/hero/hero-4.jpg", fallbackBg: "from-rose-400 to-pink-600" },
-  { img: "/images/hero/hero-5.jpg", fallbackBg: "from-emerald-400 to-teal-600" },
 ];
 
 export default function HeroCarousel() {
