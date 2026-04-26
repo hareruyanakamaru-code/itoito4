@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { Resend } from "resend";
-import { getStripe } from "./stripe";
 import {
   sendApplicationNotification,
   sendApplicantConfirmation,
@@ -34,15 +33,6 @@ import {
   kvUpdateHostApplicationStatus,
 } from "./kv-store";
 
-
-/* ─── Payment Intent 作成（埋め込み決済用） ─── */
-export async function createPaymentIntent(amount: number): Promise<{ clientSecret: string }> {
-  const pi = await getStripe().paymentIntents.create({
-    amount,
-    currency: "jpy",
-  });
-  return { clientSecret: pi.client_secret! };
-}
 
 /* ─── 申し込み確定（決済完了後に呼ぶ） ─── */
 export async function finalizeApplication({
@@ -106,91 +96,6 @@ export async function finalizeApplication({
     });
   } catch (err) {
     console.error("[Sheets]", err);
-  }
-
-  redirect(`/experiences/${experienceId}/apply/done`);
-}
-
-/* ─── 申し込み送信（Stripe決済あり） ─── */
-export async function submitApplication(formData: FormData) {
-  const experienceId = formData.get("experienceId") as string;
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const childAge = (formData.get("childAge") as string) ?? "";
-  const adults = Number(formData.get("adults") ?? 1);
-  const children = Number(formData.get("children") ?? 0);
-  const message = (formData.get("message") as string) ?? "";
-
-  if (!experienceId || !name || !email) {
-    throw new Error("必須項目が入力されていません");
-  }
-
-  const exp = getExperienceById(experienceId);
-  if (!exp) throw new Error("体験が見つかりません");
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://itoito4.vercel.app";
-  const totalParticipants = adults + children;
-
-  // Stripeが設定されている場合は決済フローへ
-  if (process.env.STRIPE_SECRET_KEY) {
-    const session = await getStripe().checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: "jpy",
-            product_data: {
-              name: exp.title,
-              description: `${exp.date} ${exp.time} / ${exp.location}`,
-            },
-            unit_amount: exp.price,
-          },
-          quantity: totalParticipants,
-        },
-      ],
-      mode: "payment",
-      customer_email: email,
-      success_url: `${baseUrl}/experiences/${experienceId}/apply/done?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/experiences/${experienceId}/apply`,
-      metadata: {
-        experienceId,
-        name,
-        email,
-        childAge,
-        adults: String(adults),
-        children: String(children),
-        message,
-      },
-    });
-    redirect(session.url!);
-  }
-
-  // Stripe未設定の場合（開発・テスト用）は従来通り
-  const app = addApplication({ experienceId, name, email, childAge, adults, children, message });
-  const experienceTitle = exp.title;
-
-  try {
-    await sendApplicationNotification({
-      experienceTitle,
-      applicantName: name,
-      applicantEmail: email,
-      childAge,
-      message,
-    });
-  } catch (err) {
-    console.error("[Resend] メール送信エラー:", err);
-  }
-
-  try {
-    await sendToSpreadsheet({
-      createdAt: app.createdAt,
-      experienceTitle,
-      applicantName: name,
-      applicantEmail: email,
-      message,
-    });
-  } catch (err) {
-    console.error("[Sheets] スプレッドシート送信エラー:", err);
   }
 
   redirect(`/experiences/${experienceId}/apply/done`);
