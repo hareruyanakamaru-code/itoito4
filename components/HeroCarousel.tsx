@@ -40,77 +40,75 @@ export default function HeroCarousel() {
   const offset = slideW > 0 ? PEEK - current * (slideW + GAP) : 0;
 
   return (
-    <section className="py-6 bg-white">
-      <div className="max-w-5xl mx-auto px-4">
+    <section className="py-6 bg-white overflow-hidden">
 
-        {/* ── カルーセル本体：overflow-hidden でチラ見えをクリップ ── */}
-        <div ref={wrapRef} className="relative overflow-hidden">
-          {/* スライドトラック */}
-          <div
-            className="flex transition-transform duration-700 ease-in-out"
-            style={{ gap: `${GAP}px`, transform: `translateX(${offset}px)` }}
-          >
-            {slides.map((slide, i) => (
-              <div
-                key={i}
-                className="shrink-0 rounded-2xl overflow-hidden"
-                style={{
-                  width:       slideW > 0 ? `${slideW}px` : `calc(100% - ${PEEK * 2}px)`,
-                  aspectRatio: "4/3",
-                }}
-              >
-                {!imgErrors[i] ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={slide.img}
-                    alt=""
-                    aria-hidden="true"
-                    onError={() => setImgErrors((e) => ({ ...e, [i]: true }))}
-                    className="w-full h-full object-cover object-top"
-                  />
-                ) : (
-                  <div className={`w-full h-full bg-gradient-to-br ${slide.fallbackBg}`} />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* ── 左右矢印（スライドの上に重ねる） ── */}
-          <button
-            onClick={prev}
-            style={{ left: `${PEEK + 10}px` }}
-            className="absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-stone-600 text-2xl transition-all"
-            aria-label="前のスライド"
-          >
-            ‹
-          </button>
-          <button
-            onClick={next}
-            style={{ right: `${PEEK + 10}px` }}
-            className="absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-stone-600 text-2xl transition-all"
-            aria-label="次のスライド"
-          >
-            ›
-          </button>
-        </div>
-
-        {/* ── ドットインジケーター ── */}
-        <div className="flex justify-center gap-2 mt-4">
-          {slides.map((_, i) => (
-            <button
+      {/* ── カルーセル本体：wrapRefで全幅を測定、overflowはsectionでクリップ ── */}
+      <div ref={wrapRef} className="relative">
+        {/* スライドトラック */}
+        <div
+          className="flex transition-transform duration-700 ease-in-out"
+          style={{ gap: `${GAP}px`, transform: `translateX(${offset}px)` }}
+        >
+          {slides.map((slide, i) => (
+            <div
               key={i}
-              onClick={() => setCurrent(i)}
-              className={`transition-all duration-300 rounded-full ${
-                i === current
-                  ? "w-6 h-2 bg-amber-400"
-                  : "w-2 h-2 bg-stone-300 hover:bg-stone-400"
-              }`}
-              aria-label={`スライド${i + 1}`}
-            />
+              className="shrink-0 rounded-2xl overflow-hidden"
+              style={{
+                width:       slideW > 0 ? `${slideW}px` : `calc(100% - ${PEEK * 2}px)`,
+                aspectRatio: "4/3",
+              }}
+            >
+              {!imgErrors[i] ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={slide.img}
+                  alt=""
+                  aria-hidden="true"
+                  onError={() => setImgErrors((e) => ({ ...e, [i]: true }))}
+                  className="w-full h-full object-cover object-top"
+                />
+              ) : (
+                <div className={`w-full h-full bg-gradient-to-br ${slide.fallbackBg}`} />
+              )}
+            </div>
           ))}
         </div>
 
+        {/* ── 左右矢印（スライドの上に重ねる） ── */}
+        <button
+          onClick={prev}
+          style={{ left: `${PEEK + 10}px` }}
+          className="absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-stone-600 text-2xl transition-all"
+          aria-label="前のスライド"
+        >
+          ‹
+        </button>
+        <button
+          onClick={next}
+          style={{ right: `${PEEK + 10}px` }}
+          className="absolute top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/80 hover:bg-white shadow-md flex items-center justify-center text-stone-600 text-2xl transition-all"
+          aria-label="次のスライド"
+        >
+          ›
+        </button>
       </div>
+
+      {/* ── ドットインジケーター ── */}
+      <div className="flex justify-center gap-2 mt-4">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={`transition-all duration-300 rounded-full ${
+              i === current
+                ? "w-6 h-2 bg-amber-400"
+                : "w-2 h-2 bg-stone-300 hover:bg-stone-400"
+            }`}
+            aria-label={`スライド${i + 1}`}
+          />
+        ))}
+      </div>
+
     </section>
   );
 }
