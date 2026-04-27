@@ -68,6 +68,11 @@ export default async function HomePage({
       {/* アクセントライン */}
       <div className="h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300" />
 
+      {/* ── スクロールアンカー ──
+          ヘッダー高さ分（57px）上に余白を取ることで
+          スクロール後に FormatTabs + SearchBar がきれいに見える */}
+      <div id="experiences" className="scroll-mt-[57px]" />
+
       {/* ══════════════════════════════
           ② 形式タブ（FormatTabs）
       ══════════════════════════════ */}
@@ -81,7 +86,7 @@ export default async function HomePage({
       {/* ══════════════════════════════
           ④ 体験一覧
       ══════════════════════════════ */}
-      <section className="bg-stone-50 pt-8 pb-4" id="experiences">
+      <section className="bg-stone-50 pt-8 pb-4">
         <div className="max-w-5xl mx-auto px-4 mb-5">
           <div className="flex items-center justify-between">
             <div>
