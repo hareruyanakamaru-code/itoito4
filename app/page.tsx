@@ -1,7 +1,6 @@
 import { getAllExperiences } from "@/lib/experiences";
 import { kvGetAddedExperiences } from "@/lib/kv-store";
 import ExperienceGrid from "@/components/ExperienceGrid";
-import CategoryCards from "@/components/CategoryCards";
 import HeroCarousel from "@/components/HeroCarousel";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import SearchBar from "@/components/SearchBar";
@@ -84,37 +83,7 @@ export default async function HomePage({
       <SearchBar defaultValues={params} />
 
       {/* ══════════════════════════════
-          ④ 体験一覧
-      ══════════════════════════════ */}
-      <section className="bg-stone-50 pt-8 pb-4">
-        <div className="max-w-5xl mx-auto px-4 mb-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg sm:text-xl font-bold text-stone-800">
-                {hasFilter ? "検索結果" : "開催予定の体験"}
-              </h2>
-              {hasFilter && (
-                <p className="text-xs text-stone-400 mt-0.5">
-                  {experiences.length}件ヒット
-                  <Link href="/" className="ml-3 text-amber-500 hover:underline">
-                    ✕ 絞り込みを解除
-                  </Link>
-                </p>
-              )}
-            </div>
-            <Link
-              href="/experiences/calendar"
-              className="text-xs font-semibold text-amber-600 hover:text-amber-700 hover:underline shrink-0"
-            >
-              すべて見る →
-            </Link>
-          </div>
-        </div>
-        <ExperienceGrid experiences={experiences} />
-      </section>
-
-      {/* ══════════════════════════════
-          ⑤ 安心できる理由
+          ② 安心できる理由
       ══════════════════════════════ */}
       <section className="py-20 sm:py-28 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
@@ -144,9 +113,34 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑥ カテゴリー
+          ③ 体験一覧
       ══════════════════════════════ */}
-      <CategoryCards />
+      <section className="bg-stone-50 pt-8 pb-4">
+        <div className="max-w-5xl mx-auto px-4 mb-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-stone-800">
+                {hasFilter ? "検索結果" : "開催予定の体験"}
+              </h2>
+              {hasFilter && (
+                <p className="text-xs text-stone-400 mt-0.5">
+                  {experiences.length}件ヒット
+                  <Link href="/" className="ml-3 text-amber-500 hover:underline">
+                    ✕ 絞り込みを解除
+                  </Link>
+                </p>
+              )}
+            </div>
+            <Link
+              href="/experiences/calendar"
+              className="text-xs font-semibold text-amber-600 hover:text-amber-700 hover:underline shrink-0"
+            >
+              すべて見る →
+            </Link>
+          </div>
+        </div>
+        <ExperienceGrid experiences={experiences} />
+      </section>
 
       {/* ══════════════════════════════
           ⑦ 注目のパートナー（コンパクト横並び）
