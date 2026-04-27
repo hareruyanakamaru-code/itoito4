@@ -35,11 +35,11 @@ const footerColumns = [
     ],
   },
   {
-    heading: "ホストを探す",
+    heading: "パートナーを探す",
     links: [
-      { label: "ホスト一覧", href: "/#featured-hosts" },
-      { label: "ホストになるには", href: "/for-host" },
-      { label: "ホスト申請フォーム", href: "/host-apply" },
+      { label: "パートナー一覧", href: "/#featured-hosts" },
+      { label: "パートナーになるには", href: "/for-host" },
+      { label: "パートナー申請フォーム", href: "/host-apply" },
     ],
   },
   {
@@ -125,20 +125,6 @@ export default function Footer() {
               </ul>
             </div>
           ))}
-        </div>
-
-        {/* ── パートナーCTA ── */}
-        <div className="bg-stone-800 rounded-2xl px-6 py-5 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="text-white text-sm font-bold">あなたの得意を、子どもたちの学びに。</p>
-            <p className="text-stone-400 text-xs mt-0.5">ホスト登録は完全無料、3分で完了します。</p>
-          </div>
-          <Link
-            href="/host-apply"
-            className="shrink-0 bg-amber-500 hover:bg-amber-400 text-white text-xs font-bold px-5 py-2.5 rounded-full transition-colors"
-          >
-            🌿 パートナーになる →
-          </Link>
         </div>
 
         {/* ── 最下部 ── */}

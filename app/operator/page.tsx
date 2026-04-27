@@ -139,7 +139,7 @@ export default function OperatorPage() {
         </p>
         <p>
           子どもたち、保護者の皆様、地域の方々、学校関係者、
-          そしてホストとして体験を届けてくださる方々。
+          そしてパートナーとして体験を届けてくださる方々。
           関わってくださるすべての方が仲間です。
         </p>
         <p>
@@ -168,7 +168,7 @@ export default function OperatorPage() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-xl mx-auto text-center">
           <p className="text-stone-400 text-sm mb-8">
-            itoitoの体験に参加する、またはホストとして仲間になる。
+            itoitoの体験に参加する、またはパートナーとして仲間になる。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -181,7 +181,7 @@ export default function OperatorPage() {
               href="/for-host"
               className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-bold px-8 py-3.5 rounded-full transition-colors"
             >
-              ホストとして参加する
+              パートナーとして参加する
             </Link>
           </div>
         </div>

@@ -166,10 +166,10 @@ export default async function HomePage({
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-10">
             <div>
               <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-2">
-                Featured Hosts
+                Featured Partners
               </p>
               <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-1">
-                現場を教える、プロの師匠たち。
+                現場を教える、注目のパートナー。
               </h2>
               <p className="text-sm text-stone-400">
                 教科書には載っていない、本物の経験を持つ大人たち。
@@ -414,7 +414,7 @@ export default async function HomePage({
                 href="/for-host"
                 className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full transition-colors shadow-md"
               >
-                ホストとして登録する →
+                パートナーとして登録する →
               </Link>
             </div>
 
@@ -427,7 +427,7 @@ export default async function HomePage({
                 最新情報を受け取る
               </h3>
               <p className="text-sm text-stone-500 mb-5 leading-relaxed">
-                新しい体験・ホストの情報をメールでお届けします。
+                新しい体験・パートナーの情報をメールでお届けします。
               </p>
               <NewsletterSignup />
               <p className="text-xs text-stone-400 mt-3 leading-relaxed">
@@ -448,13 +448,13 @@ export default async function HomePage({
 const trustPoints = [
   {
     icon: "✅",
-    title: "ホストは全員審査済み",
-    body: "掲載前にホストの経歴・体験内容を確認。安心できるホストだけを紹介しています。",
+    title: "パートナーは全員審査済み",
+    body: "掲載前にパートナーの経歴・体験内容を確認。安心できるパートナーだけを紹介しています。",
   },
   {
     icon: "👶",
     title: "少人数制で目が届く",
-    body: "定員は多くても10〜12名。ホストの目が届き、一人ひとりに丁寧に関われる規模です。",
+    body: "定員は多くても10〜12名。パートナーの目が届き、一人ひとりに丁寧に関われる規模です。",
   },
   {
     icon: "👨‍👩‍👧",
@@ -552,7 +552,7 @@ const reviews = [
 const trustStats = [
   { icon: "⭐", value: "4.8",   label: "平均評価（5段階）" },
   { icon: "👣", value: "100名+", label: "累計参加者数" },
-  { icon: "✅", value: "6名",   label: "審査済みホスト" },
+  { icon: "✅", value: "6名",   label: "審査済みパートナー" },
   { icon: "🎓", value: "9件",   label: "開催体験数" },
 ];
 

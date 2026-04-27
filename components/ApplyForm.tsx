@@ -215,7 +215,7 @@ export default function ApplyForm({ exp }: { exp: Experience }) {
           </button>
           <p className="text-center text-xs text-stone-400 flex flex-wrap justify-center gap-x-3 gap-y-1 mt-1">
             <span>✔ 最短3分で完了</span>
-            <span>✔ ホストより3営業日以内にご連絡</span>
+            <span>✔ パートナーより3営業日以内にご連絡</span>
           </p>
         </form>
       )}
