@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 // PEEK: コンテンツ幅の外側に何px隣画像を見せるか
 // メイン画像の横幅 = max-w-5xl コンテンツ幅そのまま
 const PEEK = 96;
+const GAP  = 10;  // スライド間の隙間（px）
 
 const slides = [
   { img: "/images/hero/hero-1.jpg", fallbackBg: "from-amber-400 to-orange-500" },
@@ -74,7 +75,7 @@ export default function HeroCarousel() {
   }, [goNext]);
 
   // ── offset: extIdx スライドの左端が wrapRef 内の PEEK px に来る
-  const offset = slideW > 0 ? PEEK - extIdx * slideW : 0;
+  const offset = slideW > 0 ? PEEK - extIdx * (slideW + GAP) : 0;
 
   const currentReal = toRealIdx(extIdx);
 
@@ -99,6 +100,7 @@ export default function HeroCarousel() {
           <div
             className="flex"
             style={{
+              gap:        `${GAP}px`,
               transform:  `translateX(${offset}px)`,
               transition: animated ? "transform 700ms ease-in-out" : "none",
             }}
