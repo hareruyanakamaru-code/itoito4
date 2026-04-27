@@ -4,23 +4,55 @@ import ExperienceGrid from "@/components/ExperienceGrid";
 import CategoryCards from "@/components/CategoryCards";
 import HeroCarousel from "@/components/HeroCarousel";
 import NewsletterSignup from "@/components/NewsletterSignup";
-import DateCalendar from "@/components/DateCalendar";
+import SearchBar from "@/components/SearchBar";
 import Link from "next/link";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
-  const today = new Date().toISOString().split("T")[0];
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    category?: string;
+    area?: string;
+    age?: string;
+    month?: string;
+    date?: string;
+    q?: string;
+  }>;
+}) {
+  const today  = new Date().toISOString().split("T")[0];
+  const params = await searchParams;
 
   const fileExperiences = getAllExperiences();
-  const kvExperiences = await kvGetAddedExperiences();
-  const allExperiences = [...fileExperiences, ...kvExperiences];
+  const kvExperiences   = await kvGetAddedExperiences();
+  const allExperiences  = [...fileExperiences, ...kvExperiences];
 
-  const experiences = allExperiences.filter((exp) => {
+  /* ── 期限切れを除外 ── */
+  const upcomingExps = allExperiences.filter((exp) => {
     const endDate = exp.dateTo ?? exp.date;
     return endDate >= today;
   });
+
+  /* ── 検索フィルタリング ── */
+  const experiences = upcomingExps.filter((exp) => {
+    if (params.category && exp.category !== params.category) return false;
+    if (params.area     && !exp.location.includes(params.area)) return false;
+    if (params.age      && exp.targetAge && !exp.targetAge.includes(params.age)) return false;
+    if (params.month    && !exp.date.startsWith(params.month)) return false;
+    if (params.date) {
+      const d = params.date;
+      if (exp.dateTo ? (d < exp.date || d > exp.dateTo) : exp.date !== d) return false;
+    }
+    if (params.q) {
+      const q = params.q.toLowerCase();
+      if (!exp.title.toLowerCase().includes(q) && !exp.description.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+
+  const hasFilter = !!(params.category || params.area || params.age || params.month || params.date || params.q);
 
   return (
     <div className="bg-white">
@@ -81,37 +113,37 @@ export default async function HomePage() {
       <CategoryCards />
 
       {/* ══════════════════════════════
-          ④ 日付から探す
+          ④ 絞り込み検索バー
       ══════════════════════════════ */}
-      <section className="py-14 sm:py-20 px-4 bg-stone-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-8">
-            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
-              ✦ Calendar
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">
-              日付から探す
-            </h2>
-            <p className="text-sm text-stone-400">
-              お子さまの予定に合わせて、ぴったりの学び体験を見つけよう
-            </p>
-          </div>
-          <DateCalendar experiences={experiences} compact />
-          <div className="text-center mt-8">
-            <Link
-              href="/experiences/calendar"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 border border-amber-200 bg-white px-6 py-2.5 rounded-full hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all shadow-sm"
-            >
-              📅 カレンダーで全体験を見る →
-            </Link>
-          </div>
-        </div>
-      </section>
+      <SearchBar defaultValues={params} />
 
       {/* ══════════════════════════════
           ⑤ 体験一覧
       ══════════════════════════════ */}
-      <section className="bg-white py-2">
+      <section className="bg-stone-50 pt-8 pb-4" id="experiences">
+        <div className="max-w-5xl mx-auto px-4 mb-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-stone-800">
+                {hasFilter ? "検索結果" : "開催予定の体験"}
+              </h2>
+              {hasFilter && (
+                <p className="text-xs text-stone-400 mt-0.5">
+                  {experiences.length}件ヒット
+                  <Link href="/" className="ml-3 text-amber-500 hover:underline">
+                    ✕ 絞り込みを解除
+                  </Link>
+                </p>
+              )}
+            </div>
+            <Link
+              href="/experiences/calendar"
+              className="text-xs font-semibold text-amber-600 hover:text-amber-700 hover:underline shrink-0"
+            >
+              すべて見る →
+            </Link>
+          </div>
+        </div>
         <ExperienceGrid experiences={experiences} />
       </section>
 
