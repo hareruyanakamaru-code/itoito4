@@ -17,43 +17,31 @@ export default function Header() {
               </span>
             </div>
           </Link>
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-2">
             {/* デスクトップのみ表示 */}
-            <Link
-              href="/"
-              className="text-sm text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors hidden sm:inline-flex"
-            >
-              体験を探す
-            </Link>
-            <Link
-              href="/experiences/calendar"
-              className="text-sm text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors hidden sm:inline-flex"
-            >
-              📅 日付から探す
-            </Link>
             <Link
               href="/for-host"
               className="text-sm text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors hidden sm:inline-flex"
             >
               パートナーになる
             </Link>
+            <a
+              href="/#experiences"
+              className="text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white px-4 py-1.5 rounded-full transition-colors shadow-sm hidden sm:inline-flex"
+            >
+              体験を探す
+            </a>
           </nav>
         </div>
 
         {/* モバイル専用ナビ（sm未満で表示） */}
         <div className="sm:hidden flex gap-1 pb-2 overflow-x-auto">
-          <Link
-            href="/"
-            className="text-xs text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full bg-stone-50 hover:bg-amber-50 transition-colors whitespace-nowrap shrink-0"
+          <a
+            href="/#experiences"
+            className="text-xs font-bold bg-amber-500 text-white px-3 py-1.5 rounded-full whitespace-nowrap shrink-0"
           >
             🔍 体験を探す
-          </Link>
-          <Link
-            href="/experiences/calendar"
-            className="text-xs text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full bg-stone-50 hover:bg-amber-50 transition-colors whitespace-nowrap shrink-0"
-          >
-            📅 日付から探す
-          </Link>
+          </a>
           <Link
             href="/for-host"
             className="text-xs text-stone-600 hover:text-amber-700 px-3 py-1.5 rounded-full bg-stone-50 hover:bg-amber-50 transition-colors whitespace-nowrap shrink-0"
