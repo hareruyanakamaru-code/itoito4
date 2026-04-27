@@ -5,6 +5,7 @@ import CategoryCards from "@/components/CategoryCards";
 import HeroCarousel from "@/components/HeroCarousel";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import SearchBar from "@/components/SearchBar";
+import FormatTabs from "@/components/FormatTabs";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -64,63 +65,21 @@ export default async function HomePage({
       ══════════════════════════════ */}
       <HeroCarousel />
 
-      {/* オレンジアクセントライン */}
+      {/* アクセントライン */}
       <div className="h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300" />
 
       {/* ══════════════════════════════
-          ② 安心できる理由（装飾あり）
+          ② 形式タブ（FormatTabs）
       ══════════════════════════════ */}
-      <section className="relative py-16 sm:py-24 px-4 bg-white overflow-hidden">
-        {/* 装飾：星 */}
-        <span className="absolute top-8 right-10 text-amber-200 text-3xl pointer-events-none select-none hidden sm:block">✦</span>
-        <span className="absolute top-20 right-24 text-amber-100 text-lg pointer-events-none select-none hidden sm:block">✧</span>
-        <span className="absolute bottom-10 left-8 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
-        {/* 装飾：SVG曲線 */}
-        <svg className="absolute top-0 right-0 w-72 h-72 opacity-[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none">
-          <path d="M 180 10 Q 100 100 10 180" stroke="#f59e0b" strokeWidth="4" />
-        </svg>
-        <svg className="absolute bottom-0 left-0 w-48 h-48 opacity-[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none">
-          <path d="M 10 10 Q 100 80 190 30" stroke="#f59e0b" strokeWidth="4" />
-        </svg>
-
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
-              ✦ Why itoito
-            </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800">
-              安心して参加できる<span className="text-amber-500">4つの理由</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {trustPoints.map((t) => (
-              <div
-                key={t.title}
-                className="flex flex-col items-center text-center gap-3 bg-white rounded-2xl px-5 py-6 border border-stone-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-              >
-                <span className="text-3xl">{t.icon}</span>
-                <div>
-                  <p className="text-sm font-bold text-stone-800 mb-1">{t.title}</p>
-                  <p className="text-xs text-stone-500 leading-relaxed">{t.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FormatTabs currentFormat={params.format} />
 
       {/* ══════════════════════════════
-          ③ カテゴリー
-      ══════════════════════════════ */}
-      <CategoryCards />
-
-      {/* ══════════════════════════════
-          ④ 絞り込み検索バー
+          ③ 横長検索バー（Airbnb風）
       ══════════════════════════════ */}
       <SearchBar defaultValues={params} />
 
       {/* ══════════════════════════════
-          ⑤ 体験一覧
+          ④ 体験一覧
       ══════════════════════════════ */}
       <section className="bg-stone-50 pt-8 pb-4" id="experiences">
         <div className="max-w-5xl mx-auto px-4 mb-5">
@@ -150,20 +109,47 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑥ 注目のホスト（コンパクト横並び）
+          ⑤ 安心できる理由
       ══════════════════════════════ */}
-      <section className="relative py-20 px-4 bg-white overflow-hidden" id="featured-hosts">
-        {/* 装飾：散らした星 */}
-        <span className="absolute top-8  left-8   text-amber-100 text-2xl pointer-events-none select-none">✦</span>
-        <span className="absolute top-12 right-16 text-amber-100 text-lg  pointer-events-none select-none hidden sm:block">✧</span>
-        <span className="absolute top-6  left-1/3 text-amber-100 text-base pointer-events-none select-none hidden md:block">⋆</span>
-        <span className="absolute bottom-10 left-20  text-amber-100 text-xl  pointer-events-none select-none hidden sm:block">✦</span>
-        <span className="absolute bottom-8  right-12 text-amber-100 text-lg  pointer-events-none select-none">✧</span>
-        <span className="absolute bottom-14 left-1/2 text-amber-100 text-base pointer-events-none select-none hidden md:block">⋆</span>
+      <section className="py-20 sm:py-28 px-4 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
+              ✦ Why itoito
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800">
+              安心して参加できる<span className="text-amber-500">4つの理由</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {trustPoints.map((t) => (
+              <div
+                key={t.title}
+                className="flex flex-col items-center text-center gap-3 bg-white rounded-2xl px-5 py-6 border border-stone-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+              >
+                <span className="text-3xl">{t.icon}</span>
+                <div>
+                  <p className="text-sm font-bold text-stone-800 mb-1">{t.title}</p>
+                  <p className="text-xs text-stone-500 leading-relaxed">{t.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {/* ══════════════════════════════
+          ⑥ カテゴリー
+      ══════════════════════════════ */}
+      <CategoryCards />
+
+      {/* ══════════════════════════════
+          ⑦ 注目のパートナー（コンパクト横並び）
+      ══════════════════════════════ */}
+      <section className="py-20 sm:py-28 px-4 bg-white" id="featured-hosts">
         <div className="max-w-5xl mx-auto">
           {/* 見出し + すべて見る */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-12">
             <div>
               <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-2">
                 Featured Partners
@@ -190,7 +176,6 @@ export default async function HomePage({
                 key={h.name}
                 className="shrink-0 w-28 sm:w-auto flex flex-col items-center text-center gap-2 group"
               >
-                {/* 円形アバター（クリックで遷移） */}
                 <Link href={h.href} className="block">
                   <div
                     className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-md shrink-0 overflow-hidden relative transition-transform group-hover:scale-105"
@@ -203,19 +188,13 @@ export default async function HomePage({
                     )}
                   </div>
                 </Link>
-
-                {/* 名前（リンク） */}
                 <Link
                   href={h.href}
                   className="font-bold text-base text-stone-800 hover:text-amber-600 transition-colors leading-tight mt-1"
                 >
                   {h.name}
                 </Link>
-
-                {/* 肩書き */}
                 <p className="text-[11px] text-amber-600 leading-snug -mt-1">{h.role}</p>
-
-                {/* 一言コメント */}
                 <p className="text-[11px] text-stone-400 italic leading-relaxed line-clamp-3">
                   「{h.quote}」
                 </p>
@@ -226,17 +205,11 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑥ 利用者の声
+          ⑧ 利用者の声
       ══════════════════════════════ */}
-      <section className="relative py-16 sm:py-20 px-4 bg-stone-50 overflow-hidden">
-        {/* 装飾 */}
-        <span className="absolute top-8 right-12 text-amber-200 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
-        <svg className="absolute top-0 left-0 w-56 h-56 opacity-[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none">
-          <path d="M 10 100 Q 100 20 190 100" stroke="#f59e0b" strokeWidth="4" />
-        </svg>
-
+      <section className="py-20 sm:py-28 px-4 bg-stone-50">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
+          <div className="text-center mb-12">
             <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
               Reviews
             </p>
@@ -251,7 +224,6 @@ export default async function HomePage({
                 key={i}
                 className="bg-white rounded-2xl border border-stone-100 p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow"
               >
-                {/* 星 + 属性 */}
                 <div className="flex items-start justify-between">
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, j) => (
@@ -260,18 +232,15 @@ export default async function HomePage({
                   </div>
                   <span className="text-xs text-stone-400 text-right leading-snug max-w-[100px]">{r.attribute}</span>
                 </div>
-                {/* 感想 */}
                 <p className="text-stone-700 text-sm leading-relaxed flex-1">
                   「{r.comment}」
                 </p>
-                {/* 帰宅後の変化 */}
                 <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-xl px-3 py-2">
                   <p className="text-[10px] font-semibold text-amber-500 mb-0.5 tracking-wide uppercase">
                     その後の変化 →
                   </p>
                   <p className="text-xs text-stone-600 leading-relaxed">{r.change}</p>
                 </div>
-                {/* 体験名 */}
                 <p className="text-xs font-semibold text-amber-600 border-t border-stone-100 pt-3">
                   {r.experience}
                 </p>
@@ -282,19 +251,14 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑦ 運営者紹介
+          ⑨ 運営者紹介
       ══════════════════════════════ */}
-      <section className="relative py-16 sm:py-20 px-4 bg-white overflow-hidden">
-        {/* 装飾 */}
-        <span className="absolute top-10 right-10 text-amber-100 text-3xl pointer-events-none select-none hidden sm:block">✦</span>
-        <span className="absolute bottom-10 left-10 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
-
+      <section className="py-20 sm:py-28 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
-          <p className="text-center text-amber-500 text-xs font-semibold tracking-widest uppercase mb-10">
+          <p className="text-center text-amber-500 text-xs font-semibold tracking-widest uppercase mb-12">
             Founder
           </p>
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 sm:gap-12">
-            {/* 写真 */}
             <div className="shrink-0">
               <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden border-4 border-amber-100 shadow-lg relative bg-amber-50">
                 <Image
@@ -305,7 +269,6 @@ export default async function HomePage({
                 />
               </div>
             </div>
-            {/* テキスト */}
             <div className="flex-1 text-center sm:text-left">
               <p className="text-xs text-amber-600 font-semibold tracking-wide mb-1">
                 元公立中学校教師・体験プロデューサー
@@ -340,13 +303,9 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑧ 信頼指標（数字インパクト）
+          ⑩ 信頼指標（数字インパクト）
       ══════════════════════════════ */}
-      <section className="py-16 sm:py-20 px-4 bg-stone-900 overflow-hidden relative">
-        {/* 装飾 */}
-        <span className="absolute top-6 left-8 text-amber-900 text-4xl pointer-events-none select-none">✦</span>
-        <span className="absolute bottom-6 right-8 text-amber-900 text-3xl pointer-events-none select-none">✧</span>
-
+      <section className="py-20 sm:py-28 px-4 bg-stone-900">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-3">
@@ -356,7 +315,6 @@ export default async function HomePage({
               数字が証明する、<span className="text-amber-400">itoitoの信頼</span>
             </h2>
           </div>
-
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {trustStats.map((s) => (
               <div
@@ -375,21 +333,13 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑨ ホスト募集 + メルマガ
+          ⑪ パートナー募集 + メルマガ
       ══════════════════════════════ */}
-      <section className="relative py-16 sm:py-20 px-4 bg-amber-50 overflow-hidden">
-        {/* 装飾 */}
-        <span className="absolute top-6 left-6 text-amber-200 text-4xl pointer-events-none select-none hidden sm:block">✦</span>
-        <span className="absolute bottom-6 right-8 text-amber-200 text-3xl pointer-events-none select-none hidden sm:block">✧</span>
-        <span className="absolute top-1/2 right-1/4 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">⋆</span>
-        <svg className="absolute top-0 right-0 w-64 h-64 opacity-[0.06] pointer-events-none" viewBox="0 0 200 200" fill="none">
-          <path d="M 190 10 Q 100 100 10 190" stroke="#f59e0b" strokeWidth="5" />
-        </svg>
-
+      <section className="py-20 sm:py-28 px-4 bg-amber-50">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
 
-            {/* ── 左：ホスト募集 ── */}
+            {/* ── 左：パートナー募集 ── */}
             <div>
               <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
                 For Partners

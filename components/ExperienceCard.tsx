@@ -28,12 +28,12 @@ const categoryEmoji: Record<string, string> = {
 
 /* 形式バッジ設定 */
 const formatConfig = {
-  online:  { label: "💻 オンライン",  cls: "bg-blue-500 text-white" },
+  online:  { label: "💻 オンライン",   cls: "bg-blue-500 text-white" },
   hybrid:  { label: "🌐 ハイブリッド", cls: "bg-purple-500 text-white" },
-  offline: null, // オフラインはバッジなし（デフォルト）
+  offline: null,
 };
 
-/* 星表示：小数対応（半端は四捨五入） */
+/* 星表示 */
 function StarRow({ rating, count }: { rating: number; count: number }) {
   const full = Math.round(rating);
   return (
@@ -50,12 +50,12 @@ function StarRow({ rating, count }: { rating: number; count: number }) {
 }
 
 export default function ExperienceCard({ exp }: { exp: Experience }) {
-  const colorClass = categoryColors[exp.category] ?? "bg-stone-100 text-stone-600";
-  const emoji      = categoryEmoji[exp.category] ?? "✨";
-  const dateLabel  = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
-  const imgSrc     = exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
+  const colorClass   = categoryColors[exp.category] ?? "bg-stone-100 text-stone-600";
+  const emoji        = categoryEmoji[exp.category] ?? "✨";
+  const dateLabel    = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
+  const imgSrc       = exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
   const hasRealImage = !!(exp.image && exp.image !== "null");
-  const fmtBadge   = exp.format ? formatConfig[exp.format] : null;
+  const fmtBadge     = exp.format ? formatConfig[exp.format] : null;
 
   return (
     <Link href={`/experiences/${exp.id}`} className="group block h-full">
@@ -73,10 +73,22 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
           {/* グラデーション */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-          {/* カテゴリバッジ（左上） */}
-          <span className={`absolute top-2.5 left-2.5 text-[11px] font-medium px-2 py-0.5 rounded-full shadow-sm backdrop-blur-sm ${colorClass}`}>
-            {emoji} {exp.category}
-          </span>
+          {/* 左上バッジ列（カテゴリー + NEW / 人気） */}
+          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
+            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shadow-sm backdrop-blur-sm w-fit ${colorClass}`}>
+              {emoji} {exp.category}
+            </span>
+            {exp.isPopular && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500 text-white shadow-sm w-fit">
+                🔥 人気
+              </span>
+            )}
+            {exp.isNew && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white shadow-sm w-fit">
+                ✨ NEW
+              </span>
+            )}
+          </div>
 
           {/* 対象年齢バッジ（右上） */}
           {exp.targetAge && (

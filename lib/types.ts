@@ -31,6 +31,8 @@ export type Experience = {
   images?: string[];
   rating?: number;        // 平均評価（1〜5）
   reviewCount?: number;   // レビュー件数
+  isNew?: boolean;        // 新着フラグ
+  isPopular?: boolean;    // 人気フラグ
   // オンライン体験専用フィールド
   platform?: string;              // Zoom / Google Meet など
   requiredEquipment?: string[];   // 必要な機材リスト
