@@ -116,60 +116,75 @@ export default async function HomePage() {
       </section>
 
       {/* ══════════════════════════════
-          ⑤ 注目のホスト（横スクロール対応）
+          ⑥ 注目のホスト（コンパクト横並び）
       ══════════════════════════════ */}
-      <section className="relative py-16 sm:py-20 px-4 bg-white overflow-hidden">
-        {/* 装飾 */}
-        <span className="absolute top-6 left-6 text-amber-100 text-4xl pointer-events-none select-none hidden sm:block">✦</span>
-        <span className="absolute bottom-8 right-8 text-amber-100 text-2xl pointer-events-none select-none hidden sm:block">✧</span>
+      <section className="relative py-20 px-4 bg-white overflow-hidden" id="featured-hosts">
+        {/* 装飾：散らした星 */}
+        <span className="absolute top-8  left-8   text-amber-100 text-2xl pointer-events-none select-none">✦</span>
+        <span className="absolute top-12 right-16 text-amber-100 text-lg  pointer-events-none select-none hidden sm:block">✧</span>
+        <span className="absolute top-6  left-1/3 text-amber-100 text-base pointer-events-none select-none hidden md:block">⋆</span>
+        <span className="absolute bottom-10 left-20  text-amber-100 text-xl  pointer-events-none select-none hidden sm:block">✦</span>
+        <span className="absolute bottom-8  right-12 text-amber-100 text-lg  pointer-events-none select-none">✧</span>
+        <span className="absolute bottom-14 left-1/2 text-amber-100 text-base pointer-events-none select-none hidden md:block">⋆</span>
 
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
-              Featured Hosts
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">
-              現場を教える、プロの師匠たち。
-            </h2>
-            <p className="text-sm text-stone-400">
-              教科書には載っていない、本物の経験を持つ大人たち。
-            </p>
+          {/* 見出し + すべて見る */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-10">
+            <div>
+              <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-2">
+                Featured Hosts
+              </p>
+              <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-1">
+                現場を教える、プロの師匠たち。
+              </h2>
+              <p className="text-sm text-stone-400">
+                教科書には載っていない、本物の経験を持つ大人たち。
+              </p>
+            </div>
+            <Link
+              href="#"
+              className="text-xs font-semibold text-amber-600 hover:text-amber-700 hover:underline shrink-0"
+            >
+              すべて見る →
+            </Link>
           </div>
 
-          {/* モバイル：横スクロール / sm以上：grid */}
-          <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide sm:grid sm:grid-cols-3 sm:overflow-visible">
+          {/* ホストカード：モバイル横スクロール / md:6列 */}
+          <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide sm:grid sm:grid-cols-3 sm:overflow-visible sm:gap-8 lg:grid-cols-6 lg:gap-10">
             {featuredHosts.map((h) => (
               <div
                 key={h.name}
-                className="shrink-0 w-64 sm:w-auto bg-white rounded-2xl border border-stone-100 p-6 flex flex-col items-center text-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                className="shrink-0 w-28 sm:w-auto flex flex-col items-center text-center gap-2 group"
               >
-                {/* 円形アバター */}
-                <div
-                  className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-md shrink-0 overflow-hidden relative"
-                  style={{ background: h.avatarBg }}
-                >
-                  {h.avatarImg ? (
-                    <Image src={h.avatarImg} alt={h.name} fill className="object-cover" />
-                  ) : (
-                    <span>{h.avatarInitial}</span>
-                  )}
-                </div>
-                {/* 名前・肩書き */}
-                <div>
-                  <p className="font-extrabold text-stone-800 text-base">{h.name}</p>
-                  <p className="text-xs text-amber-600 mt-0.5">{h.role}</p>
-                </div>
-                {/* 一言 */}
-                <p className="text-sm text-stone-500 leading-relaxed flex-1 italic">
-                  「{h.quote}」
-                </p>
-                {/* ボタン */}
+                {/* 円形アバター（クリックで遷移） */}
+                <Link href={h.href} className="block">
+                  <div
+                    className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-md shrink-0 overflow-hidden relative transition-transform group-hover:scale-105"
+                    style={{ background: h.avatarBg }}
+                  >
+                    {h.avatarImg ? (
+                      <Image src={h.avatarImg} alt={h.name} fill className="object-cover" />
+                    ) : (
+                      <span>{h.avatarInitial}</span>
+                    )}
+                  </div>
+                </Link>
+
+                {/* 名前（リンク） */}
                 <Link
                   href={h.href}
-                  className="text-xs font-semibold text-amber-600 hover:text-amber-700 border border-amber-200 hover:border-amber-400 hover:bg-amber-50 px-4 py-2 rounded-full transition-all"
+                  className="font-bold text-base text-stone-800 hover:text-amber-600 transition-colors leading-tight mt-1"
                 >
-                  この人の体験を見る →
+                  {h.name}
                 </Link>
+
+                {/* 肩書き */}
+                <p className="text-[11px] text-amber-600 leading-snug -mt-1">{h.role}</p>
+
+                {/* 一言コメント */}
+                <p className="text-[11px] text-stone-400 italic leading-relaxed line-clamp-3">
+                  「{h.quote}」
+                </p>
               </div>
             ))}
           </div>
