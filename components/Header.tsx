@@ -37,13 +37,6 @@ export default function Header() {
             >
               パートナーになる
             </Link>
-            <Link
-              href="/host"
-              className="text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white px-3 sm:px-4 py-1.5 rounded-full transition-colors shadow-sm ml-1 whitespace-nowrap"
-            >
-              <span className="hidden sm:inline">体験を投稿する</span>
-              <span className="sm:hidden">投稿する</span>
-            </Link>
           </nav>
         </div>
 
