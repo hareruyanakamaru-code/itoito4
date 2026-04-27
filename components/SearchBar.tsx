@@ -18,6 +18,9 @@ const AREAS = [
   { value: "江東区", label: "江東区" },
   { value: "東京",   label: "東京都内" },
   { value: "千葉",   label: "千葉県" },
+  { value: "埼玉",   label: "埼玉県" },
+  { value: "神奈川", label: "神奈川県" },
+  { value: "オンライン", label: "オンライン" },
 ];
 
 const AGES = [
@@ -39,6 +42,13 @@ const MONTHS = [
   { value: "2026-08", label: "8月" },
 ];
 
+const FORMATS = [
+  { value: "",        label: "すべて" },
+  { value: "offline", label: "📍 現地開催" },
+  { value: "online",  label: "💻 オンライン" },
+  { value: "hybrid",  label: "🌐 ハイブリッド" },
+];
+
 /* ── Props ── */
 interface DefaultValues {
   category?: string;
@@ -47,6 +57,7 @@ interface DefaultValues {
   month?: string;
   date?: string;
   q?: string;
+  format?: string;
 }
 
 /* ── スタイル共通 ── */
@@ -63,6 +74,7 @@ export default function SearchBar({ defaultValues }: { defaultValues?: DefaultVa
   const [month,    setMonth   ] = useState(defaultValues?.month    ?? "");
   const [date,     setDate    ] = useState(defaultValues?.date     ?? "");
   const [query,    setQuery   ] = useState(defaultValues?.q        ?? "");
+  const [format,   setFormat  ] = useState(defaultValues?.format   ?? "");
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -73,6 +85,7 @@ export default function SearchBar({ defaultValues }: { defaultValues?: DefaultVa
     if (month)    params.set("month",    month);
     if (date)     params.set("date",     date);
     if (query)    params.set("q",        query);
+    if (format)   params.set("format",   format);
     const qs = params.toString();
     router.push(`/${qs ? `?${qs}` : ""}#experiences`);
   }
@@ -117,7 +130,7 @@ export default function SearchBar({ defaultValues }: { defaultValues?: DefaultVa
           </div>
 
           {/* 2行目：開催月・開催日・フリーワード＋検索ボタン */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3">
             {/* 開催月 */}
             <div className="relative">
               <select value={month} onChange={e => setMonth(e.target.value)} className={fieldClass}>
@@ -151,6 +164,25 @@ export default function SearchBar({ defaultValues }: { defaultValues?: DefaultVa
                 検索
               </button>
             </div>
+          </div>
+
+          {/* 形式フィルター（ボタン切り替え） */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[11px] text-stone-400 font-semibold shrink-0">開催形式：</span>
+            {FORMATS.map(f => (
+              <button
+                key={f.value}
+                type="button"
+                onClick={() => setFormat(f.value)}
+                className={`text-xs px-3 py-1 rounded-full border font-medium transition-all ${
+                  format === f.value
+                    ? "bg-amber-500 text-white border-amber-500 shadow-sm"
+                    : "bg-white border-stone-200 text-stone-600 hover:border-amber-400 hover:text-amber-600"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
         </form>
       </div>

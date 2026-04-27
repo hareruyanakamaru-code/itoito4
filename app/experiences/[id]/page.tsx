@@ -141,7 +141,7 @@ export default async function ExperienceDetailPage({
             </h1>
 
             {/* 価格（Gifte!参考：タイトル直下に大きく） */}
-            <div className="flex items-baseline gap-2 mb-5">
+            <div className="flex items-baseline gap-2 mb-4">
               <span className="text-3xl font-extrabold text-amber-600">
                 ¥{exp.price.toLocaleString()}
               </span>
@@ -150,6 +150,20 @@ export default async function ExperienceDetailPage({
                 {dateLabel}
               </span>
             </div>
+
+            {/* 星評価 */}
+            {exp.rating != null && exp.reviewCount != null && (
+              <div className="flex items-center gap-2 mb-5 bg-amber-50 rounded-xl px-4 py-3 border border-amber-100">
+                <span className="flex">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <span key={n} className={`text-xl ${n <= Math.round(exp.rating!) ? "text-amber-400" : "text-stone-200"}`}>★</span>
+                  ))}
+                </span>
+                <span className="text-2xl font-extrabold text-amber-500">{exp.rating.toFixed(1)}</span>
+                <span className="text-sm text-stone-400">/ 5.0</span>
+                <span className="text-sm text-stone-400 ml-1">（{exp.reviewCount}件のレビュー）</span>
+              </div>
+            )}
 
             {/* 説明 */}
             <p className="text-stone-600 leading-relaxed mb-8 whitespace-pre-line">
@@ -240,6 +254,66 @@ export default async function ExperienceDetailPage({
             <p className="text-sm text-stone-600 leading-relaxed whitespace-pre-line">
               {exp.parentNote}
             </p>
+          </div>
+        )}
+
+        {/* オンライン参加について */}
+        {exp.format === "online" && (
+          <div className="mt-4 bg-blue-50 rounded-2xl p-6 border border-blue-100">
+            <h2 className="text-sm font-bold text-blue-700 mb-4 flex items-center gap-2">
+              💻 オンライン参加について
+            </h2>
+            <div className="flex flex-col gap-3">
+              {/* プラットフォーム */}
+              {exp.platform && (
+                <div className="flex items-start gap-3 bg-white rounded-xl p-3.5">
+                  <span className="text-lg shrink-0">🎥</span>
+                  <div>
+                    <p className="text-xs text-stone-400 mb-0.5">使用ツール</p>
+                    <p className="font-medium text-stone-800">{exp.platform}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* 必要な機材 */}
+              {exp.requiredEquipment && exp.requiredEquipment.length > 0 && (
+                <div className="bg-white rounded-xl p-3.5">
+                  <p className="text-xs text-stone-400 mb-2 flex items-center gap-1.5">
+                    <span>🛠</span> 参加に必要なもの
+                  </p>
+                  <ul className="flex flex-col gap-1.5">
+                    {exp.requiredEquipment.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-stone-700">
+                        <span className="text-blue-400 font-bold shrink-0 mt-0.5">✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* 参加URL */}
+              <div className="bg-white rounded-xl p-3.5">
+                <p className="text-xs text-stone-400 mb-1 flex items-center gap-1.5">
+                  <span>🔗</span> 参加URL
+                </p>
+                <p className="text-sm text-stone-700">
+                  申し込み完了後、登録メールアドレスに参加URLをお送りします。
+                </p>
+              </div>
+
+              {/* 接続テスト */}
+              {exp.platform && exp.platform.toLowerCase().includes("zoom") && (
+                <a
+                  href="https://zoom.us/test"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                >
+                  🔍 Zoom接続テストはこちら →
+                </a>
+              )}
+            </div>
           </div>
         )}
 

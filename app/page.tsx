@@ -20,6 +20,7 @@ export default async function HomePage({
     month?: string;
     date?: string;
     q?: string;
+    format?: string;
   }>;
 }) {
   const today  = new Date().toISOString().split("T")[0];
@@ -49,10 +50,11 @@ export default async function HomePage({
       const q = params.q.toLowerCase();
       if (!exp.title.toLowerCase().includes(q) && !exp.description.toLowerCase().includes(q)) return false;
     }
+    if (params.format && exp.format !== params.format) return false;
     return true;
   });
 
-  const hasFilter = !!(params.category || params.area || params.age || params.month || params.date || params.q);
+  const hasFilter = !!(params.category || params.area || params.age || params.month || params.date || params.q || params.format);
 
   return (
     <div className="bg-white">
@@ -338,7 +340,42 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑧ ホスト募集 + ⑩ メルマガ
+          ⑧ 信頼指標（数字インパクト）
+      ══════════════════════════════ */}
+      <section className="py-16 sm:py-20 px-4 bg-stone-900 overflow-hidden relative">
+        {/* 装飾 */}
+        <span className="absolute top-6 left-8 text-amber-900 text-4xl pointer-events-none select-none">✦</span>
+        <span className="absolute bottom-6 right-8 text-amber-900 text-3xl pointer-events-none select-none">✧</span>
+
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-3">
+              Trust Numbers
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">
+              数字が証明する、<span className="text-amber-400">itoitoの信頼</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {trustStats.map((s) => (
+              <div
+                key={s.label}
+                className="flex flex-col items-center text-center gap-2 bg-stone-800 rounded-2xl px-4 py-7 border border-stone-700"
+              >
+                <span className="text-3xl mb-1">{s.icon}</span>
+                <p className="text-3xl md:text-4xl font-extrabold text-amber-400 leading-none">
+                  {s.value}
+                </p>
+                <p className="text-xs text-stone-400 leading-snug mt-1">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════
+          ⑨ ホスト募集 + メルマガ
       ══════════════════════════════ */}
       <section className="relative py-16 sm:py-20 px-4 bg-amber-50 overflow-hidden">
         {/* 装飾 */}
@@ -510,6 +547,13 @@ const reviews = [
       "子どもが生き物に夢中になる姿を久しぶりに見ました。スマホを一切触らず3時間没頭していたのが印象的でした。",
     change: "その後、毎週末に川や公園に行きたがるようになりました。",
   },
+];
+
+const trustStats = [
+  { icon: "⭐", value: "4.8",   label: "平均評価（5段階）" },
+  { icon: "👣", value: "100名+", label: "累計参加者数" },
+  { icon: "✅", value: "6名",   label: "審査済みホスト" },
+  { icon: "🎓", value: "9件",   label: "開催体験数" },
 ];
 
 const hostCTAPoints = [

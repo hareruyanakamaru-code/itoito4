@@ -11,6 +11,7 @@ export type Experience = {
   title: string;
   description: string;
   category: string;
+  format?: "offline" | "online" | "hybrid"; // 開催形式
   date: string;
   dateTo?: string;
   time: string;
@@ -28,6 +29,12 @@ export type Experience = {
   skillTags?: string[];
   image?: string | null;
   images?: string[];
+  rating?: number;        // 平均評価（1〜5）
+  reviewCount?: number;   // レビュー件数
+  // オンライン体験専用フィールド
+  platform?: string;              // Zoom / Google Meet など
+  requiredEquipment?: string[];   // 必要な機材リスト
+  accessUrl?: string;             // 参加URL（申し込み後にメール送信）
 };
 
 export type ApplicationStatus = "未確認" | "確認済み" | "承認" | "キャンセル";

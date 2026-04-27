@@ -26,12 +26,36 @@ const categoryEmoji: Record<string, string> = {
   "探究・学び":           "🔍",
 };
 
+/* 形式バッジ設定 */
+const formatConfig = {
+  online:  { label: "💻 オンライン",  cls: "bg-blue-500 text-white" },
+  hybrid:  { label: "🌐 ハイブリッド", cls: "bg-purple-500 text-white" },
+  offline: null, // オフラインはバッジなし（デフォルト）
+};
+
+/* 星表示：小数対応（半端は四捨五入） */
+function StarRow({ rating, count }: { rating: number; count: number }) {
+  const full = Math.round(rating);
+  return (
+    <div className="flex items-center gap-1">
+      <span className="flex">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <span key={n} className={`text-[13px] ${n <= full ? "text-amber-400" : "text-stone-200"}`}>★</span>
+        ))}
+      </span>
+      <span className="text-[12px] font-semibold text-stone-700">{rating.toFixed(1)}</span>
+      <span className="text-[11px] text-stone-400">（{count}件）</span>
+    </div>
+  );
+}
+
 export default function ExperienceCard({ exp }: { exp: Experience }) {
   const colorClass = categoryColors[exp.category] ?? "bg-stone-100 text-stone-600";
   const emoji      = categoryEmoji[exp.category] ?? "✨";
   const dateLabel  = exp.dateTo ? `${exp.date} 〜 ${exp.dateTo}` : exp.date;
   const imgSrc     = exp.image && exp.image !== "null" ? exp.image : "/images/placeholder.svg";
   const hasRealImage = !!(exp.image && exp.image !== "null");
+  const fmtBadge   = exp.format ? formatConfig[exp.format] : null;
 
   return (
     <Link href={`/experiences/${exp.id}`} className="group block h-full">
@@ -46,22 +70,29 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className={`object-cover transition-transform duration-500 ${hasRealImage ? "group-hover:scale-105" : ""}`}
           />
-          {/* グラデーション（価格の視認性確保） */}
+          {/* グラデーション */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-          {/* カテゴリバッジ */}
+          {/* カテゴリバッジ（左上） */}
           <span className={`absolute top-2.5 left-2.5 text-[11px] font-medium px-2 py-0.5 rounded-full shadow-sm backdrop-blur-sm ${colorClass}`}>
             {emoji} {exp.category}
           </span>
 
-          {/* 対象年齢バッジ */}
+          {/* 対象年齢バッジ（右上） */}
           {exp.targetAge && (
             <span className="absolute top-2.5 right-2.5 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
               {exp.targetAge}
             </span>
           )}
 
-          {/* 価格バッジ（常時表示） */}
+          {/* 形式バッジ（左下・オンライン/ハイブリッドのみ） */}
+          {fmtBadge && (
+            <span className={`absolute bottom-2.5 left-2.5 text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm ${fmtBadge.cls}`}>
+              {fmtBadge.label}
+            </span>
+          )}
+
+          {/* 価格バッジ（右下・常時） */}
           <div className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1 shadow-sm">
             <span className="font-bold text-amber-700 text-sm">¥{exp.price.toLocaleString()}</span>
             <span className="text-xs text-stone-500"> / 人</span>
@@ -86,6 +117,11 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
               <span className="text-xs text-stone-500">{exp.location}</span>
             </div>
           </div>
+
+          {/* 星評価 */}
+          {exp.rating != null && exp.reviewCount != null && (
+            <StarRow rating={exp.rating} count={exp.reviewCount} />
+          )}
 
           {/* パートナー名＋定員 */}
           <div className="flex items-center justify-between text-xs text-stone-400 pt-1.5 border-t border-stone-100">
