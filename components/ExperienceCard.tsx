@@ -73,7 +73,7 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
           {/* グラデーション */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-          {/* 左上バッジ列（カテゴリー + NEW / 人気） */}
+          {/* 左上バッジ（カテゴリーのみ） */}
           <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full shadow-sm backdrop-blur-sm w-fit ${colorClass}`}>
               {emoji} {exp.category}
@@ -90,25 +90,12 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
             )}
           </div>
 
-          {/* 対象年齢バッジ（右上） */}
-          {exp.targetAge && (
-            <span className="absolute top-2.5 right-2.5 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
-              {exp.targetAge}
-            </span>
-          )}
-
           {/* 形式バッジ（左下・オンライン/ハイブリッドのみ） */}
           {fmtBadge && (
             <span className={`absolute bottom-2.5 left-2.5 text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm ${fmtBadge.cls}`}>
               {fmtBadge.label}
             </span>
           )}
-
-          {/* 価格バッジ（右下・常時） */}
-          <div className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1 shadow-sm">
-            <span className="font-bold text-amber-700 text-sm">¥{exp.price.toLocaleString()}</span>
-            <span className="text-xs text-stone-500"> / 人</span>
-          </div>
         </div>
 
         {/* ── テキストエリア ── */}
@@ -117,6 +104,18 @@ export default function ExperienceCard({ exp }: { exp: Experience }) {
           <h2 className="text-sm sm:text-base font-bold text-stone-800 group-hover:text-amber-700 transition-colors leading-snug line-clamp-2">
             {exp.title}
           </h2>
+
+          {/* 対象年齢 / 料金（横並び） */}
+          <div className="flex items-center gap-1.5 text-xs bg-stone-50 rounded-lg px-2.5 py-1.5 w-fit">
+            {exp.targetAge && (
+              <>
+                <span className="text-stone-500">対象</span>
+                <span className="font-medium text-stone-700">{exp.targetAge}</span>
+                <span className="text-stone-300">／</span>
+              </>
+            )}
+            <span className="font-bold text-amber-700">¥{exp.price.toLocaleString()}</span>
+          </div>
 
           {/* 日時・場所 */}
           <div className="flex flex-col gap-1 mt-auto">

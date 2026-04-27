@@ -2,7 +2,6 @@ import { getAllExperiences } from "@/lib/experiences";
 import { kvGetAddedExperiences } from "@/lib/kv-store";
 import ExperienceGrid from "@/components/ExperienceGrid";
 import HeroCarousel from "@/components/HeroCarousel";
-import NewsletterSignup from "@/components/NewsletterSignup";
 import SearchBar from "@/components/SearchBar";
 import FormatTabs from "@/components/FormatTabs";
 import Link from "next/link";
@@ -60,60 +59,16 @@ export default async function HomePage({
     <div className="bg-white">
 
       {/* ══════════════════════════════
-          ① ヒーローカルーセル
+          ① ヒーロー
       ══════════════════════════════ */}
       <HeroCarousel />
-
-      {/* アクセントライン */}
       <div className="h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300" />
-
-      {/* ── スクロールアンカー ──
-          ヘッダー高さ分（57px）上に余白を取ることで
-          スクロール後に FormatTabs + SearchBar がきれいに見える */}
       <div id="experiences" className="scroll-mt-[57px]" />
-
-      {/* ══════════════════════════════
-          ② 形式タブ（FormatTabs）
-      ══════════════════════════════ */}
       <FormatTabs currentFormat={params.format} />
-
-      {/* ══════════════════════════════
-          ③ 横長検索バー（Airbnb風）
-      ══════════════════════════════ */}
       <SearchBar defaultValues={params} />
 
       {/* ══════════════════════════════
-          ② 安心できる理由
-      ══════════════════════════════ */}
-      <section className="py-20 sm:py-28 px-4 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
-              ✦ Why itoito
-            </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800">
-              安心して参加できる<span className="text-amber-500">4つの理由</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {trustPoints.map((t) => (
-              <div
-                key={t.title}
-                className="flex flex-col items-center text-center gap-3 bg-white rounded-2xl px-5 py-6 border border-stone-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-              >
-                <span className="text-3xl">{t.icon}</span>
-                <div>
-                  <p className="text-sm font-bold text-stone-800 mb-1">{t.title}</p>
-                  <p className="text-xs text-stone-500 leading-relaxed">{t.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════
-          ③ 体験一覧
+          ② 開催予定の体験
       ══════════════════════════════ */}
       <section className="bg-stone-50 pt-8 pb-4">
         <div className="max-w-5xl mx-auto px-4 mb-5">
@@ -143,16 +98,12 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑦ 注目のパートナー（コンパクト横並び）
+          ③ 注目のパートナー
       ══════════════════════════════ */}
       <section className="py-20 sm:py-28 px-4 bg-white" id="featured-hosts">
         <div className="max-w-5xl mx-auto">
-          {/* 見出し + すべて見る */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-12">
             <div>
-              <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-2">
-                Featured Partners
-              </p>
               <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-1">
                 現場を教える、注目のパートナー。
               </h2>
@@ -167,8 +118,6 @@ export default async function HomePage({
               すべて見る →
             </Link>
           </div>
-
-          {/* ホストカード：モバイル横スクロール / md:6列 */}
           <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide sm:grid sm:grid-cols-3 sm:overflow-visible sm:gap-8 lg:grid-cols-6 lg:gap-10">
             {featuredHosts.map((h) => (
               <div
@@ -177,13 +126,13 @@ export default async function HomePage({
               >
                 <Link href={h.href} className="block">
                   <div
-                    className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-md shrink-0 overflow-hidden relative transition-transform group-hover:scale-105"
+                    className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold shadow-md shrink-0 overflow-hidden relative transition-transform group-hover:scale-105"
                     style={{ background: h.avatarBg }}
                   >
                     {h.avatarImg ? (
                       <Image src={h.avatarImg} alt={h.name} fill className="object-cover" />
                     ) : (
-                      <span>{h.avatarInitial}</span>
+                      <span style={{ color: "#4A4A4A" }}>{h.avatarInitial}</span>
                     )}
                   </div>
                 </Link>
@@ -204,14 +153,11 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑧ 利用者の声
+          ④ 参加者の声
       ══════════════════════════════ */}
       <section className="py-20 sm:py-28 px-4 bg-stone-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
-              Reviews
-            </p>
             <h2 className="text-2xl md:text-3xl font-bold text-stone-800 mb-2">
               参加者の声
             </h2>
@@ -235,7 +181,7 @@ export default async function HomePage({
                   「{r.comment}」
                 </p>
                 <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-xl px-3 py-2">
-                  <p className="text-[10px] font-semibold text-amber-500 mb-0.5 tracking-wide uppercase">
+                  <p className="text-[10px] font-semibold text-amber-500 mb-0.5 tracking-wide">
                     その後の変化 →
                   </p>
                   <p className="text-xs text-stone-600 leading-relaxed">{r.change}</p>
@@ -250,13 +196,37 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑨ 運営者紹介
+          ⑤ 安心して参加できる理由
       ══════════════════════════════ */}
       <section className="py-20 sm:py-28 px-4 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800">
+              安心して参加できる<span className="text-amber-500">理由</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {trustPoints.map((t) => (
+              <div
+                key={t.title}
+                className="flex flex-col items-center text-center gap-3 bg-white rounded-2xl px-5 py-6 border border-stone-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+              >
+                <span className="text-3xl">{t.icon}</span>
+                <div>
+                  <p className="text-sm font-bold text-stone-800 mb-1">{t.title}</p>
+                  <p className="text-xs text-stone-500 leading-relaxed">{t.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════
+          ⑥ 運営者紹介
+      ══════════════════════════════ */}
+      <section className="py-20 sm:py-28 px-4 bg-stone-50">
         <div className="max-w-3xl mx-auto">
-          <p className="text-center text-amber-500 text-xs font-semibold tracking-widest uppercase mb-12">
-            Founder
-          </p>
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 sm:gap-12">
             <div className="shrink-0">
               <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden border-4 border-amber-100 shadow-lg relative bg-amber-50">
@@ -302,89 +272,30 @@ export default async function HomePage({
       </section>
 
       {/* ══════════════════════════════
-          ⑩ 信頼指標（数字インパクト）
-      ══════════════════════════════ */}
-      <section className="py-20 sm:py-28 px-4 bg-stone-900">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-amber-400 text-xs font-semibold tracking-widest uppercase mb-3">
-              Trust Numbers
-            </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white">
-              数字が証明する、<span className="text-amber-400">itoitoの信頼</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {trustStats.map((s) => (
-              <div
-                key={s.label}
-                className="flex flex-col items-center text-center gap-2 bg-stone-800 rounded-2xl px-4 py-7 border border-stone-700"
-              >
-                <span className="text-3xl mb-1">{s.icon}</span>
-                <p className="text-3xl md:text-4xl font-extrabold text-amber-400 leading-none">
-                  {s.value}
-                </p>
-                <p className="text-xs text-stone-400 leading-snug mt-1">{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════
-          ⑪ パートナー募集 + メルマガ
+          ⑦ パートナー募集（シンプル版）
       ══════════════════════════════ */}
       <section className="py-20 sm:py-28 px-4 bg-amber-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-
-            {/* ── 左：パートナー募集 ── */}
-            <div>
-              <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
-                For Partners
-              </p>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800 leading-snug mb-7">
-                あなたの得意が、
-                <br />
-                <span className="text-amber-600">子どもたちの学びの種になる。</span>
-              </h2>
-              <div className="space-y-5 mb-8">
-                {hostCTAPoints.map((p) => (
-                  <div key={p.title} className="flex gap-4 items-start">
-                    <span className="text-2xl shrink-0 mt-0.5">{p.icon}</span>
-                    <div>
-                      <p className="font-bold text-stone-800 text-sm mb-0.5">{p.title}</p>
-                      <p className="text-xs text-stone-500 leading-relaxed">{p.body}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Link
-                href="/for-host"
-                className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3.5 rounded-full transition-colors shadow-md"
-              >
-                パートナーとして登録する →
-              </Link>
-            </div>
-
-            {/* ── 右：メルマガ登録 ── */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-amber-100">
-              <p className="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">
-                Newsletter
-              </p>
-              <h3 className="text-lg font-extrabold text-stone-800 mb-2">
-                最新情報を受け取る
-              </h3>
-              <p className="text-sm text-stone-500 mb-5 leading-relaxed">
-                新しい体験・パートナーの情報をメールでお届けします。
-              </p>
-              <NewsletterSignup />
-              <p className="text-xs text-stone-400 mt-3 leading-relaxed">
-                ✔ スパムメールは送りません<br />
-                ✔ いつでも配信解除できます
-              </p>
-            </div>
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-stone-800 leading-snug mb-4">
+            あなたの得意が、<br />
+            <span className="text-amber-600">子どもたちの学びの種になる。</span>
+          </h2>
+          <p className="text-stone-500 text-sm leading-relaxed mb-8">
+            料理・ものづくり・自然体験・専門知識…<br />
+            スキルを持つ大人の方、パートナーとして体験を届けませんか。
+          </p>
+          {/* マイクロコピー */}
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-stone-500 mb-10">
+            <span>✓ 登録は3分で完了</span>
+            <span>✓ 掲載は完全無料</span>
+            <span>✓ 手数料は永久ゼロ</span>
           </div>
+          <Link
+            href="/for-host"
+            className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold text-base px-10 py-4 rounded-full transition-colors shadow-md"
+          >
+            パートナーとして登録する →
+          </Link>
         </div>
       </section>
 
@@ -417,12 +328,15 @@ const trustPoints = [
   },
 ];
 
+// 【3】アバター色を統一: 薄ベージュ #F5EFE6 / 文字 #4A4A4A（中丸さんのみ実写真）
+const AVATAR_BG = "#F5EFE6";
+
 const featuredHosts = [
   {
     name: "中丸 晴留哉",
     role: "竹あかり作家・元中学校教師",
     quote: "光と影の間に、子どもの目が輝く瞬間があります。",
-    avatarBg: "#f59e0b",
+    avatarBg: AVATAR_BG,
     avatarImg: "/images/founder.jpg",
     avatarInitial: "中",
     href: "/experiences/1",
@@ -431,7 +345,7 @@ const featuredHosts = [
     name: "山本 誠",
     role: "パン職人・フランス修行10年",
     quote: "パン生地の声を聞く。それが職人の仕事です。",
-    avatarBg: "#d97706",
+    avatarBg: AVATAR_BG,
     avatarImg: null,
     avatarInitial: "山",
     href: "/experiences/2",
@@ -440,7 +354,7 @@ const featuredHosts = [
     name: "佐々木農園",
     role: "有機農家・千葉県富津市",
     quote: "土に触れた手は、生涯忘れない感覚を持ちます。",
-    avatarBg: "#65a30d",
+    avatarBg: AVATAR_BG,
     avatarImg: null,
     avatarInitial: "佐",
     href: "/experiences/3",
@@ -449,7 +363,7 @@ const featuredHosts = [
     name: "渡辺 翔",
     role: "ネイチャーガイド・生態学研究者",
     quote: "自然の中に入ると、子どもは別人みたいに生き生きします。",
-    avatarBg: "#16a34a",
+    avatarBg: AVATAR_BG,
     avatarImg: null,
     avatarInitial: "渡",
     href: "/experiences/5",
@@ -458,7 +372,7 @@ const featuredHosts = [
     name: "中村 理恵",
     role: "理系研究者・大学非常勤講師",
     quote: "「なぜ？」という問いを持てた子どもは、一生学び続けられます。",
-    avatarBg: "#0891b2",
+    avatarBg: AVATAR_BG,
     avatarImg: null,
     avatarInitial: "中",
     href: "/experiences/7",
@@ -467,7 +381,7 @@ const featuredHosts = [
     name: "田中 健一",
     role: "イタリアンシェフ・料理研究家",
     quote: "食材を選ぶことから、料理は始まっています。",
-    avatarBg: "#e11d48",
+    avatarBg: AVATAR_BG,
     avatarImg: null,
     avatarInitial: "田",
     href: "/experiences/2",
@@ -498,27 +412,3 @@ const reviews = [
   },
 ];
 
-const trustStats = [
-  { icon: "⭐", value: "4.8",   label: "平均評価（5段階）" },
-  { icon: "👣", value: "100名+", label: "累計参加者数" },
-  { icon: "✅", value: "6名",   label: "審査済みパートナー" },
-  { icon: "🎓", value: "9件",   label: "開催体験数" },
-];
-
-const hostCTAPoints = [
-  {
-    icon: "🌱",
-    title: "子どもたちの未来を育てる",
-    body: "あなたの経験が、子どもの「好き」の種になります。",
-  },
-  {
-    icon: "🎨",
-    title: "自分らしいスタイルで",
-    body: "場所・日程・料金はすべてあなたが決められます。",
-  },
-  {
-    icon: "🤝",
-    title: "新しい出会いと可能性",
-    body: "itoitoのコミュニティで、同志や家族と繋がれます。",
-  },
-];
